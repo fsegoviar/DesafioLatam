@@ -68,7 +68,7 @@ export const TableLinks = () => {
         return (
           <span
             style={{ backgroundColor: 'green', color: '#FFFFFF' }}
-            className="px-2 py-1 rounded-full"
+            className='px-2 py-1 rounded-full'
           >
             {rowData.estado}
           </span>
@@ -77,7 +77,7 @@ export const TableLinks = () => {
         return (
           <span
             style={{ backgroundColor: '#CB8C22', color: '#FFFFFF' }}
-            className="px-2 py-1 rounded-full"
+            className='px-2 py-1 rounded-full'
           >
             {rowData.estado}
           </span>
@@ -86,7 +86,7 @@ export const TableLinks = () => {
         return (
           <span
             style={{ backgroundColor: 'red', color: '#FFFFFF' }}
-            className="px-2 py-1 rounded-full"
+            className='px-2 py-1 rounded-full'
           >
             {rowData.estado}
           </span>
@@ -95,7 +95,7 @@ export const TableLinks = () => {
         return (
           <span
             style={{ backgroundColor: 'black', color: '#FFFFFF' }}
-            className="px-2 py-1 rounded-full"
+            className='px-2 py-1 rounded-full'
           >
             {rowData.estado}
           </span>
@@ -107,17 +107,17 @@ export const TableLinks = () => {
 
   const actionEdit = (rowData: any) => {
     return (
-      <div className="flex">
+      <div className='flex'>
         <div style={{ margin: '0 2px' }}>
           <Button
-            icon="pi pi-pencil"
-            className="p-button-rounded p-button-text p-button-warning"
+            icon='pi pi-pencil'
+            className='p-button-rounded p-button-text p-button-warning'
           />
         </div>
         <div style={{ margin: '0 2px' }}>
           <Button
-            icon="pi pi-send"
-            className="p-button-rounded p-button-text "
+            icon='pi pi-send'
+            className='p-button-rounded p-button-text '
           />
         </div>
       </div>
@@ -126,12 +126,12 @@ export const TableLinks = () => {
 
   const renderHeader = () => {
     return (
-      <div className="table-header flex justify-between">
-        <h5 className="mx-0 my-1">Enlaces</h5>
+      <div className='table-header flex justify-between'>
+        <h5 className='mx-0 my-1'>Enlaces</h5>
         <Button
-          icon="pi pi-plus"
-          label="Nuevo Enlace"
-          className="p-button-success p-button-sm"
+          icon='pi pi-plus'
+          label='Nuevo Enlace'
+          className='p-button-success p-button-sm'
         />
       </div>
     );
@@ -140,41 +140,41 @@ export const TableLinks = () => {
   return (
     <DataTable
       value={mockData}
-      responsiveLayout="stack"
-      breakpoint="960px"
-      dataKey="id"
+      responsiveLayout='stack'
+      breakpoint='960px'
+      dataKey='id'
       rows={15}
       filters={filters}
-      filterDisplay="row"
+      filterDisplay='row'
       paginator
-      className="shadow-lg shadow-gray-500/30"
+      className='shadow-lg shadow-gray-500/30'
       header={renderHeader}
     >
-      <Column field="id" header={'Id'} sortable></Column>
+      <Column field='id' header={'Id'} sortable></Column>
       <Column
-        field="fecha"
+        field='fecha'
         filter
         filterPlaceholder={'Buscar por fecha'}
         header={'Fecha'}
         sortable
       ></Column>
       <Column
-        field="usuario"
+        field='usuario'
         filter
         filterPlaceholder={'Buscar por nombre'}
         header={'Usuario'}
         sortable
       ></Column>
       <Column
-        field="curso"
+        field='curso'
         filter
-        filterPlaceholder={'Buscar por curso'}
-        header={'Curso'}
+        filterPlaceholder={'Buscar por programa'}
+        header={'Programa'}
         sortable
       ></Column>
-      <Column field="valor" header={'Valor $USD'} sortable></Column>
-      <Column field="dsc" header={'Dcto. $USD'} sortable></Column>
-      <Column field="total" header={'Total $USD'} sortable></Column>
+      <Column field='valor' header={'Valor $USD'} sortable></Column>
+      <Column field='dsc' header={'Dcto. $USD'} sortable></Column>
+      <Column field='total' header={'Total $USD'} sortable></Column>
       <Column body={renderState} header={'Estado'}></Column>
       <Column
         body={actionEdit}

@@ -2,6 +2,8 @@ import { DataTable } from 'primereact/datatable';
 import { FilterMatchMode } from 'primereact/api';
 import { Column } from 'primereact/column';
 import { Button } from 'primereact/button';
+import { useState } from 'react';
+import { DialogTablePricing } from './DialogTablePricing';
 
 const mockData = [
   {
@@ -17,6 +19,9 @@ const mockData = [
 ];
 
 export const TablePrices = () => {
+
+  const [openDialog, setOpenDialog] = useState(false);
+
   const filters = {
     nombre: {
       value: '',
@@ -31,63 +36,70 @@ export const TablePrices = () => {
   const actionEdit = (rowData: any) => {
     return (
       <Button
-        icon="pi pi-pencil"
-        className="p-button-rounded p-button-text p-button-warning"
+        icon='pi pi-pencil'
+        className='p-button-rounded p-button-text p-button-warning'
       />
     );
   };
 
   const renderHeader = () => {
     return (
-      <div className="table-header flex justify-between">
-        <h5 className="mx-0 my-1">Tabla de precios</h5>
+      <div className='table-header flex justify-between'>
+        <h5 className='mx-0 my-1'>Tabla de precios</h5>
         <Button
-          icon="pi pi-plus"
-          label="Nueva Tabla"
-          className="p-button-success p-button-sm"
+          icon='pi pi-plus'
+          label='Nueva Tabla'
+          className='p-button-success p-button-sm'
+          onClick={() => {
+            setOpenDialog(true);
+          }
+          }
         />
       </div>
     );
   };
 
   return (
-    <DataTable
-      value={mockData}
-      responsiveLayout="stack"
-      breakpoint="960px"
-      dataKey="id"
-      rows={15}
-      filters={filters}
-      filterDisplay="row"
-      paginator
-      className="shadow-lg shadow-gray-500/30"
-      header={renderHeader}
-    >
-      <Column field="id" header={'Id'} sortable></Column>
-      <Column
-        field="nombre"
-        filter
-        filterPlaceholder={'Buscar por tabla'}
-        header={'Tabla de precios'}
-        sortable
-      ></Column>
-      <Column
-        field="curso"
-        filter
-        filterPlaceholder={'Buscar por curso'}
-        header={'Curso'}
-        sortable
-      ></Column>
-      <Column field="valor" header={'Valor Curso'} sortable></Column>
-      <Column field="dsctoCuot" header={'Dcto. Cuotas'} sortable></Column>
-      <Column field="dsctoAnt" header={'Dscto. Anticipado'} sortable></Column>
-      <Column field="matricula" header={'Matricula'} sortable></Column>
-      <Column field="motivo" header={'Motivo descuento'} sortable></Column>
-      <Column
-        body={actionEdit}
-        exportable={false}
-        style={{ minWidth: '8rem' }}
-      ></Column>
-    </DataTable>
+    <>
+      <DataTable
+        value={mockData}
+        responsiveLayout='stack'
+        breakpoint='960px'
+        dataKey='id'
+        rows={15}
+        filters={filters}
+        filterDisplay='row'
+        paginator
+        className='shadow-lg shadow-gray-500/30'
+        header={renderHeader}
+      >
+        <Column field='id' header={'Id'} sortable></Column>
+        <Column
+          field='nombre'
+          filter
+          filterPlaceholder={'Buscar por tabla'}
+          header={'Tabla de precios'}
+          sortable
+        ></Column>
+        <Column
+          field='curso'
+          filter
+          filterPlaceholder={'Buscar por curso'}
+          header={'Curso'}
+          sortable
+        ></Column>
+        <Column field='valor' header={'Valor de referencia'} sortable></Column>
+        <Column field='dsctoCuot' header={'Dcto. Cuotas'} sortable></Column>
+        <Column field='dsctoAnt' header={'Dscto. Anticipado'} sortable></Column>
+        <Column field='matricula' header={'Matricula'} sortable></Column>
+        <Column field='motivo' header={'Motivo descuento'} sortable></Column>
+        <Column
+          body={actionEdit}
+          exportable={false}
+          style={{ minWidth: '8rem' }}
+        ></Column>
+      </DataTable>
+      <DialogTablePricing open={openDialog} setOpen={setOpenDialog} />
+    </>
   );
 };
