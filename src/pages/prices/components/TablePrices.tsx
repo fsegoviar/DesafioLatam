@@ -84,8 +84,8 @@ export const TablePrices = () => {
         <Column
           field='curso'
           filter
-          filterPlaceholder={'Buscar por curso'}
-          header={'Curso'}
+          filterPlaceholder={'Buscar por programa'}
+          header={'Programa'}
           sortable
         ></Column>
         <Column field='valor' header={'Valor de referencia'} sortable></Column>

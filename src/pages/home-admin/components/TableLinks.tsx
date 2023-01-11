@@ -138,49 +138,51 @@ export const TableLinks = () => {
   };
 
   return (
-    <DataTable
-      value={mockData}
-      responsiveLayout='stack'
-      breakpoint='960px'
-      dataKey='id'
-      rows={15}
-      filters={filters}
-      filterDisplay='row'
-      paginator
-      className='shadow-lg shadow-gray-500/30'
-      header={renderHeader}
-    >
-      <Column field='id' header={'Id'} sortable></Column>
-      <Column
-        field='fecha'
-        filter
-        filterPlaceholder={'Buscar por fecha'}
-        header={'Fecha'}
-        sortable
-      ></Column>
-      <Column
-        field='usuario'
-        filter
-        filterPlaceholder={'Buscar por nombre'}
-        header={'Usuario'}
-        sortable
-      ></Column>
-      <Column
-        field='curso'
-        filter
-        filterPlaceholder={'Buscar por programa'}
-        header={'Programa'}
-        sortable
-      ></Column>
-      <Column field='valor' header={'Valor $USD'} sortable></Column>
-      <Column field='dsc' header={'Dcto. $USD'} sortable></Column>
-      <Column field='total' header={'Total $USD'} sortable></Column>
-      <Column body={renderState} header={'Estado'}></Column>
-      <Column
-        body={actionEdit}
-        exportable={false}
-        style={{ minWidth: '8rem' }}
-      ></Column>
-    </DataTable>
+    <>
+      <DataTable
+        value={mockData}
+        responsiveLayout='stack'
+        breakpoint='960px'
+        dataKey='id'
+        rows={15}
+        filters={filters}
+        filterDisplay='row'
+        paginator
+        className='shadow-lg shadow-gray-500/30'
+        header={renderHeader}
+      >
+        <Column field='id' header={'Id'} sortable></Column>
+        <Column
+          field='fecha'
+          filter
+          filterPlaceholder={'Buscar por fecha'}
+          header={'Fecha'}
+          sortable
+        ></Column>
+        <Column
+          field='usuario'
+          filter
+          filterPlaceholder={'Buscar por nombre'}
+          header={'Usuario'}
+          sortable
+        ></Column>
+        <Column
+          field='curso'
+          filter
+          filterPlaceholder={'Buscar por programa'}
+          header={'Programa'}
+          sortable
+        ></Column>
+        <Column field='valor' header={'Valor $USD'} sortable></Column>
+        <Column field='dsc' header={'Dcto. $USD'} sortable></Column>
+        <Column field='total' header={'Total $USD'} sortable></Column>
+        <Column body={renderState} header={'Estado'}></Column>
+        <Column
+          body={actionEdit}
+          exportable={false}
+          style={{ minWidth: '8rem' }}
+        ></Column>
+      </DataTable>
+    </>
   );
 };
