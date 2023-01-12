@@ -38,18 +38,47 @@
 
 /* Propiedades del formulario (step 1)*/
 input {
-  @apply m-1 border-2 border-black rounded-md p-1;
+  @apply m-3 border-2 border-black rounded-md p-1;
+}
+.collapse-step-1 {
+  transition: height .2s;
+  height: 0;
+  overflow: hidden;
+}
+
+.expand-step-1 {
+  transition: height .2s;
+  height: 230px
+}
+
+.expand-step-2 {
+  transition: height .2s;
+  height: 120px
+}
+
+.animation-arrow{
+  transition: all .2s;
 }
 
 input:disabled {
   @apply border-gray-200;
 }
 
+.container-layout{
+  @apply w-full py-3 bg-gray-200 px-3 cursor-pointer font-bold text-xl rounded-t-lg;
+}
+
 /* Propiedades step 2 */
 
 .card {
-  @apply flex flex-col items-center border-2 py-10 border-black rounded-xl w-56 shadow-2xl;
+  transition: all .2s;
+  @apply cursor-pointer flex flex-col items-center border-2 py-10 border-black rounded-xl w-56 hover:shadow-2xl hover:scale-105 ;
 }
+
+.card-selected{
+  @apply shadow-2xl scale-105;
+}
+
 
 ul li::before {
   content: '\2022';

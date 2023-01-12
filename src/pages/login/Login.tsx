@@ -40,7 +40,7 @@ export const Login = () => {
               buttonText="Login"
               onSuccess={response}
               onFailure={response}
-              render={(renderProps) => (
+              render={(renderProps: any) => (
                 <GoogleLoginButton
                   onClick={renderProps.onClick}
                   text={'Iniciar con Google'}

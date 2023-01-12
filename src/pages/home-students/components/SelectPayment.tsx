@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 type PropsFormUser = {
   currentStep: number;
@@ -6,6 +6,11 @@ type PropsFormUser = {
 };
 
 export const SelectPayment = (props: PropsFormUser) => {
+
+  const [cardSelected1, setCardSelected1] = useState(false);
+  const [cardSelected2, setCardSelected2] = useState(false);
+  const [cardSelected3, setCardSelected3] = useState(false);
+
   const prevStep = () => {
     props.setCurrentStep(props.currentStep - 1);
   };
@@ -13,6 +18,24 @@ export const SelectPayment = (props: PropsFormUser) => {
   const nextStep = () => {
     props.setCurrentStep(props.currentStep + 1);
   };
+
+  const selectCard = (key: string) => {
+    setCardSelected1(false);
+    setCardSelected2(false);
+    setCardSelected3(false);
+
+    switch (key) {
+      case '1':
+        setCardSelected1(true);
+        break;
+      case '2':
+        setCardSelected2(true);
+        break;
+      case '3':
+        setCardSelected3(true);
+        break;
+    }
+  }
 
   return (
     <form method="post" className="mt-5 ">
@@ -22,7 +45,7 @@ export const SelectPayment = (props: PropsFormUser) => {
         </label>
       </div>
       <div className="flex">
-        <div className="card m-4">
+        <div className={`card m-4 ${cardSelected1 && 'card-selected'}`} onClick={() => selectCard('1')}>
           <p className="font-bold text-sky-500 text-[18px] text-center">
             Cuotas mensuales
           </p>
@@ -36,7 +59,7 @@ export const SelectPayment = (props: PropsFormUser) => {
             descuento
           </p>
         </div>
-        <div className="card m-4">
+        <div className={`card m-4 ${cardSelected2 && 'card-selected'}`} onClick={() => selectCard('2')}>
           <p className="font-bold text-sky-500 text-[18px] px-5 text-center">
             Pago anticipado tarjetas o transferencia
           </p>
@@ -48,7 +71,7 @@ export const SelectPayment = (props: PropsFormUser) => {
             descuento
           </p>
         </div>
-        <div className="card m-4">
+        <div className={`card m-4 ${cardSelected3 && 'card-selected'}`} onClick={() => selectCard('3')}>
           <p className="font-bold text-sky-500 text-[18px] text-center">
             Acuerdo ingresos compartidos (ISA)
           </p>
@@ -60,11 +83,6 @@ export const SelectPayment = (props: PropsFormUser) => {
         </div>
       </div>
       <div className="flex flex-col items-center justify-center mt-5">
-        <select className="border-2 rounded-lg p-2">
-          <option value="">Cuotas mensuales</option>
-          <option value="">Pago anticipado tarjetas o transferencias</option>
-          <option value="">Acuerdo ingresos compartidos (ISA)</option>
-        </select>
         <label className="mt-5">Número de Cuotas</label>
         <select className="w-36 border-2 rounded-lg p-2">
           <option value="">1</option>
