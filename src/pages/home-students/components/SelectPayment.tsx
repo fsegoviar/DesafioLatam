@@ -6,7 +6,6 @@ type PropsFormUser = {
 };
 
 export const SelectPayment = (props: PropsFormUser) => {
-
   const [cardSelected1, setCardSelected1] = useState(false);
   const [cardSelected2, setCardSelected2] = useState(false);
   const [cardSelected3, setCardSelected3] = useState(false);
@@ -35,7 +34,7 @@ export const SelectPayment = (props: PropsFormUser) => {
         setCardSelected3(true);
         break;
     }
-  }
+  };
 
   return (
     <form method="post" className="mt-5 ">
@@ -45,7 +44,7 @@ export const SelectPayment = (props: PropsFormUser) => {
         </label>
       </div>
       <div className="flex">
-        <div className={`card m-4 ${cardSelected1 && 'card-selected'}`} onClick={() => selectCard('1')}>
+        {/* <div className={`card m-4 ${cardSelected1 && 'card-selected'}`} onClick={() => selectCard('1')}>
           <p className="font-bold text-sky-500 text-[18px] text-center">
             Cuotas mensuales
           </p>
@@ -58,8 +57,36 @@ export const SelectPayment = (props: PropsFormUser) => {
             <span className="font-bold text-sky-500 text-3xl">+ 40%</span> de
             descuento
           </p>
+        </div> */}
+        <div
+          className={`card m-4 p-3 ${cardSelected1 && 'card-selected'}`}
+          onClick={() => selectCard('1')}
+        >
+          <p className="font-bold text-sky-500 text-[18px] text-center">
+            Cuotas mensuales
+          </p>
+          <p className="text-[12px] font-light text-center py-2 text-gray-500">
+            Paga en hasta 12 cuotas mensuales con diferentes medios de pago en
+            la fecha que más te convenga
+          </p>
+          <p className="text-[14px] font-bold">Matrícula $22.500 CLP</p>
+          <p className="text-sky-500 font-bold text-lg">+</p>
+          <p className="text-sky-500 font-bold text-2xl text-center">
+            10 cuotas de $125.000 CLP
+          </p>
+          <p className="text-sm pt-2">
+            Valor Referencia:{' '}
+            <span className="line-through">$9.000.000 CLP</span>
+          </p>
+          <p className="font-bold">Descuento: 90%</p>
+          <p className="font-bold text-center text-sky-500 text-sm pt-2">
+            Total a pagar: $1.250.000 CLP
+          </p>
         </div>
-        <div className={`card m-4 ${cardSelected2 && 'card-selected'}`} onClick={() => selectCard('2')}>
+        {/* <div
+          className={`card m-4 ${cardSelected2 && 'card-selected'}`}
+          onClick={() => selectCard('2')}
+        >
           <p className="font-bold text-sky-500 text-[18px] px-5 text-center">
             Pago anticipado tarjetas o transferencia
           </p>
@@ -70,8 +97,36 @@ export const SelectPayment = (props: PropsFormUser) => {
             <span className="font-bold text-sky-500 text-3xl">+ 60%</span> de
             descuento
           </p>
+        </div> */}
+        <div
+          className={`card m-4 p-3 ${cardSelected2 && 'card-selected'}`}
+          onClick={() => selectCard('2')}
+        >
+          <p className="font-bold text-sky-500 text-[18px] text-center">
+            Pago anticipado tarjetas o transferencia
+          </p>
+          <p className="text-[12px] font-light text-center py-2 text-gray-500">
+            Paga antes de comenzar y obtén un descuento especial. Todos los
+            medios de pago disponibles.
+          </p>
+          <p className="text-[14px] font-bold">Matrícula $22.500 CLP</p>
+          <p className="text-sky-500 font-bold text-lg">+</p>
+          <p className="text-sky-500 font-bold text-2xl text-center">
+            $1.100.000 CLP
+          </p>
+          <p className="text-sm pt-2">
+            Valor Referencia:{' '}
+            <span className="line-through">$9.000.000 CLP</span>
+          </p>
+          <p className="font-bold">Descuento: 95%</p>
+          <p className="font-bold text-center text-sky-500 text-sm pt-2">
+            Total a Pagar $1.100.000
+          </p>
         </div>
-        <div className={`card m-4 ${cardSelected3 && 'card-selected'}`} onClick={() => selectCard('3')}>
+        {/* <div
+          className={`card m-4 ${cardSelected3 && 'card-selected'}`}
+          onClick={() => selectCard('3')}
+        >
           <p className="font-bold text-sky-500 text-[18px] text-center">
             Acuerdo ingresos compartidos (ISA)
           </p>
@@ -80,6 +135,26 @@ export const SelectPayment = (props: PropsFormUser) => {
               15% sueldo en 18 cuotas o hasta llegar al arancel total
             </li>
           </ul>
+        </div> */}
+        <div
+          className={`card m-4 p-3 ${cardSelected3 && 'card-selected'}`}
+          onClick={() => selectCard('3')}
+        >
+          <p className="font-bold text-sky-500 text-[18px] text-center">
+            Acuerdo ingresos compartidos (ISA)
+          </p>
+          <p className="text-[12px] font-light text-center py-2 text-gray-500">
+            Modelo de financiamiento donde solo comienzas a pagar una vez
+            consigues trabajo, sin costo inicial
+          </p>
+          <p className="text-[14px] font-bold">Matrícula $22.500 CLP</p>
+          <p className="text-sky-500 font-bold text-lg">+</p>
+          <p className="text-sky-500 font-bold text-2xl text-center">
+            15% de tus ingresos
+          </p>
+          <p className="font-bold text-center text-sky-500 text-sm pt-2">
+            Hasta pagar $3.500.000
+          </p>
         </div>
       </div>
       <div className="flex flex-col items-center justify-center mt-5">
