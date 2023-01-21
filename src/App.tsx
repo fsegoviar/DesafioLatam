@@ -1,8 +1,31 @@
 import './App.css';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import { HomeAdmin, HomeStudentsPage, Login, PricesPage, FinishPaymentPage } from './pages';
+import {
+  HomeAdmin,
+  HomeStudentsPage,
+  Login,
+  PricesPage,
+  FinishPaymentPage
+} from './pages';
+import { useEffect } from 'react';
+import axios from 'axios';
 
 function App() {
+  useEffect(() => {
+    const fetch = async () => {
+      await axios
+        .get('http://127.0.0.1:8000', {
+          headers: {
+            'Access-Control-Allow-Origin': '*'
+          }
+        })
+        .then((response) => console.log('Respuesta =>', response))
+        .catch((error: any) => console.log('Error =>', error));
+    };
+
+    fetch();
+  }, []);
+
   return (
     <BrowserRouter>
       <Routes>
