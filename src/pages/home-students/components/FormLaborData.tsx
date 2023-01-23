@@ -62,21 +62,6 @@ export const FormLaborData = (props: PropsFormUser) => {
             <input type="text" />
           </div>
         </div>
-      </div>
-      {/* Paso 4 - Registro */}
-      <div className="mt-3">
-        <div>
-          <div className="grid grid-cols-4 gap-4">
-            <div className="col-span-2 flex flex-col">
-              <label>Carrera a la cual te estas matriculando</label>
-              <input type="text" />
-            </div>
-            <div className="col-span-2 flex flex-col">
-              <label>Generación a la que matrícula</label>
-              <input type="text" />
-            </div>
-          </div>
-        </div>
         <div className="flex justify-end">
           <p className="mt-3 text-sm font-light">
             ( * ) Esta información ayuda a nuestro equipo de asesores/as de
@@ -84,6 +69,7 @@ export const FormLaborData = (props: PropsFormUser) => {
           </p>
         </div>
       </div>
+
       <div className="flex justify-end mt-5">
         <button className="btn-prev m-1" onClick={() => prevStep()}>
           Atras
