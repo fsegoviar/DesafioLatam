@@ -38,8 +38,10 @@ export const FormLaborData = (props: PropsFormUser) => {
               className="w-full py-1.5 border-2 rounded-lg  border-black"
             >
               <option value="">Seleccionar</option>
-              {situaciones.map((situacion) => (
-                <option value="">{situacion}</option>
+              {situaciones.map((situacion, index) => (
+                <option key={index} value={situacion}>
+                  {situacion}
+                </option>
               ))}
             </select>
           </div>

@@ -37,8 +37,10 @@ export const EducationForm = (props: PropsFormUser) => {
               className="py-1.5 border-2 rounded-lg border-black"
             >
               <option value="">Seleccionar</option>
-              {nivEducacion.map((niv) => (
-                <option value="">{niv}</option>
+              {nivEducacion.map((niv, index) => (
+                <option key={index} value={niv}>
+                  {niv}
+                </option>
               ))}
             </select>
           </div>
@@ -50,8 +52,10 @@ export const EducationForm = (props: PropsFormUser) => {
               className=" py-1.5 border-2 rounded-lg border-black"
             >
               <option value="">Seleccionar</option>
-              {nivIngles.map((niv) => (
-                <option value="">{niv}</option>
+              {nivIngles.map((niv, index) => (
+                <option key={index} value={niv}>
+                  {niv}
+                </option>
               ))}
             </select>
           </div>
