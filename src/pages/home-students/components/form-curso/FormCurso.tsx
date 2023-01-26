@@ -3,8 +3,8 @@ import { TiTick } from 'react-icons/ti';
 import { FormPersonalData } from './FormPersonalData';
 import { SelectPayment } from '../SelectPayment';
 import { SignDocument } from '../SignDocument';
-import { FinishPayment } from '../FinishPayment';
 import { FormBilling } from './FormBilling';
+import { SimpleFinishPayment } from '../SimpleFinishPayment';
 
 export const FormCurso = () => {
   const steps = [
@@ -75,7 +75,7 @@ export const FormCurso = () => {
               />
             );
           case 5:
-            return <FinishPayment />;
+            return <SimpleFinishPayment />;
           default:
             break;
         }

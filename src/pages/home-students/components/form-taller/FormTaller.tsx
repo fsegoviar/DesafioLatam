@@ -1,17 +1,15 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { TiTick } from 'react-icons/ti';
 import { FormPersonalData } from './FormPersonalData';
-import { EducationForm } from './EducationForm';
-import { FormLaborData } from './FormLaborData';
+import { FormBilling } from './FormBilling';
 import { SelectPayment } from '../SelectPayment';
 import { SignDocument } from '../SignDocument';
 import { SimpleFinishPayment } from '../SimpleFinishPayment';
 
-export const FormCarrera = () => {
+export const FormTaller = () => {
   const steps = [
     'Datos personales',
-    'Educación',
-    'Datos laborales',
+    'Documento a emitir',
     'Forma de pago',
     'Firma de acuerdo',
     'Finalizar pago'
@@ -55,7 +53,7 @@ export const FormCarrera = () => {
             );
           case 2:
             return (
-              <EducationForm
+              <FormBilling
                 currentStep={currentStep}
                 setComplete={setComplete}
                 setCurrentStep={setCurrentStep}
@@ -64,28 +62,19 @@ export const FormCarrera = () => {
             );
           case 3:
             return (
-              <FormLaborData
-                currentStep={currentStep}
-                setComplete={setComplete}
-                setCurrentStep={setCurrentStep}
-                stepsLength={steps.length}
-              />
-            );
-          case 4:
-            return (
               <SelectPayment
                 currentStep={currentStep}
                 setCurrentStep={setCurrentStep}
               />
             );
-          case 5:
+          case 4:
             return (
               <SignDocument
                 currentStep={currentStep}
                 setCurrentStep={setCurrentStep}
               />
             );
-          case 6:
+          case 5:
             return <SimpleFinishPayment />;
           default:
             break;

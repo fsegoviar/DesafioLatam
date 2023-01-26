@@ -3,6 +3,8 @@ import { Navbar } from '../../components';
 import './styles.css';
 import { FormCarrera } from './components/form-carrera/FormCarrera';
 import { FormCurso } from './components/form-curso/FormCurso';
+import { FormTaller } from './components/form-taller/FormTaller';
+import { FormReintegro } from './components/form-reintegro/FormReintegro';
 
 export const HomeStudentsPage = () => {
   const { typeForm } = useParams();
@@ -20,6 +22,10 @@ export const HomeStudentsPage = () => {
               return <FormCarrera />;
             case 'registro_curso':
               return <FormCurso />;
+            case 'registro_taller':
+              return <FormTaller />;
+            case 'registro_reintegro':
+              return <FormReintegro />;
             default:
               break;
           }

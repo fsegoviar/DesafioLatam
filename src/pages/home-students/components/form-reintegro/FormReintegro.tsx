@@ -1,17 +1,15 @@
 import { useState } from 'react';
 import { TiTick } from 'react-icons/ti';
 import { FormPersonalData } from './FormPersonalData';
-import { EducationForm } from './EducationForm';
-import { FormLaborData } from './FormLaborData';
 import { SelectPayment } from '../SelectPayment';
 import { SignDocument } from '../SignDocument';
-import { SimpleFinishPayment } from '../SimpleFinishPayment';
+import { FormBilling } from './FormBilling';
+import { FinishPayment } from './FinishPayment';
 
-export const FormCarrera = () => {
+export const FormReintegro = () => {
   const steps = [
     'Datos personales',
-    'Educación',
-    'Datos laborales',
+    'Documento a emitir',
     'Forma de pago',
     'Firma de acuerdo',
     'Finalizar pago'
@@ -19,6 +17,7 @@ export const FormCarrera = () => {
 
   const [currentStep, setCurrentStep] = useState(1);
   const [complete, setComplete] = useState(false);
+
   return (
     <div>
       <div className="flex flex-col justify-center items-center">
@@ -55,7 +54,7 @@ export const FormCarrera = () => {
             );
           case 2:
             return (
-              <EducationForm
+              <FormBilling
                 currentStep={currentStep}
                 setComplete={setComplete}
                 setCurrentStep={setCurrentStep}
@@ -64,29 +63,20 @@ export const FormCarrera = () => {
             );
           case 3:
             return (
-              <FormLaborData
-                currentStep={currentStep}
-                setComplete={setComplete}
-                setCurrentStep={setCurrentStep}
-                stepsLength={steps.length}
-              />
-            );
-          case 4:
-            return (
               <SelectPayment
                 currentStep={currentStep}
                 setCurrentStep={setCurrentStep}
               />
             );
-          case 5:
+          case 4:
             return (
               <SignDocument
                 currentStep={currentStep}
                 setCurrentStep={setCurrentStep}
               />
             );
-          case 6:
-            return <SimpleFinishPayment />;
+          case 5:
+            return <FinishPayment />;
           default:
             break;
         }
