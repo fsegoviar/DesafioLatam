@@ -1,21 +1,5 @@
 import React from 'react';
 
-// type FormType = {
-//   //Datos personales
-//   nombre: string;
-//   apellidos: string;
-//   tipoIdentificacion: string; //select
-//   numIdentificacion: string;
-//   codTel: string;
-//   numTelefono: string;
-//   correo: string;
-//   fechaNacimiento: string;
-//   direccion: string;
-//   ciudad: string;
-//   paisResidencia: string;
-//   nacionalidad: string;
-// };
-
 type PropsFormUser = {
   stepsLength: number;
   currentStep: number;
@@ -110,6 +94,21 @@ export const FormPersonalData = (props: PropsFormUser) => {
         <div className="flex flex-col col-span-3">
           <label>Dirección</label>
           <input type="email" />
+        </div>
+      </div>
+      {/* Paso 4 - Registro */}
+      <div className="mt-3">
+        <div>
+          <div className="grid grid-cols-4 gap-4">
+            <div className="col-span-2 flex flex-col">
+              <label>Carrera a la cual te estas matriculando</label>
+              <input type="text" />
+            </div>
+            <div className="col-span-2 flex flex-col">
+              <label>Generación a la que matrícula</label>
+              <input type="text" />
+            </div>
+          </div>
         </div>
       </div>
       <div className="flex justify-end mt-5">

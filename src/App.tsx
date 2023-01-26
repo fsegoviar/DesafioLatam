@@ -7,14 +7,12 @@ import {
   PricesPage,
   FinishPaymentPage
 } from './pages';
-import { useEffect } from 'react';
-import axios from 'axios';
 
 function App() {
-  useEffect(() => {
+  /*   useEffect(() => {
     const fetch = async () => {
       await axios
-        .get('http://127.0.0.1:8000', {
+        .get('http://127.0.0.1:8000/api/clients', {
           headers: {
             'Access-Control-Allow-Origin': '*'
           }
@@ -25,12 +23,12 @@ function App() {
 
     fetch();
   }, []);
-
+ */
   return (
     <BrowserRouter>
       <Routes>
         <Route path={'/servicio_cliente'} element={<HomeAdmin />} />
-        <Route path={'/'} element={<HomeStudentsPage />} />
+        <Route path={'/formulario/:typeForm'} element={<HomeStudentsPage />} />
         <Route path={'login'} element={<Login />} />
         <Route path={'tabla_precios'} element={<PricesPage />} />
         <Route path={'pago_finalizado'} element={<FinishPaymentPage />} />

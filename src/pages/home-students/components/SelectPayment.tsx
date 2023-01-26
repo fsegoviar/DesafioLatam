@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { ReactNode, useState } from 'react';
 
 type PropsFormUser = {
   currentStep: number;
@@ -9,6 +9,10 @@ export const SelectPayment = (props: PropsFormUser) => {
   const [cardSelected1, setCardSelected1] = useState(false);
   const [cardSelected2, setCardSelected2] = useState(false);
   const [cardSelected3, setCardSelected3] = useState(false);
+  const [totalValue, setTotalValue] = useState(0);
+  const [discount, setDiscount] = useState(0);
+  const [count, setCount] = useState(0);
+  const [activeCount, setActiveCount] = useState(false);
 
   const prevStep = () => {
     props.setCurrentStep(props.currentStep - 1);
@@ -25,13 +29,21 @@ export const SelectPayment = (props: PropsFormUser) => {
 
     switch (key) {
       case '1':
+        setTotalValue(1_250_000);
         setCardSelected1(true);
+        setActiveCount(true);
+        setDiscount(90);
         break;
       case '2':
+        setTotalValue(1_100_000);
+        setDiscount(95);
         setCardSelected2(true);
+        setActiveCount(true);
         break;
       case '3':
+        setDiscount(0);
         setCardSelected3(true);
+        setActiveCount(false);
         break;
     }
   };
@@ -44,20 +56,6 @@ export const SelectPayment = (props: PropsFormUser) => {
         </label>
       </div>
       <div className="flex">
-        {/* <div className={`card m-4 ${cardSelected1 && 'card-selected'}`} onClick={() => selectCard('1')}>
-          <p className="font-bold text-sky-500 text-[18px] text-center">
-            Cuotas mensuales
-          </p>
-          <ul className="py-7 font-bold">
-            <li>Hasta 3 MSI</li>
-            <li>Hasta 9 MSI</li>
-            <li>Hasta 12 MSI</li>
-          </ul>
-          <p className="font-bold text-center text-[20px] px-5">
-            <span className="font-bold text-sky-500 text-3xl">+ 40%</span> de
-            descuento
-          </p>
-        </div> */}
         <div
           className={`card m-4 p-3 ${cardSelected1 && 'card-selected'}`}
           onClick={() => selectCard('1')}
@@ -83,21 +81,6 @@ export const SelectPayment = (props: PropsFormUser) => {
             Total a pagar: $1.250.000 CLP
           </p>
         </div>
-        {/* <div
-          className={`card m-4 ${cardSelected2 && 'card-selected'}`}
-          onClick={() => selectCard('2')}
-        >
-          <p className="font-bold text-sky-500 text-[18px] px-5 text-center">
-            Pago anticipado tarjetas o transferencia
-          </p>
-          <ul className="py-7 font-bold">
-            <li>1 cuota</li>
-          </ul>
-          <p className="font-bold text-center text-[20px] px-5">
-            <span className="font-bold text-sky-500 text-3xl">+ 60%</span> de
-            descuento
-          </p>
-        </div> */}
         <div
           className={`card m-4 p-3 ${cardSelected2 && 'card-selected'}`}
           onClick={() => selectCard('2')}
@@ -123,19 +106,6 @@ export const SelectPayment = (props: PropsFormUser) => {
             Total a Pagar $1.100.000
           </p>
         </div>
-        {/* <div
-          className={`card m-4 ${cardSelected3 && 'card-selected'}`}
-          onClick={() => selectCard('3')}
-        >
-          <p className="font-bold text-sky-500 text-[18px] text-center">
-            Acuerdo ingresos compartidos (ISA)
-          </p>
-          <ul className="py-7 font-bold px-12">
-            <li className="text-left">
-              15% sueldo en 18 cuotas o hasta llegar al arancel total
-            </li>
-          </ul>
-        </div> */}
         <div
           className={`card m-4 p-3 ${cardSelected3 && 'card-selected'}`}
           onClick={() => selectCard('3')}
@@ -157,22 +127,52 @@ export const SelectPayment = (props: PropsFormUser) => {
           </p>
         </div>
       </div>
-      <div className="flex flex-col items-center justify-center mt-5">
-        <label className="mt-5">Número de Cuotas</label>
-        <select className="w-36 border-2 rounded-lg p-2">
-          <option value="">1</option>
-        </select>
-      </div>
-      <div>
-        <div className="flex flex-col justify-end items-end mt-5">
-          <p className="border-2 py-2 px-7 rounded-lg m-1">1 cuota $22.500</p>
-          <p className="border-2 py-2 px-7 rounded-lg m-1 font-bold text-2xl">
-            60%
-          </p>
-          <label className="text-gray-500 text-sm">* Descuento aplicado</label>
-          <p className="font-bold mt-5 text-3xl">Total: $9000</p>
-        </div>
-      </div>
+      {activeCount && (
+        <>
+          <div className="flex flex-col items-center justify-center mt-5">
+            <select
+              className="w-48 border-2 rounded-lg p-2"
+              onChange={(evt: any) => {
+                setCount(evt.target.value);
+              }}
+            >
+              <option value={''}>Nº de cuotas</option>;
+              {(() => {
+                let items: ReactNode[] = [];
+                for (let i = 1; i < 13; i++) {
+                  items.push(
+                    <option key={i} value={i}>
+                      {i}
+                    </option>
+                  );
+                }
+                return items;
+              })()}
+            </select>
+          </div>
+          {count > 0 && (
+            <div>
+              <div className="flex flex-col justify-end items-end mt-5">
+                <div className="border-2 rounded-lg flex flex-col justify-end items-end ">
+                  <p className="py-2 px-7 rounded-lg m-1">Matrícula $22.500</p>
+                  <p className="py-2 px-7 rounded-lg m-1">{`${count} cuotas de $ ${Math.round(
+                    Number(totalValue / count)
+                  )}`}</p>
+                  <p className="py-2 px-7 rounded-lg m-1 font-bold text-2xl">
+                    {discount}%
+                  </p>
+                  <label className="text-gray-500 text-sm m-1">
+                    * Descuento aplicado
+                  </label>
+                </div>
+                <p className="font-bold mt-5 text-3xl">
+                  Total: ${22_500 + totalValue}
+                </p>
+              </div>
+            </div>
+          )}
+        </>
+      )}
       <div className="flex justify-end mt-5">
         <button className="btn-prev m-1" onClick={() => prevStep()}>
           Atras
