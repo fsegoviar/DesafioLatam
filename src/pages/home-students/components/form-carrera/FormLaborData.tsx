@@ -1,4 +1,5 @@
 import React from 'react';
+import { GetWorkSituations } from '../../../../services';
 
 type PropsFormUser = {
   stepsLength: number;
@@ -8,14 +9,7 @@ type PropsFormUser = {
 };
 
 export const FormLaborData = (props: PropsFormUser) => {
-  const situaciones = [
-    'Estudiante',
-    'Desempleado',
-    'Independiente',
-    'Contrato tiempo completo',
-    'Contatro medio tiempo',
-    'Pensionado'
-  ];
+  const { workSituations } = GetWorkSituations();
 
   const prevStep = () => {
     props.setCurrentStep(props.currentStep - 1);
@@ -38,11 +32,12 @@ export const FormLaborData = (props: PropsFormUser) => {
               className="w-full py-1.5 border-2 rounded-lg  border-black"
             >
               <option value="">Seleccionar</option>
-              {situaciones.map((situacion, index) => (
-                <option key={index} value={situacion}>
-                  {situacion}
-                </option>
-              ))}
+              {workSituations &&
+                workSituations.map((niv, index) => (
+                  <option key={index} value={niv.id}>
+                    {niv.description}
+                  </option>
+                ))}
             </select>
           </div>
           <div className="col-span-2 flex flex-col">

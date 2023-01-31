@@ -19,6 +19,8 @@ export const FormCarrera = () => {
 
   const [currentStep, setCurrentStep] = useState(1);
   const [complete, setComplete] = useState(false);
+  
+
   return (
     <div>
       <div className="flex flex-col justify-center items-center">

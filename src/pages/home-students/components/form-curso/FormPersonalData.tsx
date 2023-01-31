@@ -1,4 +1,5 @@
 import React from 'react';
+import { GetIdentityTypes } from '../../../../services';
 
 type PropsFormUser = {
   stepsLength: number;
@@ -8,6 +9,8 @@ type PropsFormUser = {
 };
 
 export const FormPersonalData = (props: PropsFormUser) => {
+  const { indentityTypes } = GetIdentityTypes();
+
   const nextStep = () => {
     props.setCurrentStep(props.currentStep + 1);
   };
@@ -36,8 +39,12 @@ export const FormPersonalData = (props: PropsFormUser) => {
             <option value="" disabled>
               Seleccionar
             </option>
-            <option value="">Rut</option>
-            <option value="">Pasaporte</option>
+            {indentityTypes &&
+              indentityTypes.map((niv, index) => (
+                <option key={index} value={niv.id}>
+                  {niv.description}
+                </option>
+              ))}
           </select>
         </div>
         <div className="col-span-2 flex flex-col">
