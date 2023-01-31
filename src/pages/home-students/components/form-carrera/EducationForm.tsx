@@ -1,4 +1,5 @@
 import React from 'react';
+import { GetEnglishLevel } from '../../../../services';
 
 type PropsFormUser = {
   stepsLength: number;
@@ -15,7 +16,7 @@ export const EducationForm = (props: PropsFormUser) => {
     'Universitaria Completa'
   ];
 
-  const nivIngles = ['Básico', 'Intermedio', 'Avanzado'];
+  const { englishLevel } = GetEnglishLevel();
 
   const prevStep = () => {
     props.setCurrentStep(props.currentStep - 1);
@@ -52,11 +53,12 @@ export const EducationForm = (props: PropsFormUser) => {
               className=" py-1.5 border-2 rounded-lg border-black"
             >
               <option value="">Seleccionar</option>
-              {nivIngles.map((niv, index) => (
-                <option key={index} value={niv}>
-                  {niv}
-                </option>
-              ))}
+              {englishLevel &&
+                englishLevel.map((niv, index) => (
+                  <option key={index} value={niv.id}>
+                    {niv.description}
+                  </option>
+                ))}
             </select>
           </div>
         </div>
