@@ -1,7 +1,7 @@
 import React from 'react';
 import { useDialogCreateLinkHook } from '../context/TableContext';
-import { useForm } from 'react-hook-form';
-import { UpdateFormPayment } from '../context/PaymentFormContext';
+import { useForm, SubmitHandler } from 'react-hook-form';
+import { UpdateFormPayment, initialValue } from '../context/PaymentFormContext';
 
 type StepsType = {
   nextStep: (value: boolean) => void;
@@ -9,15 +9,16 @@ type StepsType = {
 
 export const FormDataProgram = ({ nextStep }: StepsType) => {
   const { closeDialog } = useDialogCreateLinkHook();
-  const {
-    register,
-    handleSubmit,
-    formState: { errors }
-  } = useForm<UpdateFormPayment>();
+  const { handleSubmit } = useForm<UpdateFormPayment>({
+    defaultValues: { ...initialValue }
+  });
+
+  const onSubmit: SubmitHandler<UpdateFormPayment> = (data) =>
+    console.log('Data =>', data);
 
   return (
     <div>
-      <form action="">
+      <form onSubmit={handleSubmit(onSubmit)}>
         <div className={'flex'}>
           <div className={'flex flex-col mx-5 my-2'}>
             <label>Nombre</label>

@@ -23,7 +23,7 @@ export const DialogTablePricing = () => {
       className="p-fluid"
       onHide={closeDialog}
     >
-      <PaymentFormProvider showPanel={initialValue.showPanel}>
+      <PaymentFormProvider {...initialValue}>
         {!showPanel ? (
           <div>
             <FormDataProgram nextStep={setShowPanel} />

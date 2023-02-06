@@ -1,30 +1,34 @@
 import { ReactElement, createContext, useReducer } from 'react';
 
-type FormPaymentType = {
+export type FormPaymentType = {
+  career_id: number;
   name: string;
-  program: string;
-  valueProgram: string;
-  discountCuot: string;
-  discountAnt: string;
-  matricula: string;
-  motive: string;
+  value: string;
+  free_duscount: string;
+  advance_discount: string;
+  tuition: string;
+  comments: string;
 };
 
 export class UpdateFormPayment implements Partial<FormPaymentType> {}
 
-type FormPaymentValuesType = {};
+// type FormPaymentValuesType = {};
 
-type StateType = {
-  showPanel: boolean;
-};
+// type StateType = {
+//   showPanel: boolean;
+// };
 
-export const initialValue: StateType = {
-  showPanel: false
+export const initialValue: FormPaymentType = {
+  career_id: 1,
+  name: '',
+  value: '',
+  free_duscount: '',
+  advance_discount: '',
+  tuition: '',
+  comments: ''
 };
 
 const enum REDUCE_ACTION_TYPE {
-  NEXT_STEP,
-  PREVIOUS_STEP,
   UPDATE_FORM
 }
 
@@ -35,25 +39,26 @@ type ReducerAction = {
 
 //* Reducer Config
 
-const reducer = (state: StateType, action: ReducerAction): StateType => {
+const reducer = (
+  state: FormPaymentType,
+  action: ReducerAction
+): FormPaymentType => {
   switch (action.type) {
-    case REDUCE_ACTION_TYPE.NEXT_STEP:
-      return { ...state, showPanel: true };
-    case REDUCE_ACTION_TYPE.PREVIOUS_STEP:
-      return { ...state, showPanel: false };
+    case REDUCE_ACTION_TYPE.UPDATE_FORM:
+      state = Object.assign(state, action.payloand);
+      return { ...state };
     default:
       throw new Error();
   }
 };
 
-const usePaymentFormContext = (initialValue: StateType) => {
+const usePaymentFormContext = (initialValue: FormPaymentType) => {
   const [state, dispatch] = useReducer(reducer, initialValue);
 
-  const nextStep = () => dispatch({ type: REDUCE_ACTION_TYPE.NEXT_STEP });
-  const previousStep = () =>
-    dispatch({ type: REDUCE_ACTION_TYPE.PREVIOUS_STEP });
+  const updateForm = (data: UpdateFormPayment) =>
+    dispatch({ type: REDUCE_ACTION_TYPE.UPDATE_FORM, payloand: data });
 
-  return { state, nextStep, previousStep };
+  return { state, updateForm };
 };
 
 //* UseContext and Providers Config
@@ -62,8 +67,7 @@ type UsePaymentFormContextType = ReturnType<typeof usePaymentFormContext>;
 
 const initContextState: UsePaymentFormContextType = {
   state: initialValue,
-  nextStep: () => {},
-  previousStep: () => {}
+  updateForm: () => {}
 };
 
 type ChildrenType = {
@@ -76,7 +80,7 @@ export const PaymentFormContext =
 export const PaymentFormProvider = ({
   children,
   ...initialValue
-}: ChildrenType & StateType) => {
+}: ChildrenType & FormPaymentType) => {
   return (
     <PaymentFormContext.Provider value={usePaymentFormContext(initialValue)}>
       {children}
