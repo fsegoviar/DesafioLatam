@@ -3,3 +3,4 @@ export * from './home-admin';
 export * from './prices';
 export * from './home-students';
 export * from './finish-payment';
+export * from "./admin/section-payment";

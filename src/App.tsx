@@ -4,8 +4,8 @@ import {
   HomeAdmin,
   HomeStudentsPage,
   Login,
-  PricesPage,
-  FinishPaymentPage
+  FinishPaymentPage,
+  SectionPayment
 } from './pages';
 
 function App() {
@@ -30,7 +30,7 @@ function App() {
         <Route path={'/servicio_cliente'} element={<HomeAdmin />} />
         <Route path={'/formulario/:typeForm'} element={<HomeStudentsPage />} />
         <Route path={'login'} element={<Login />} />
-        <Route path={'tabla_precios'} element={<PricesPage />} />
+        <Route path={'tabla_precios'} element={<SectionPayment />} />
         <Route path={'pago_finalizado'} element={<FinishPaymentPage />} />
       </Routes>
     </BrowserRouter>
