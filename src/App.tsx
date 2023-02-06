@@ -7,6 +7,8 @@ import {
   PricesPage,
   FinishPaymentPage
 } from './pages';
+import { Provider } from 'react-redux';
+import store from './store/store';
 
 function App() {
   /*   useEffect(() => {
@@ -25,15 +27,20 @@ function App() {
   }, []);
  */
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path={'/servicio_cliente'} element={<HomeAdmin />} />
-        <Route path={'/formulario/:typeForm'} element={<HomeStudentsPage />} />
-        <Route path={'login'} element={<Login />} />
-        <Route path={'tabla_precios'} element={<PricesPage />} />
-        <Route path={'pago_finalizado'} element={<FinishPaymentPage />} />
-      </Routes>
-    </BrowserRouter>
+    <Provider store={store}>
+      <BrowserRouter>
+        <Routes>
+          <Route path={'/servicio_cliente'} element={<HomeAdmin />} />
+          <Route
+            path={'/formulario/:typeForm'}
+            element={<HomeStudentsPage />}
+          />
+          <Route path={'login'} element={<Login />} />
+          <Route path={'tabla_precios'} element={<PricesPage />} />
+          <Route path={'pago_finalizado'} element={<FinishPaymentPage />} />
+        </Routes>
+      </BrowserRouter>
+    </Provider>
   );
 }
 
