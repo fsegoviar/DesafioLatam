@@ -1,16 +1,5 @@
 import { ReactElement, createContext, useReducer } from 'react';
-
-export type FormPaymentType = {
-  career_id: number;
-  name: string;
-  value: string;
-  free_duscount: string;
-  advance_discount: string;
-  tuition: string;
-  comments: string;
-};
-
-export class UpdateFormPayment implements Partial<FormPaymentType> {}
+import { FormPaymentType, UpdateFormPayment } from '../../../../interfaces';
 
 // type FormPaymentValuesType = {};
 
@@ -22,7 +11,7 @@ export const initialValue: FormPaymentType = {
   career_id: 1,
   name: '',
   value: '',
-  free_duscount: '',
+  free_discount: '',
   advance_discount: '',
   tuition: '',
   comments: ''

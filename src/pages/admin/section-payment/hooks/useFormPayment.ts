@@ -1,9 +1,8 @@
 import { useContext } from 'react';
 import {
-  FormPaymentType,
   PaymentFormContext,
-  UpdateFormPayment
 } from '../context/PaymentFormContext';
+import { FormPaymentType, UpdateFormPayment } from '../../../../interfaces';
 
 type UseFormPaymentType = {
   state: FormPaymentType;

@@ -4,6 +4,7 @@ import { Column } from 'primereact/column';
 import { DataTable } from 'primereact/datatable';
 import { DialogTablePricing } from './DialogTablePricing';
 import { HeaderTable } from './HeaderTable';
+import { GetPricesTable } from '../../../../services/Prices';
 
 type DataTableType = {
   id: string;
@@ -16,20 +17,9 @@ type DataTableType = {
   motivo: string;
 };
 
-const mockData: DataTableType[] = [
-  {
-    id: '1',
-    nombre: 'Tabla Full Stack beca',
-    curso: 'Full Stack JS',
-    valor: '49000',
-    dsctoCuot: '0',
-    dsctoAnt: '50',
-    matricula: '0',
-    motivo: 'Sin descuento'
-  }
-];
-
 export const TablePrices = () => {
+  const { listPrices } = GetPricesTable();
+
   const filters = {
     nombre: {
       value: '',
@@ -53,7 +43,7 @@ export const TablePrices = () => {
   return (
     <>
       <DataTable
-        value={mockData}
+        value={listPrices}
         responsiveLayout="stack"
         breakpoint="960px"
         dataKey="id"
@@ -66,24 +56,32 @@ export const TablePrices = () => {
       >
         <Column field="id" header={'Id'} sortable></Column>
         <Column
-          field="nombre"
+          field="name"
           filter
           filterPlaceholder={'Buscar por tabla'}
           header={'Tabla de precios'}
           sortable
         ></Column>
         <Column
-          field="curso"
+          field={'career.description'}
           filter
           filterPlaceholder={'Buscar por programa'}
           header={'Programa'}
           sortable
         ></Column>
-        <Column field="valor" header={'Valor de referencia'} sortable></Column>
-        <Column field="dsctoCuot" header={'Dcto. Cuotas'} sortable></Column>
-        <Column field="dsctoAnt" header={'Dscto. Anticipado'} sortable></Column>
-        <Column field="matricula" header={'Matricula'} sortable></Column>
-        <Column field="motivo" header={'Motivo descuento'} sortable></Column>
+        <Column field="value" header={'Valor de referencia'} sortable></Column>
+        <Column
+          field="advance_discount"
+          header={'Dcto. Cuotas'}
+          sortable
+        ></Column>
+        <Column
+          field="free_discount"
+          header={'Dscto. Anticipado'}
+          sortable
+        ></Column>
+        <Column field="tuition" header={'Matricula'} sortable></Column>
+        <Column field="comments" header={'Motivo descuento'} sortable></Column>
         <Column
           body={actionEdit}
           exportable={false}
