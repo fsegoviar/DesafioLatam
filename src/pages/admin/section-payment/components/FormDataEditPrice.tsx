@@ -1,44 +1,40 @@
 import React from 'react';
-import { useDialogCreateLinkHook } from '../context/TableContext';
 import { useForm, SubmitHandler } from 'react-hook-form';
-import { initialValue } from '../context/PaymentFormContext';
+import { FormPaymentType, PaymentType } from '../../../../interfaces';
+import { useDialogEditPriceHook } from '../context/TableContext';
 import { UseFormPayment } from '../hooks/useFormPayment';
-import { FormPaymentType } from '../../../../interfaces';
 import axios, { AxiosError } from 'axios';
 
-type StepsType = {
-  nextStep: (value: boolean) => void;
-};
-
-export const FormDataProgram = ({ nextStep }: StepsType) => {
-  const { closeDialog } = useDialogCreateLinkHook();
+export const FormDataEditPrice = (data: FormPaymentType) => {
+  const { closeDialogEdit } = useDialogEditPriceHook();
   const { updateForm } = UseFormPayment();
+
   const {
     handleSubmit,
     register,
     formState: { errors }
-  } = useForm<FormPaymentType>({
-    defaultValues: { ...initialValue }
+  } = useForm<PaymentType>({
+    defaultValues: { ...data }
   });
 
-  const onSubmit: SubmitHandler<FormPaymentType> = (data) => {
+  const onSubmit: SubmitHandler<PaymentType> = (data) => {
+    console.log('Edit =>', data);
     updateForm(data);
     //* Almaceno la data del formulario
     // Todo : Falta agregar los tipos de la tabla de precios
     axios
-      .post(`${process.env.REACT_APP_API_BACKEND}/prices`, data, {
+      .post(`${process.env.REACT_APP_API_BACKEND}/prices/${data.id}`, data, {
         headers: {
           'Access-Control-Allow-Origin': '*'
         }
       })
       .then((response) => {
         console.log('Response Price =>', response.data);
+        closeDialogEdit();
       })
       .catch((error: AxiosError) => {
         console.log('Error Price =>', error);
-      })
-      .finally(closeDialog);
-    nextStep(true);
+      });
   };
 
   const RequiredField = () => {
@@ -122,7 +118,7 @@ export const FormDataProgram = ({ nextStep }: StepsType) => {
           </div>
         </div>
         <div className={'flex justify-end mt-5'}>
-          <button className={'btn-prev m-1'} onClick={closeDialog}>
+          <button className={'btn-prev m-1'} onClick={closeDialogEdit}>
             Cerrar
           </button>
           <button type="submit" className={'btn m-1'}>

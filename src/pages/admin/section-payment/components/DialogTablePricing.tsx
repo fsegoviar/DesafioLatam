@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { Dialog } from 'primereact/dialog';
 import { useDialogCreateLinkHook } from '../context/TableContext';
 import { FormDataProgram } from './FormDataProgram';
-import { FormPaymentProgram } from './FormPaymentProgram';
+// import { FormPaymentProgram } from './FormPaymentProgram';
 import {
   PaymentFormProvider,
   initialValue
@@ -12,6 +12,8 @@ import {
 export const DialogTablePricing = () => {
   const { isOpenDialog, closeDialog } = useDialogCreateLinkHook();
   const [showPanel, setShowPanel] = useState<boolean>(false);
+
+  console.log('ShowPanel', showPanel);
 
   return (
     <Dialog
@@ -24,7 +26,7 @@ export const DialogTablePricing = () => {
       onHide={closeDialog}
     >
       <PaymentFormProvider {...initialValue}>
-        {!showPanel ? (
+        {/* {!showPanel ? (
           <div>
             <FormDataProgram nextStep={setShowPanel} />
           </div>
@@ -45,7 +47,10 @@ export const DialogTablePricing = () => {
               </button>
             </div>
           </div>
-        )}
+        )} */}
+        <div>
+          <FormDataProgram nextStep={setShowPanel} />
+        </div>
       </PaymentFormProvider>
     </Dialog>
   );

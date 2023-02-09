@@ -1,7 +1,5 @@
 import { useContext } from 'react';
-import {
-  PaymentFormContext,
-} from '../context/PaymentFormContext';
+import { PaymentFormContext } from '../context/PaymentFormContext';
 import { FormPaymentType, UpdateFormPayment } from '../../../../interfaces';
 
 type UseFormPaymentType = {
@@ -9,7 +7,7 @@ type UseFormPaymentType = {
   updateForm: (data: UpdateFormPayment) => void;
 };
 
-export const useFormPayment = (): UseFormPaymentType => {
+export const UseFormPayment = (): UseFormPaymentType => {
   const { state, updateForm } = useContext(PaymentFormContext);
 
   return { state, updateForm };

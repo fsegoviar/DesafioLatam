@@ -8,7 +8,7 @@ export const SectionPayment = () => {
     <>
       <Navbar />
       <div className="pt-48 px-10 w-full h-screen bg-[#F9F9F9]">
-        <TableProvider isOpenDialog={initialState.isOpenDialog}>
+        <TableProvider {...initialState}>
           <TablePrices />
         </TableProvider>
       </div>

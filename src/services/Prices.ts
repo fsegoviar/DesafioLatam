@@ -1,6 +1,6 @@
-import axios from "axios";
-import { useEffect, useState } from "react"
-import { PaymentType } from "../interfaces";
+import axios from 'axios';
+import { useEffect, useState } from 'react';
+import { PaymentType } from '../interfaces';
 
 export const GetPricesTable = () => {
   const [listPrices, setListPrices] = useState<PaymentType[]>();
@@ -17,8 +17,6 @@ export const GetPricesTable = () => {
           }
         }
       );
-      console.log('Niv Ingles', response.data);
-
       setListPrices(response.data);
     } catch (error) {
       console.log('Error =>', error);

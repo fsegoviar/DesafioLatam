@@ -13,8 +13,9 @@ export class UpdateFormPayment implements Partial<FormPaymentType> {}
 export type CareerType = {
   id: number;
   description: string;
-}
+};
 
-export interface PaymentType extends FormPaymentType { 
-  career: CareerType
+export interface PaymentType extends FormPaymentType {
+  id?: number;
+  career: CareerType;
 }

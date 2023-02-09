@@ -2,15 +2,19 @@ import { ReactElement, createContext, useContext, useReducer } from 'react';
 
 type StateType = {
   isOpenDialog: boolean;
+  isOpenDialogEdit: boolean;
 };
 
 export const initialState: StateType = {
-  isOpenDialog: false
+  isOpenDialog: false,
+  isOpenDialogEdit: false
 };
 
 const enum REDUCER_ACTION_TYPE {
   OPEN_DIALOG,
-  CLOSE_DIALOG
+  CLOSE_DIALOG,
+  OPEN_DIALOG_EDIT,
+  CLOSE_DIALOG_EDIT
 }
 
 type ReducerAction = {
@@ -23,6 +27,10 @@ const reducer = (state: StateType, action: ReducerAction): StateType => {
       return { ...state, isOpenDialog: true };
     case REDUCER_ACTION_TYPE.CLOSE_DIALOG:
       return { ...state, isOpenDialog: false };
+    case REDUCER_ACTION_TYPE.OPEN_DIALOG_EDIT:
+      return { ...state, isOpenDialogEdit: true };
+    case REDUCER_ACTION_TYPE.CLOSE_DIALOG_EDIT:
+      return { ...state, isOpenDialogEdit: false };
     default:
       throw new Error();
   }
@@ -34,8 +42,12 @@ const useTableContext = (initialValues: typeof initialState) => {
   const openDialog = () => dispatch({ type: REDUCER_ACTION_TYPE.OPEN_DIALOG });
   const closeDialog = () =>
     dispatch({ type: REDUCER_ACTION_TYPE.CLOSE_DIALOG });
+  const openDialogEdit = () =>
+    dispatch({ type: REDUCER_ACTION_TYPE.OPEN_DIALOG_EDIT });
+  const closeDialogEdit = () =>
+    dispatch({ type: REDUCER_ACTION_TYPE.CLOSE_DIALOG_EDIT });
 
-  return { state, openDialog, closeDialog };
+  return { state, openDialog, closeDialog, openDialogEdit, closeDialogEdit };
 };
 
 type UseTableContextType = ReturnType<typeof useTableContext>;
@@ -44,7 +56,9 @@ type UseTableContextType = ReturnType<typeof useTableContext>;
 const initContextState: UseTableContextType = {
   state: initialState,
   openDialog: () => {},
-  closeDialog: () => {}
+  closeDialog: () => {},
+  openDialogEdit: () => {},
+  closeDialogEdit: () => {}
 };
 
 type ChildrenType = {
@@ -80,4 +94,20 @@ export const useDialogCreateLinkHook = (): UseDialogCreateLinkType => {
   } = useContext(TableContext);
 
   return { isOpenDialog, closeDialog, openDialog };
+};
+
+type UseDialogEditPriceType = {
+  isOpenDialogEdit: boolean;
+  openDialogEdit: () => void;
+  closeDialogEdit: () => void;
+};
+
+export const useDialogEditPriceHook = (): UseDialogEditPriceType => {
+  const {
+    state: { isOpenDialogEdit },
+    openDialogEdit,
+    closeDialogEdit
+  } = useContext(TableContext);
+
+  return { isOpenDialogEdit, openDialogEdit, closeDialogEdit };
 };
