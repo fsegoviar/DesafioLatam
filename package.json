@@ -29,7 +29,7 @@
   },
   "scripts": {
     "dev": "env-cmd -f .env.development react-scripts start",
-    "build": "react-scripts build"
+    "build": "env-cmd -f .env.development react-scripts build"
   },
   "eslintConfig": {
     "extends": [
