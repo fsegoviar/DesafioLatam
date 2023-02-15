@@ -1,6 +1,9 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Dropdown } from 'primereact/dropdown';
 import '../styles.css';
+import { GetCareers } from '../../../../services';
+import { Career } from '../../../../interfaces';
+import axios from 'axios';
 
 type DialogCreateLinkTypes = {
   open: boolean;
@@ -10,24 +13,39 @@ type DialogCreateLinkTypes = {
 export const DialogCreateLink = (props: DialogCreateLinkTypes) => {
   const modalRef = useRef<HTMLDivElement>(null!);
   const containerRef = useRef<HTMLDivElement>(null!);
-  const [selectedCity, setSelectedCity] = useState(null);
+  const [inputEmail, setInputEmail] = useState('');
+  const [selectedCareers, setSelectedCareers] = useState<Career>(null!);
   const [selectForm, setSelectForm] = useState(null);
-  const cities = [
-    { name: 'New York', code: 'NY' },
-    { name: 'Rome', code: 'RM' },
-    { name: 'London', code: 'LDN' },
-    { name: 'Istanbul', code: 'IST' },
-    { name: 'Paris', code: 'PRS' }
-  ];
+  const { careers } = GetCareers();
 
   const forms = [
-    { name: 'Formulario de talleres' },
-    { name: 'Formulario de cursos' },
-    { name: 'Formulario de reintegro' }
+    { name: 'Formulario de carrera', id: 1 },
+    { name: 'Formulario de cursos', id: 2 },
+    { name: 'Formulario de reintegro', id: 3 },
+    { name: 'Formulario de talleres', id: 4 }
   ];
 
   useEffect(() => {
     if (props.open) modalRef.current.style.display = 'flex';
+
+    const fetch = async () => {
+      try {
+        const response = await axios.get(
+          `${process.env.REACT_APP_API_BACKEND}/hubspot/clients`,
+          {
+            headers: {
+              Accept: 'application/json'
+            }
+          }
+        );
+
+        console.log('Response Get Clients =>', response.data);
+      } catch (error) {
+        console.log('Error Clients =>', error);
+      }
+    };
+
+    fetch();
   }, [props.open]);
 
   const closeModal = (): void => {
@@ -44,6 +62,37 @@ export const DialogCreateLink = (props: DialogCreateLinkTypes) => {
     (e: any) => e.target === modalRef.current && closeModal()
   );
 
+  const searchUserByEmail = async () => {
+    console.log('Email =>', inputEmail);
+
+    const response = await axios.get(
+      `${process.env.REACT_APP_API_BACKEND}/hubspot/client/${inputEmail}/email`,
+      {
+        headers: {
+          Accept: 'application/json'
+        }
+      }
+    );
+
+    console.log('Response Hubspot by Email =>', response);
+  };
+
+  const handleChangeCareer = async (value: Career) => {
+    console.log('Value change career =>', value);
+    setSelectedCareers(value);
+
+    const response = await axios.get(
+      `${process.env.REACT_APP_API_BACKEND}/careers/${value.id}/generations`,
+      {
+        headers: {
+          Accept: 'applicatino/json'
+        }
+      }
+    );
+
+    console.log('Response Generations => ', response.data);
+  };
+
   return (
     <div className="window-background" id="window-background" ref={modalRef}>
       <div
@@ -59,10 +108,14 @@ export const DialogCreateLink = (props: DialogCreateLinkTypes) => {
               <input
                 type="email"
                 placeholder="Correo electrónico"
+                onChange={(e) => setInputEmail(e.target.value)}
                 className="border-r-0 py-2 rounded-none rounded-l-lg w-8/12"
                 style={{ border: '1px solid gray' }}
               />
-              <button className="bg-green-500 py-[9px] px-5 rounded-tr-lg rounded-br-lg text-white">
+              <button
+                className="bg-green-500 py-[9px] px-5 rounded-tr-lg rounded-br-lg text-white"
+                onClick={searchUserByEmail}
+              >
                 Buscar
               </button>
             </div>
@@ -71,11 +124,12 @@ export const DialogCreateLink = (props: DialogCreateLinkTypes) => {
             <p className="font-thin">Cursos</p>
             <div>
               <Dropdown
-                value={selectedCity}
-                options={cities}
-                onChange={(e) => setSelectedCity(e.value)}
-                optionLabel="name"
-                placeholder="Select a City"
+                value={selectedCareers}
+                options={careers}
+                onChange={(e) => handleChangeCareer(e.value)}
+                optionLabel="description"
+                filter
+                placeholder="Seleccionar Curso"
                 className="w-full md:w-14rem"
               />
             </div>
