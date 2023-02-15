@@ -19,7 +19,7 @@ export const TablePrices = () => {
   // const { listPrices, loading } = GetPricesTable();
   const { openDialogEdit } = useDialogEditPriceHook();
   const { updateForm } = UseFormPayment();
-  const [rowSelected, setRowSelected] = useState<PaymentType>();
+  const [rowSelected, setRowSelected] = useState<PaymentType>(null!);
   const [listPrices, setListPrices] = useState<PaymentType[]>([]);
   const [loading, setLoading] = useState(false);
 
@@ -33,6 +33,7 @@ export const TablePrices = () => {
           }
         }
       );
+      console.log('Response ListPrices =>', response.data);
       setListPrices(response.data);
     } catch (error) {
       console.log('Error =>', error);
