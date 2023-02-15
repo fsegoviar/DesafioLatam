@@ -33,7 +33,7 @@ export const TablePrices = () => {
           }
         }
       );
-      console.log('Response ListPrices =>', response.data);
+      console.log('Response ListPrices =>', response);
       setListPrices(response.data);
     } catch (error) {
       console.log('Error =>', error);
