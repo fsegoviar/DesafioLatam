@@ -26,28 +26,6 @@ export const DialogTablePricing = () => {
       onHide={closeDialog}
     >
       <PaymentFormProvider {...initialValue}>
-        {/* {!showPanel ? (
-          <div>
-            <FormDataProgram nextStep={setShowPanel} />
-          </div>
-        ) : (
-          <div>
-            <div>
-              <FormPaymentProgram />
-            </div>
-            <div className={'flex justify-end'}>
-              <button
-                className={'btn-prev m-1'}
-                onClick={() => setShowPanel(false)}
-              >
-                Atras
-              </button>
-              <button className={'btn m-1'} onClick={closeDialog}>
-                Guardar
-              </button>
-            </div>
-          </div>
-        )} */}
         <div>
           <FormDataProgram nextStep={setShowPanel} />
         </div>

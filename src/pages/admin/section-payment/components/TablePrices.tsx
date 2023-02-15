@@ -12,39 +12,14 @@ import {
   initialValue
 } from '../context/PaymentFormContext';
 import { UseFormPayment } from '../hooks/useFormPayment';
-import { useEffect, useState } from 'react';
-import axios from 'axios';
+import { useState } from 'react';
+import { GetPricesTable } from '../../../../services/Prices';
 
 export const TablePrices = () => {
-  // const { listPrices, loading } = GetPricesTable();
+  const { listPrices, loading } = GetPricesTable();
   const { openDialogEdit } = useDialogEditPriceHook();
   const { updateForm } = UseFormPayment();
   const [rowSelected, setRowSelected] = useState<PaymentType>(null!);
-  const [listPrices, setListPrices] = useState<PaymentType[]>([]);
-  const [loading, setLoading] = useState(false);
-
-  const fetchData = async () => {
-    try {
-      const response = await axios.get(
-        `${process.env.REACT_APP_API_BACKEND}/prices`,
-        {
-          headers: {
-            Accept: '*/*'
-          }
-        }
-      );
-      console.log('Response ListPrices =>', response);
-      setListPrices(response.data);
-    } catch (error) {
-      console.log('Error =>', error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchData();
-  }, []);
 
   const filters = {
     nombre: {
