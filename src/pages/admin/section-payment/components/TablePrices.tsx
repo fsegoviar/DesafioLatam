@@ -29,7 +29,7 @@ export const TablePrices = () => {
         `${process.env.REACT_APP_API_BACKEND}/prices`,
         {
           headers: {
-            Accept: 'application/json'
+            Accept: '*/*'
           }
         }
       );
