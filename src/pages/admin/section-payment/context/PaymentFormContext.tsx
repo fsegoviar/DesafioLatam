@@ -14,7 +14,8 @@ export const initialValue: FormPaymentType = {
   free_discount: '',
   advance_discount: '',
   tuition: '',
-  comments: ''
+  comments: '',
+  payment_methods: []
 };
 
 const enum REDUCE_ACTION_TYPE {

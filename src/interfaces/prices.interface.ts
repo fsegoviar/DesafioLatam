@@ -6,6 +6,21 @@ export type FormPaymentType = {
   advance_discount: string;
   tuition: string;
   comments: string;
+  payment_methods: PaymentMethod[];
+};
+
+export type PaymentMethod = {
+  supplier_id: number;
+  tuition: number;
+  quotes: number;
+  quotes_value: number;
+  full_value: number;
+  discount: number;
+};
+
+export type SupplierType = {
+  id: number;
+  description: string;
 };
 
 export class UpdateFormPayment implements Partial<FormPaymentType> {}

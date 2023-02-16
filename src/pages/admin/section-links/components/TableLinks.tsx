@@ -4,52 +4,57 @@ import { Column } from 'primereact/column';
 import { Button } from 'primereact/button';
 import { useState } from 'react';
 import { DialogCreateLink } from './DialogCreateLink';
+import { GetRegisters } from '../../../../services';
 
-const mockData = [
-  {
-    id: '1',
-    usuario: 'Julio Milán',
-    estado: 'Validado',
-    fecha: '12-12-2022',
-    curso: 'Data Science',
-    valor: '200',
-    dsc: '50',
-    total: '150'
-  },
-  {
-    id: '2',
-    usuario: 'Andres Restrepo',
-    estado: 'Completado',
-    fecha: '13-12-2022',
-    curso: 'Diseño UI/UX',
-    valor: '300',
-    dsc: '100',
-    total: '200'
-  },
-  {
-    id: '3',
-    usuario: 'Sofía León',
-    estado: 'Pendiente',
-    fecha: '14-12-2022',
-    curso: 'Desarrollo Front End',
-    valor: '500',
-    dsc: '150',
-    total: '350'
-  },
-  {
-    id: '4',
-    usuario: 'Juan Perez',
-    estado: 'Cancelado',
-    fecha: '14-12-2022',
-    curso: 'Desarrollo Front End',
-    valor: '300',
-    dsc: '50',
-    total: '250'
-  }
-];
+// const mockData = [
+//   {
+//     id: '1',
+//     usuario: 'Julio Milán',
+//     estado: 'Validado',
+//     fecha: '12-12-2022',
+//     curso: 'Data Science',
+//     valor: '200',
+//     dsc: '50',
+//     total: '150'
+//   },
+//   {
+//     id: '2',
+//     usuario: 'Andres Restrepo',
+//     estado: 'Completado',
+//     fecha: '13-12-2022',
+//     curso: 'Diseño UI/UX',
+//     valor: '300',
+//     dsc: '100',
+//     total: '200'
+//   },
+//   {
+//     id: '3',
+//     usuario: 'Sofía León',
+//     estado: 'Pendiente',
+//     fecha: '14-12-2022',
+//     curso: 'Desarrollo Front End',
+//     valor: '500',
+//     dsc: '150',
+//     total: '350'
+//   },
+//   {
+//     id: '4',
+//     usuario: 'Juan Perez',
+//     estado: 'Cancelado',
+//     fecha: '14-12-2022',
+//     curso: 'Desarrollo Front End',
+//     valor: '300',
+//     dsc: '50',
+//     total: '250'
+//   }
+// ];
 
 export const TableLinks = () => {
   const [openCreateLink, setOpenCreateLink] = useState(false);
+  const { registers, loading } = GetRegisters();
+
+  console.log('Registers =>', registers);
+
   const filters = {
     usuario: {
       value: '',
@@ -66,14 +71,14 @@ export const TableLinks = () => {
   };
 
   const renderState = (rowData: any) => {
-    switch (rowData.estado) {
+    switch (rowData.status) {
       case 'Validado':
         return (
           <span
             style={{ backgroundColor: 'green', color: '#FFFFFF' }}
             className="px-2 py-1 rounded-full"
           >
-            {rowData.estado}
+            {rowData.status}
           </span>
         );
       case 'Completado':
@@ -82,7 +87,7 @@ export const TableLinks = () => {
             style={{ backgroundColor: '#CB8C22', color: '#FFFFFF' }}
             className="px-2 py-1 rounded-full"
           >
-            {rowData.estado}
+            {rowData.status}
           </span>
         );
       case 'Pendiente':
@@ -91,7 +96,7 @@ export const TableLinks = () => {
             style={{ backgroundColor: 'red', color: '#FFFFFF' }}
             className="px-2 py-1 rounded-full"
           >
-            {rowData.estado}
+            {rowData.status}
           </span>
         );
       case 'Cancelado':
@@ -144,7 +149,8 @@ export const TableLinks = () => {
   return (
     <>
       <DataTable
-        value={mockData}
+        value={registers}
+        loading={loading}
         responsiveLayout="stack"
         breakpoint="960px"
         dataKey="id"
@@ -157,29 +163,41 @@ export const TableLinks = () => {
       >
         <Column field="id" header={'Id'} sortable></Column>
         <Column
-          field="fecha"
+          field="created_at"
           filter
           filterPlaceholder={'Buscar por fecha'}
           header={'Fecha'}
           sortable
         ></Column>
         <Column
-          field="usuario"
+          field="user.name"
           filter
           filterPlaceholder={'Buscar por nombre'}
           header={'Usuario'}
           sortable
         ></Column>
         <Column
-          field="curso"
+          field="career.description"
           filter
           filterPlaceholder={'Buscar por programa'}
           header={'Programa'}
           sortable
         ></Column>
-        <Column field="valor" header={'Valor $USD'} sortable></Column>
-        <Column field="dsc" header={'Dcto. $USD'} sortable></Column>
-        <Column field="total" header={'Total $USD'} sortable></Column>
+        <Column
+          field="career.price.value"
+          header={'Valor $USD'}
+          sortable
+        ></Column>
+        <Column
+          field="career.price.free_discount"
+          header={'Dcto. $USD'}
+          sortable
+        ></Column>
+        <Column
+          field={`career.price.value`}
+          header={'Total $USD'}
+          sortable
+        ></Column>
         <Column body={renderState} header={'Estado'}></Column>
         <Column
           body={actionEdit}
