@@ -6,49 +6,6 @@ import { useState } from 'react';
 import { DialogCreateLink } from './DialogCreateLink';
 import { GetRegisters } from '../../../../services';
 
-// const mockData = [
-//   {
-//     id: '1',
-//     usuario: 'Julio Milán',
-//     estado: 'Validado',
-//     fecha: '12-12-2022',
-//     curso: 'Data Science',
-//     valor: '200',
-//     dsc: '50',
-//     total: '150'
-//   },
-//   {
-//     id: '2',
-//     usuario: 'Andres Restrepo',
-//     estado: 'Completado',
-//     fecha: '13-12-2022',
-//     curso: 'Diseño UI/UX',
-//     valor: '300',
-//     dsc: '100',
-//     total: '200'
-//   },
-//   {
-//     id: '3',
-//     usuario: 'Sofía León',
-//     estado: 'Pendiente',
-//     fecha: '14-12-2022',
-//     curso: 'Desarrollo Front End',
-//     valor: '500',
-//     dsc: '150',
-//     total: '350'
-//   },
-//   {
-//     id: '4',
-//     usuario: 'Juan Perez',
-//     estado: 'Cancelado',
-//     fecha: '14-12-2022',
-//     curso: 'Desarrollo Front End',
-//     valor: '300',
-//     dsc: '50',
-//     total: '250'
-//   }
-// ];
-
 export const TableLinks = () => {
   const [openCreateLink, setOpenCreateLink] = useState(false);
   const { registers, loading } = GetRegisters();

@@ -1,10 +1,11 @@
-import { useState } from 'react';
+// import { useState } from 'react';
 import { UseFormPayment } from '../hooks/useFormPayment';
-import { GetFormsPayments } from '../../../../services';
-import { PaymentMethod, SupplierType } from '../../../../interfaces';
+// import { GetFormsPayments } from '../../../../services';
+import { PaymentMethod } from '../../../../interfaces';
 import { SubmitHandler, useForm } from 'react-hook-form';
-import { Dropdown } from 'primereact/dropdown';
 import axios, { AxiosError } from 'axios';
+import { BsFillInfoCircleFill } from 'react-icons/bs';
+import { Tooltip } from 'primereact/tooltip';
 
 type FormPaymentProgramType = {
   close: () => void;
@@ -13,14 +14,10 @@ type FormPaymentProgramType = {
 
 export const FormPaymentProgram = (props: FormPaymentProgramType) => {
   const { updateForm, state } = UseFormPayment();
-  const { paymentForms } = GetFormsPayments();
-  const [selectedPaymentForm, setSelectedPaymentForm] = useState<SupplierType>(
-    null!
-  );
+  // const { paymentForms } = GetFormsPayments();
   const {
     handleSubmit,
     register,
-    setValue,
     formState: { errors }
   } = useForm<PaymentMethod>();
 
@@ -45,10 +42,9 @@ export const FormPaymentProgram = (props: FormPaymentProgramType) => {
       .finally(props.closeModal);
   };
 
-  const handleChangePaymentForm = (data: SupplierType) => {
-    setValue('supplier_id', data.id);
-    setSelectedPaymentForm(data);
-  };
+  // const handleChangePaymentForm = (data: SupplierType) => {
+  //   setValue('supplier_id', data.id);
+  // };
 
   const RequiredField = () => {
     return <span className="text-red-500 text-[12px]">Campo Requerido</span>;
@@ -57,12 +53,21 @@ export const FormPaymentProgram = (props: FormPaymentProgramType) => {
   return (
     <div className="relative overflow-x-auto">
       <form onSubmit={handleSubmit(onSubmit)}>
+        <div className="px-5 pb-3">
+          <Tooltip target=".custom-target-icon" />
+          <BsFillInfoCircleFill
+            size={24}
+            className="custom-target-icon"
+            data-pr-tooltip="Marca la casilla para habilitar cada forma de pago."
+            data-pr-position="right"
+            data-pr-at="right+5 top"
+            data-pr-my="left center-2"
+          />
+        </div>
         <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
           <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
             <tr>
-              <th scope="col" className="px-6 py-3">
-                Tipo
-              </th>
+              <th scope="col" className="px-6 py-3"></th>
               <th scope="col" className="px-6 py-3">
                 Proveedor
               </th>
@@ -84,29 +89,30 @@ export const FormPaymentProgram = (props: FormPaymentProgramType) => {
             </tr>
           </thead>
           <tbody>
+            {/* Transbank */}
             <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
-              <td>
+              <td className="px-6">
+                <div className="">
+                  <input
+                    id="default-checkbox"
+                    type="checkbox"
+                    value=""
+                    className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                  />
+                </div>
+              </td>
+              <td className="px-6 py-4">
                 <input
                   type="text"
-                  {...register('discount')}
+                  placeholder="Transbank"
+                  readOnly
+                  {...register('tuition')}
                   className={
-                    errors.discount
+                    errors.tuition
                       ? 'border-red-500 py-3 rounded-lg'
                       : 'py-3 rounded-lg '
                   }
                 />
-                {errors.discount && <RequiredField />}
-              </td>
-              <td className="px-6 py-4">
-                <Dropdown
-                  value={selectedPaymentForm}
-                  options={paymentForms}
-                  onChange={(e) => handleChangePaymentForm(e.value)}
-                  optionLabel="description"
-                  placeholder="Seleccionar Curso"
-                  className="w-full md:w-14rem"
-                />
-                {errors.supplier_id && <RequiredField />}
               </td>
               <td className="px-6 py-4">
                 <input
@@ -156,15 +162,154 @@ export const FormPaymentProgram = (props: FormPaymentProgramType) => {
                 />
                 {errors.full_value && <RequiredField />}
               </td>
-              {/* <td className="px-6 py-4 flex justify-center">
-              <div
-                className={
-                  'bg-green-500 flex justify-center items-center rounded-full w-8 h-8'
-                }
-              >
-                <TiPlus size={24} className={'text-white'} />
-              </div>
-            </td> */}
+            </tr>
+            {/* Paypal */}
+            <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+              <td className="px-6">
+                <div className="">
+                  <input
+                    id="default-checkbox"
+                    type="checkbox"
+                    value=""
+                    className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                  />
+                </div>
+              </td>
+              <td className="px-6 py-4">
+                <input
+                  type="text"
+                  placeholder="Paypal"
+                  readOnly
+                  {...register('tuition')}
+                  className={
+                    errors.tuition
+                      ? 'border-red-500 py-3 rounded-lg'
+                      : 'py-3 rounded-lg '
+                  }
+                />
+              </td>
+              <td className="px-6 py-4">
+                <input
+                  type="text"
+                  {...register('tuition')}
+                  className={
+                    errors.tuition
+                      ? 'border-red-500 py-3 rounded-lg'
+                      : 'py-3 rounded-lg '
+                  }
+                />
+                {errors.tuition && <RequiredField />}
+              </td>
+              <td className="px-6 py-4">
+                <input
+                  type="text"
+                  {...register('quotes')}
+                  className={
+                    errors.quotes
+                      ? 'border-red-500 py-3 rounded-lg'
+                      : 'py-3 rounded-lg '
+                  }
+                />
+                {errors.quotes && <RequiredField />}
+              </td>
+              <td className="px-6 py-4">
+                <input
+                  type="text"
+                  {...register('quotes_value')}
+                  className={
+                    errors.quotes_value
+                      ? 'border-red-500 py-3 rounded-lg'
+                      : 'py-3 rounded-lg '
+                  }
+                />
+                {errors.quotes_value && <RequiredField />}
+              </td>
+              <td className="px-6 py-4">
+                <input
+                  type="text"
+                  {...register('full_value')}
+                  className={
+                    errors.full_value
+                      ? 'border-red-500 py-3 rounded-lg'
+                      : 'py-3 rounded-lg '
+                  }
+                />
+                {errors.full_value && <RequiredField />}
+              </td>
+            </tr>
+            {/* Flow */}
+            <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+              <td className="px-6">
+                <div className="">
+                  <input
+                    id="default-checkbox"
+                    type="checkbox"
+                    value=""
+                    className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                  />
+                </div>
+              </td>
+              <td className="px-6 py-4">
+                <input
+                  type="text"
+                  placeholder="Flow"
+                  readOnly
+                  {...register('tuition')}
+                  className={
+                    errors.tuition
+                      ? 'border-red-500 py-3 rounded-lg'
+                      : 'py-3 rounded-lg '
+                  }
+                />
+              </td>
+              <td className="px-6 py-4">
+                <input
+                  type="text"
+                  {...register('tuition')}
+                  className={
+                    errors.tuition
+                      ? 'border-red-500 py-3 rounded-lg'
+                      : 'py-3 rounded-lg '
+                  }
+                />
+                {errors.tuition && <RequiredField />}
+              </td>
+              <td className="px-6 py-4">
+                <input
+                  type="text"
+                  {...register('quotes')}
+                  className={
+                    errors.quotes
+                      ? 'border-red-500 py-3 rounded-lg'
+                      : 'py-3 rounded-lg '
+                  }
+                />
+                {errors.quotes && <RequiredField />}
+              </td>
+              <td className="px-6 py-4">
+                <input
+                  type="text"
+                  {...register('quotes_value')}
+                  className={
+                    errors.quotes_value
+                      ? 'border-red-500 py-3 rounded-lg'
+                      : 'py-3 rounded-lg '
+                  }
+                />
+                {errors.quotes_value && <RequiredField />}
+              </td>
+              <td className="px-6 py-4">
+                <input
+                  type="text"
+                  {...register('full_value')}
+                  className={
+                    errors.full_value
+                      ? 'border-red-500 py-3 rounded-lg'
+                      : 'py-3 rounded-lg '
+                  }
+                />
+                {errors.full_value && <RequiredField />}
+              </td>
             </tr>
           </tbody>
         </table>

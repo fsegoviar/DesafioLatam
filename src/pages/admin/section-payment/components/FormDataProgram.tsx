@@ -11,11 +11,35 @@ type StepsType = {
   nextStep: (value: boolean) => void;
 };
 
+const mockDataCash = [
+  {
+    id: 1,
+    name: 'CLP'
+  },
+  {
+    id: 2,
+    name: 'MXN'
+  },
+  {
+    id: 3,
+    name: 'USD'
+  },
+  {
+    id: 4,
+    name: 'COL'
+  },
+  {
+    id: 5,
+    name: 'SOL'
+  }
+];
+
 export const FormDataProgram = ({ nextStep }: StepsType) => {
   const { closeDialog } = useDialogCreateLinkHook();
   const { updateForm } = UseFormPayment();
   const [selectedCareers, setSelectedCareers] = useState<Career>(null!);
   const { careers } = GetCareers();
+  const [cashType, setCashType] = useState('');
   const {
     handleSubmit,
     register,
@@ -62,14 +86,13 @@ export const FormDataProgram = ({ nextStep }: StepsType) => {
             {errors.name && <RequiredField />}
           </div>
           <div className="flex flex-col">
-            <label>Programa</label>
+            <label>Tipo de moneda</label>
             <Dropdown
-              value={selectedCareers}
-              options={careers}
-              onChange={(e) => handleChangeCareer(e.value)}
-              optionLabel="description"
-              filter
-              placeholder="Seleccionar Curso"
+              value={cashType}
+              options={mockDataCash}
+              onChange={(e) => setCashType(e.value)}
+              optionLabel="name"
+              placeholder="Seleccionar Moneda"
               className="w-full md:w-14rem"
             />
             {errors.name && <RequiredField />}
@@ -125,6 +148,21 @@ export const FormDataProgram = ({ nextStep }: StepsType) => {
                   ? 'border-red-500 py-3 rounded-lg'
                   : 'py-3 rounded-lg '
               }
+            />
+            {errors.name && <RequiredField />}
+          </div>
+        </div>
+        <div className={'grid grid-rows-1 grid-flow-col gap-4 mt-5'}>
+          <div className="flex flex-col">
+            <label>Programa</label>
+            <Dropdown
+              value={selectedCareers}
+              options={careers}
+              onChange={(e) => handleChangeCareer(e.value)}
+              optionLabel="description"
+              filter
+              placeholder="Seleccionar Curso"
+              className="w-full md:w-14rem"
             />
             {errors.name && <RequiredField />}
           </div>
