@@ -9,6 +9,7 @@ import { FormPaymentType, UpdateFormPayment } from '../../../../interfaces';
 
 export const initialValue: FormPaymentType = {
   career_id: 1,
+  currency_id: 1,
   name: '',
   value: '',
   free_discount: '',

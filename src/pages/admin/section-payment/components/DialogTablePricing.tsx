@@ -13,8 +13,6 @@ export const DialogTablePricing = () => {
   const { isOpenDialog, closeDialog } = useDialogCreateLinkHook();
   const [showPanel, setShowPanel] = useState<boolean>(false);
 
-  console.log('ShowPanel', showPanel);
-
   return (
     <Dialog
       visible={isOpenDialog}

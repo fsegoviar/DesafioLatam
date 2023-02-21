@@ -4,6 +4,7 @@ export type FormPaymentType = {
   value: string;
   free_discount: string;
   advance_discount: string;
+  currency_id: number;
   tuition: string;
   comments: string;
   payment_methods: PaymentMethod[];

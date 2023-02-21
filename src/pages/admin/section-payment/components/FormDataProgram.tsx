@@ -4,39 +4,16 @@ import { useForm, SubmitHandler } from 'react-hook-form';
 import { initialValue } from '../context/PaymentFormContext';
 import { UseFormPayment } from '../hooks/useFormPayment';
 import { Career, FormPaymentType } from '../../../../interfaces';
-import { Dropdown } from 'primereact/dropdown';
-import { GetCareers } from '../../../../services';
+import { Dropdown, DropdownChangeParams } from 'primereact/dropdown';
+import { GetCareers, GetCurrencies } from '../../../../services';
 
 type StepsType = {
   nextStep: (value: boolean) => void;
 };
-
-const mockDataCash = [
-  {
-    id: 1,
-    name: 'CLP'
-  },
-  {
-    id: 2,
-    name: 'MXN'
-  },
-  {
-    id: 3,
-    name: 'USD'
-  },
-  {
-    id: 4,
-    name: 'COL'
-  },
-  {
-    id: 5,
-    name: 'SOL'
-  }
-];
-
 export const FormDataProgram = ({ nextStep }: StepsType) => {
   const { closeDialog } = useDialogCreateLinkHook();
   const { updateForm } = UseFormPayment();
+  const { currencies } = GetCurrencies();
   const [selectedCareers, setSelectedCareers] = useState<Career>(null!);
   const { careers } = GetCareers();
   const [cashType, setCashType] = useState('');
@@ -51,8 +28,6 @@ export const FormDataProgram = ({ nextStep }: StepsType) => {
 
   const onSubmit: SubmitHandler<FormPaymentType> = (data) => {
     updateForm(data);
-    //* Almaceno la data del formulario
-    // Todo : Falta agregar los tipos de la tabla de precios
 
     nextStep(true);
   };
@@ -89,16 +64,19 @@ export const FormDataProgram = ({ nextStep }: StepsType) => {
             <label>Tipo de moneda</label>
             <Dropdown
               value={cashType}
-              options={mockDataCash}
-              onChange={(e) => setCashType(e.value)}
-              optionLabel="name"
+              options={currencies}
+              onChange={(e: DropdownChangeParams) => {
+                setCashType(e.value);
+                setValue('currency_id', e.value.id);
+              }}
+              optionLabel="code"
               placeholder="Seleccionar Moneda"
               className="w-full md:w-14rem"
             />
             {errors.name && <RequiredField />}
           </div>
           <div className="flex flex-col">
-            <label>Valor del programa (USD)</label>
+            <label>Valor del programa</label>
             <input
               type="text"
               {...register('value', { required: true })}
@@ -139,7 +117,7 @@ export const FormDataProgram = ({ nextStep }: StepsType) => {
             {errors.name && <RequiredField />}
           </div>
           <div className={'flex flex-col'}>
-            <label>Matricula (USD)</label>
+            <label>Matricula</label>
             <input
               type="text"
               {...register('tuition', { required: true })}
