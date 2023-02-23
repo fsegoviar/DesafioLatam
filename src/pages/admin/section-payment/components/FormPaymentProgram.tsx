@@ -21,7 +21,7 @@ export const FormPaymentProgram = (props: FormPaymentProgramType) => {
     full_value: 0,
     quotes: 0,
     quotes_value: 0,
-    supplier_id: 1
+    supplier_id: 3
   });
   const [checkPaypal, setCheckPaypal] = useState(false);
   const [supplierPaypal, setSupplierPaypal] = useState<PaymentMethod>({
@@ -111,7 +111,7 @@ export const FormPaymentProgram = (props: FormPaymentProgramType) => {
               Descuento
             </th> */}
           </tr>
-        </thead>
+        </thead>wwww
         <tbody>
           {/* Transbank */}
           <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">

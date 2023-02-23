@@ -2,7 +2,11 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Dropdown } from 'primereact/dropdown';
 import '../styles.css';
 import { GetCareers } from '../../../../services';
-import { Career, RegisterLinkType } from '../../../../interfaces';
+import {
+  Career,
+  CareerSupplier,
+  RegisterLinkType
+} from '../../../../interfaces';
 import axios, { AxiosError } from 'axios';
 import { SubmitHandler, useForm } from 'react-hook-form';
 
@@ -17,7 +21,7 @@ export const DialogCreateLink = (props: DialogCreateLinkTypes) => {
   const [inputEmail, setInputEmail] = useState('');
   const [selectedCareers, setSelectedCareers] = useState<Career>(null!);
   const [selectForm, setSelectForm] = useState<any>(null!);
-  const [valueCareer, setValueCareer] = useState<string | number>(null!);
+  const [nameUser, setNameUser] = useState<string | number>(null!);
   const { careers } = GetCareers();
   const { handleSubmit, setValue } = useForm<RegisterLinkType>();
 
@@ -77,8 +81,9 @@ export const DialogCreateLink = (props: DialogCreateLinkTypes) => {
         }
       }
     );
+    console.log('Response Search by Email =>!', response.data);
 
-    setInputEmail(
+    setNameUser(
       `${response.data.results[0].properties.firstname} ${response.data.results[0].properties.lastname}`
     );
 
@@ -93,11 +98,6 @@ export const DialogCreateLink = (props: DialogCreateLinkTypes) => {
     console.log('Value change career =>', value);
     setSelectedCareers(value);
     setValue('career_id', value.id);
-    if (value.price) {
-      setValueCareer(value.price.value as never);
-    } else {
-      setValueCareer('Sin precio');
-    }
 
     const response = await axios.get(
       `${process.env.REACT_APP_API_BACKEND}/careers/${value.id}/generations`,
@@ -114,6 +114,11 @@ export const DialogCreateLink = (props: DialogCreateLinkTypes) => {
   const handleChangeFormType = (value: { id: number; name: string }) => {
     setSelectForm(value);
     setValue('form_type_id', value.id);
+  };
+
+  const handleChangeRadio = (row: CareerSupplier) => {
+    console.log('Radio Selected => ', row);
+    setValue('price_id', row.id);
   };
 
   const onSubmit: SubmitHandler<RegisterLinkType> = async (data) => {
@@ -174,11 +179,11 @@ export const DialogCreateLink = (props: DialogCreateLinkTypes) => {
               </div>
             </div>
             <div className="mt-5">
-              <p className="font-thin">Valor de curso $USD</p>
+              <p className="font-thin">Nombre de usuario</p>
               <div>
                 <input
                   type="text"
-                  value={valueCareer}
+                  value={nameUser}
                   className="border-r-0 py-2 rounded-lg w-10/12 bg-gray-300"
                   style={{ border: '1px solid gray' }}
                   disabled
@@ -199,6 +204,58 @@ export const DialogCreateLink = (props: DialogCreateLinkTypes) => {
               </div>
             </div>
           </div>
+          {selectedCareers && (
+            <div className="mt-5 col-span-12">
+              <p className="font-thin">Tabla de precios</p>
+              <div>
+                <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+                  <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                    <tr>
+                      <th></th>
+                      <th scope="col" className="px-6 py-3">
+                        Proveedor
+                      </th>
+                      <th scope="col" className="px-6 py-3">
+                        Matricula
+                      </th>
+                      <th scope="col" className="px-6 py-3">
+                        Cuotas
+                      </th>
+                      <th scope="col" className="px-6 py-3">
+                        Valor de cuota
+                      </th>
+                      <th scope="col" className="px-6 py-3">
+                        Valor total
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {selectedCareers.prices.map((price) => {
+                      const value = price.suppliers.map((supplier) => {
+                        return (
+                          <tr>
+                            <td>
+                              <input
+                                type="radio"
+                                name="select-row"
+                                onChange={() => handleChangeRadio(supplier)}
+                              />
+                            </td>
+                            <td>{supplier.description}</td>
+                            <td>{supplier.pivot.tuition}</td>
+                            <td>{supplier.pivot.quotes}</td>
+                            <td>{supplier.pivot.quotes_value}</td>
+                            <td>{supplier.pivot.full_value}</td>
+                          </tr>
+                        );
+                      });
+                      return value;
+                    })}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
           <div className="mt-5  w-full flex justify-end">
             <button
               className="m-1 px-5 rounded-lg text-white bg-gray-500"

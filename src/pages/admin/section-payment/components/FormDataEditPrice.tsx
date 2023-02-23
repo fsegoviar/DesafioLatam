@@ -5,7 +5,12 @@ import { useDialogEditPriceHook } from '../context/TableContext';
 import { UseFormPayment } from '../hooks/useFormPayment';
 import axios, { AxiosError } from 'axios';
 
-export const FormDataEditPrice = (data: FormPaymentType) => {
+type PropsEditPrice = {
+  data: FormPaymentType;
+  nextStep: (value: boolean) => void;
+};
+
+export const FormDataEditPrice = (props: PropsEditPrice) => {
   const { closeDialogEdit } = useDialogEditPriceHook();
   const { updateForm } = UseFormPayment();
 
@@ -14,14 +19,14 @@ export const FormDataEditPrice = (data: FormPaymentType) => {
     register,
     formState: { errors }
   } = useForm<PaymentType>({
-    defaultValues: { ...data }
+    defaultValues: { ...props.data }
   });
 
   const onSubmit: SubmitHandler<PaymentType> = (data) => {
     console.log('Edit =>', data);
     updateForm(data);
     //* Almaceno la data del formulario
-    // Todo : Falta agregar los tipos de la tabla de precios
+    // Todo: Falta agregar los tipos de la tabla de precios
     axios
       .post(`${process.env.REACT_APP_API_BACKEND}/prices/${data.id}`, data, {
         headers: {

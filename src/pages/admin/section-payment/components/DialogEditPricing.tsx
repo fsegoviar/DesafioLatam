@@ -1,5 +1,5 @@
 import { Dialog } from 'primereact/dialog';
-import React from 'react';
+import React, { useState } from 'react';
 import {
   PaymentFormProvider,
   initialValue
@@ -7,9 +7,11 @@ import {
 import { FormDataEditPrice } from './FormDataEditPrice';
 import { useDialogEditPriceHook } from '../context/TableContext';
 import { FormPaymentType } from '../../../../interfaces';
+import { FormDataEditPayment } from './FormDataEditPayment';
 
 export const DialogEditPricing = (data: FormPaymentType) => {
   const { isOpenDialogEdit, closeDialogEdit } = useDialogEditPriceHook();
+  const [showPanel, setShowPanel] = useState<boolean>(false);
 
   return (
     <Dialog
@@ -22,7 +24,19 @@ export const DialogEditPricing = (data: FormPaymentType) => {
       onHide={closeDialogEdit}
     >
       <PaymentFormProvider {...initialValue}>
-        <FormDataEditPrice {...data} />
+        {!showPanel ? (
+          <>
+            <FormDataEditPrice nextStep={setShowPanel} data={data} />
+          </>
+        ) : (
+          <>
+            <FormDataEditPayment
+              data={data}
+              closeModal={() => closeDialogEdit()}
+              close={() => setShowPanel(false)}
+            />
+          </>
+        )}
       </PaymentFormProvider>
     </Dialog>
   );

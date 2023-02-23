@@ -5,9 +5,11 @@ import { Button } from 'primereact/button';
 import { useState } from 'react';
 import { DialogCreateLink } from './DialogCreateLink';
 import { GetRegisters } from '../../../../services';
+import { DialogSendEmail } from './DialogSendEmail';
 
 export const TableLinks = () => {
   const [openCreateLink, setOpenCreateLink] = useState(false);
+  const [openSendEmail, setOpenSendEmail] = useState(false);
   const { registers, loading } = GetRegisters();
 
   console.log('Registers =>', registers);
@@ -83,6 +85,7 @@ export const TableLinks = () => {
           <Button
             icon="pi pi-send"
             className="p-button-rounded p-button-text "
+            onClick={() => setOpenSendEmail(true)}
           />
         </div>
       </div>
@@ -140,21 +143,13 @@ export const TableLinks = () => {
           header={'Programa'}
           sortable
         ></Column>
+        <Column field="price.value" header={'Valor'} sortable></Column>
         <Column
-          field="career.price.value"
-          header={'Valor $USD'}
+          field="price.free_discount"
+          header={'Descuento'}
           sortable
         ></Column>
-        <Column
-          field="career.price.free_discount"
-          header={'Dcto. $USD'}
-          sortable
-        ></Column>
-        <Column
-          field={`career.price.value`}
-          header={'Total $USD'}
-          sortable
-        ></Column>
+        <Column field={`price.value`} header={'Total'} sortable></Column>
         <Column body={renderState} header={'Estado'}></Column>
         <Column
           body={actionEdit}
@@ -166,6 +161,12 @@ export const TableLinks = () => {
         <DialogCreateLink
           open={openCreateLink}
           close={() => setOpenCreateLink(false)}
+        />
+      )}
+      {openSendEmail && (
+        <DialogSendEmail
+          open={openSendEmail}
+          close={() => setOpenSendEmail(false)}
         />
       )}
     </>
