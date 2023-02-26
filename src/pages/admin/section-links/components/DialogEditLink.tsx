@@ -1,26 +1,25 @@
-import React, { useEffect, useRef, useState } from 'react';
+import axios, { AxiosError } from 'axios';
 import { Dropdown } from 'primereact/dropdown';
-import '../styles.css';
+import React, { useEffect, useRef, useState } from 'react';
 import { GetCareers } from '../../../../services';
 import { Career, CareerPrice, RegisterLinkType } from '../../../../interfaces';
-import axios, { AxiosError } from 'axios';
 import { SubmitHandler, useForm } from 'react-hook-form';
 
-type DialogCreateLinkTypes = {
+type DialogEditLinkTypes = {
+  data: any;
   open: boolean;
   close: () => void;
 };
 
-export const DialogCreateLink = (props: DialogCreateLinkTypes) => {
+export const DialogEditLink = (props: DialogEditLinkTypes) => {
   const modalRef = useRef<HTMLDivElement>(null!);
   const containerRef = useRef<HTMLDivElement>(null!);
   const [inputEmail, setInputEmail] = useState('');
   const [selectedCareers, setSelectedCareers] = useState<Career>(null!);
   const [selectForm, setSelectForm] = useState<any>(null!);
   const [nameUser, setNameUser] = useState<string | number>(null!);
-  const { careers } = GetCareers();
   const { handleSubmit, setValue } = useForm<RegisterLinkType>();
-
+  const { careers } = GetCareers();
   const forms = [
     { name: 'Formulario de carrera', id: 1 },
     { name: 'Formulario de cursos', id: 2 },
@@ -29,6 +28,9 @@ export const DialogCreateLink = (props: DialogCreateLinkTypes) => {
   ];
 
   useEffect(() => {
+    console.log('Edit => ', props.data);
+    initData();
+
     if (props.open) modalRef.current.style.display = 'flex';
 
     const fetch = async () => {
@@ -49,7 +51,14 @@ export const DialogCreateLink = (props: DialogCreateLinkTypes) => {
     };
 
     fetch();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [props.open]);
+
+  const initData = () => {
+    setValue('email', props.data.user.email);
+    setInputEmail(props.data.user.email);
+    setNameUser(`${props.data.user.name} ${props.data.user.lastname}`);
+  };
 
   const closeModal = (): void => {
     containerRef.current.classList.add('close');
@@ -65,9 +74,26 @@ export const DialogCreateLink = (props: DialogCreateLinkTypes) => {
     (e: any) => e.target === modalRef.current && closeModal()
   );
 
+  const handleChangeCareer = async (value: Career) => {
+    console.log('Value change career =>', value);
+    setSelectedCareers(value);
+    // setValue('career_id', value.id);
+
+    const response = await axios.get(
+      `${process.env.REACT_APP_API_BACKEND}/careers/${value.id}/generations`,
+      {
+        headers: {
+          Accept: 'applicatino/json'
+        }
+      }
+    );
+
+    console.log('Response Generations => ', response.data);
+  };
+
   const searchUserByEmail = async () => {
-    const email = inputEmail;
-    setValue('email', email);
+    // const email = inputEmail;
+    // setValue('email', email);
 
     const response = await axios.get(
       `${process.env.REACT_APP_API_BACKEND}/hubspot/client/${inputEmail}/email`,
@@ -83,38 +109,21 @@ export const DialogCreateLink = (props: DialogCreateLinkTypes) => {
       `${response.data.results[0].properties.firstname} ${response.data.results[0].properties.lastname}`
     );
 
-    setValue('name', response.data.results[0].properties.firstname);
-    setValue('lastname', response.data.results[0].properties.lastname);
-    setValue('lastname2', '');
+    // setValue('name', response.data.results[0].properties.firstname);
+    // setValue('lastname', response.data.results[0].properties.lastname);
+    // setValue('lastname2', '');
 
     console.log('Response Hubspot by Email =>', response);
   };
 
-  const handleChangeCareer = async (value: Career) => {
-    console.log('Value change career =>', value);
-    setSelectedCareers(value);
-    setValue('career_id', value.id);
-
-    const response = await axios.get(
-      `${process.env.REACT_APP_API_BACKEND}/careers/${value.id}/generations`,
-      {
-        headers: {
-          Accept: 'applicatino/json'
-        }
-      }
-    );
-
-    console.log('Response Generations => ', response.data);
-  };
-
   const handleChangeFormType = (value: { id: number; name: string }) => {
     setSelectForm(value);
-    setValue('form_type_id', value.id);
+    // setValue('form_type_id', value.id);
   };
 
   const handleChangeRadio = (row: CareerPrice) => {
     console.log('Radio Selected => ', row);
-    setValue('price_id', row.id);
+    // setValue('price_id', row.id);
   };
 
   const onSubmit: SubmitHandler<RegisterLinkType> = async (data) => {
@@ -137,7 +146,7 @@ export const DialogCreateLink = (props: DialogCreateLinkTypes) => {
         id="window-container"
         ref={containerRef}
       >
-        <p className="text-2xl">Crear Enlace</p>
+        <p className="text-2xl">Editar Enlace</p>
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="grid grid-cols-2 gap-4 mt-5">
             <div>

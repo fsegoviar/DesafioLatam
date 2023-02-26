@@ -4,7 +4,6 @@ import { Column } from 'primereact/column';
 import { DataTable } from 'primereact/datatable';
 import { DialogTablePricing } from './DialogTablePricing';
 import { HeaderTable } from './HeaderTable';
-import { PaymentType } from '../../../../interfaces';
 import { useDialogEditPriceHook } from '../context/TableContext';
 import { DialogEditPricing } from './DialogEditPricing';
 import {
@@ -19,7 +18,7 @@ export const TablePrices = () => {
   const { listPrices, loading } = GetPricesTable();
   const { openDialogEdit } = useDialogEditPriceHook();
   const { updateForm } = UseFormPayment();
-  const [rowSelected, setRowSelected] = useState<PaymentType>(null!);
+  const [rowSelected, setRowSelected] = useState<any>(null!);
 
   const filters = {
     nombre: {
@@ -32,11 +31,13 @@ export const TablePrices = () => {
     }
   };
 
-  const actionEdit = (rowData: PaymentType) => {
+  const actionEdit = (rowData: any) => {
     return (
       <Button
         icon="pi pi-pencil"
-        className="p-button-rounded p-button-text p-button-warning"
+        className="p-button-rounded p-button-text p-button-warning "
+        data-te-toggle="tooltip"
+        title="Editar"
         onClick={() => {
           setRowSelected(rowData);
           updateForm(rowData);

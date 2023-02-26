@@ -6,13 +6,16 @@ import { useState } from 'react';
 import { DialogCreateLink } from './DialogCreateLink';
 import { GetRegisters } from '../../../../services';
 import { DialogSendEmail } from './DialogSendEmail';
+import axios, { AxiosError } from 'axios';
+import { CgFileDocument } from 'react-icons/cg';
+import { DialogEditLink } from './DialogEditLink';
 
 export const TableLinks = () => {
   const [openCreateLink, setOpenCreateLink] = useState(false);
   const [openSendEmail, setOpenSendEmail] = useState(false);
   const { registers, loading } = GetRegisters();
-
-  console.log('Registers =>', registers);
+  const [selectedRow, setSelectedRow] = useState();
+  const [openEditLink, setOpenEditLink] = useState(false);
 
   const filters = {
     usuario: {
@@ -27,6 +30,23 @@ export const TableLinks = () => {
       value: '',
       matchMode: FilterMatchMode.CONTAINS
     }
+  };
+
+  const sendEmail = async (id: string) => {
+    await axios
+      .get(
+        `${process.env.REACT_APP_API_BACKEND}/registers/${id}/notification`,
+        {
+          headers: {
+            Accept: 'application/json'
+          }
+        }
+      )
+      .then((response: any) => {
+        console.log('Notificacion Enviada =>', response.data);
+        setOpenSendEmail(true);
+      })
+      .catch((error: AxiosError) => console.log('Error => ', error));
   };
 
   const renderState = (rowData: any) => {
@@ -78,16 +98,37 @@ export const TableLinks = () => {
         <div style={{ margin: '0 2px' }}>
           <Button
             icon="pi pi-pencil"
+            data-te-toggle="tooltip"
+            title="Editar"
             className="p-button-rounded p-button-text p-button-warning"
+            onClick={() => {
+              setSelectedRow(rowData);
+              setOpenEditLink(true);
+            }}
           />
         </div>
         <div style={{ margin: '0 2px' }}>
           <Button
             icon="pi pi-send"
-            className="p-button-rounded p-button-text "
-            onClick={() => setOpenSendEmail(true)}
+            className="p-button-rounded p-button-text"
+            data-te-toggle="tooltip"
+            title="Enviar correo"
+            onClick={() => sendEmail(rowData.id)}
           />
         </div>
+      </div>
+    );
+  };
+
+  const renderForm = (rowData: any) => {
+    return (
+      <div className="flex justify-center">
+        <CgFileDocument
+          size={24}
+          className="cursor-pointer"
+          data-te-toggle="tooltip"
+          title="Ver formulario"
+        />
       </div>
     );
   };
@@ -150,6 +191,7 @@ export const TableLinks = () => {
           sortable
         ></Column>
         <Column field={`price.value`} header={'Total'} sortable></Column>
+        <Column body={renderForm} header={'Formulario'}></Column>
         <Column body={renderState} header={'Estado'}></Column>
         <Column
           body={actionEdit}
@@ -161,6 +203,13 @@ export const TableLinks = () => {
         <DialogCreateLink
           open={openCreateLink}
           close={() => setOpenCreateLink(false)}
+        />
+      )}
+      {openEditLink && (
+        <DialogEditLink
+          data={selectedRow}
+          open={openEditLink}
+          close={() => setOpenEditLink(false)}
         />
       )}
       {openSendEmail && (

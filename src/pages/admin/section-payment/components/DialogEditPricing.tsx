@@ -6,10 +6,9 @@ import {
 } from '../context/PaymentFormContext';
 import { FormDataEditPrice } from './FormDataEditPrice';
 import { useDialogEditPriceHook } from '../context/TableContext';
-import { FormPaymentType } from '../../../../interfaces';
 import { FormDataEditPayment } from './FormDataEditPayment';
 
-export const DialogEditPricing = (data: FormPaymentType) => {
+export const DialogEditPricing = (data: any) => {
   const { isOpenDialogEdit, closeDialogEdit } = useDialogEditPriceHook();
   const [showPanel, setShowPanel] = useState<boolean>(false);
 

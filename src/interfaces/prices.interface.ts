@@ -10,6 +10,26 @@ export type FormPaymentType = {
   payment_methods: PaymentMethod[];
 };
 
+export type FormEditPayment = {
+  advance_discount: string;
+  career: CareerType;
+  career_id: number;
+  comments: string;
+  currency: Currency;
+  currency_id: number;
+  free_discount: number;
+  id: number;
+  name: string;
+  tuition: number;
+  value: number;
+};
+
+export type Currency = {
+  id: number;
+  description: string;
+  code: string;
+};
+
 export type PaymentMethod = {
   supplier_id: number;
   tuition: number;
@@ -29,6 +49,8 @@ export class UpdateFormPayment implements Partial<FormPaymentType> {}
 export type CareerType = {
   id: number;
   description: string;
+  prices: any[];
+  sis_program_id: number;
 };
 
 export interface PaymentType extends FormPaymentType {

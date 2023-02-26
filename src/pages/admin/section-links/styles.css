@@ -26,6 +26,19 @@
   z-index: 10;
 }
 
+.window-container-notification {
+  position: relative;
+  background-color: #fff;
+  width: 450px;
+  height: auto;
+  padding: 1.5rem;
+  border-radius: 20px;
+  animation-name: modal;
+  animation-duration: 0.5s;
+  box-shadow: 0 5px 15px 5px rgba(0, 0, 0, 0.4);
+  z-index: 10;
+}
+
 .close {
   transition: transform 0.8s cubic-bezier(0, -0.42, 1, -0.41);
   transform: translateY(90vh);
