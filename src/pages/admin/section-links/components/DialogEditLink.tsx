@@ -6,7 +6,7 @@ import { Career, CareerPrice, RegisterLinkType } from '../../../../interfaces';
 import { SubmitHandler, useForm } from 'react-hook-form';
 
 type DialogEditLinkTypes = {
-  data: any;
+  idRegister: any;
   open: boolean;
   close: () => void;
 };
@@ -18,7 +18,8 @@ export const DialogEditLink = (props: DialogEditLinkTypes) => {
   const [selectedCareers, setSelectedCareers] = useState<Career>(null!);
   const [selectForm, setSelectForm] = useState<any>(null!);
   const [nameUser, setNameUser] = useState<string | number>(null!);
-  const { handleSubmit, setValue } = useForm<RegisterLinkType>();
+  const { handleSubmit } = useForm<RegisterLinkType>();
+  const [loading, setLoading] = useState(false);
   const { careers } = GetCareers();
   const forms = [
     { name: 'Formulario de carrera', id: 1 },
@@ -28,8 +29,7 @@ export const DialogEditLink = (props: DialogEditLinkTypes) => {
   ];
 
   useEffect(() => {
-    console.log('Edit => ', props.data);
-    initData();
+    console.log('Edit => ', props.idRegister);
 
     if (props.open) modalRef.current.style.display = 'flex';
 
@@ -50,15 +50,46 @@ export const DialogEditLink = (props: DialogEditLinkTypes) => {
       }
     };
 
+    const fetchRegister = async () => {
+      setLoading(true);
+      await axios
+        .get(
+          `${process.env.REACT_APP_API_BACKEND}/registers/${props.idRegister}`,
+          {
+            headers: {
+              Accept: 'application/json'
+            }
+          }
+        )
+        .then((response: any) => {
+          console.log('RegisterSelected => ', response.data);
+
+          const findForm = forms.find(
+            (form) => form.id === response.data[0].form_type_id
+          );
+
+          console.log('Find Form =>', findForm);
+
+          setSelectForm(findForm);
+          setInputEmail(response.data[0].user.email);
+          setNameUser(
+            `${response.data[0].user.name} ${response.data[0].user.lastname}`
+          );
+        })
+        .catch((error: AxiosError) => console.log('Error =>', error))
+        .finally(() => setLoading(false));
+    };
+
     fetch();
+    fetchRegister();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [props.open]);
 
-  const initData = () => {
-    setValue('email', props.data.user.email);
-    setInputEmail(props.data.user.email);
-    setNameUser(`${props.data.user.name} ${props.data.user.lastname}`);
-  };
+  // const initData = () => {
+  //   setValue('email', props.data.user.email);
+  //   setInputEmail(props.data.user.email);
+  //   setNameUser(`${props.data.user.name} ${props.data.user.lastname}`);
+  // };
 
   const closeModal = (): void => {
     containerRef.current.classList.add('close');
@@ -147,134 +178,138 @@ export const DialogEditLink = (props: DialogEditLinkTypes) => {
         ref={containerRef}
       >
         <p className="text-2xl">Editar Enlace</p>
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <div className="grid grid-cols-2 gap-4 mt-5">
-            <div>
-              <p className="font-thin">Usuario</p>
+        {loading ? (
+          <p>Cargando....</p>
+        ) : (
+          <form onSubmit={handleSubmit(onSubmit)}>
+            <div className="grid grid-cols-2 gap-4 mt-5">
               <div>
-                <input
-                  type="text"
-                  value={inputEmail}
-                  placeholder="Correo electrónico"
-                  onChange={(e) => setInputEmail(e.target.value)}
-                  className="border-r-0 py-2 rounded-none rounded-l-lg w-8/12"
-                  style={{ border: '1px solid gray' }}
-                />
-                <button
-                  type="button"
-                  className="bg-green-500 py-[9px] px-5 rounded-tr-lg rounded-br-lg text-white"
-                  onClick={searchUserByEmail}
-                >
-                  Buscar
-                </button>
+                <p className="font-thin">Usuario</p>
+                <div>
+                  <input
+                    type="text"
+                    value={inputEmail}
+                    placeholder="Correo electrónico"
+                    onChange={(e) => setInputEmail(e.target.value)}
+                    className="border-r-0 py-2 rounded-none rounded-l-lg w-8/12"
+                    style={{ border: '1px solid gray' }}
+                  />
+                  <button
+                    type="button"
+                    className="bg-green-500 py-[9px] px-5 rounded-tr-lg rounded-br-lg text-white"
+                    onClick={searchUserByEmail}
+                  >
+                    Buscar
+                  </button>
+                </div>
+              </div>
+              <div>
+                <p className="font-thin">Cursos</p>
+                <div>
+                  <Dropdown
+                    value={selectedCareers}
+                    options={careers}
+                    onChange={(e) => handleChangeCareer(e.value)}
+                    optionLabel="description"
+                    filter
+                    placeholder="Seleccionar Curso"
+                    className="w-full md:w-14rem"
+                  />
+                </div>
+              </div>
+              <div className="mt-5">
+                <p className="font-thin">Nombre de usuario</p>
+                <div>
+                  <input
+                    type="text"
+                    value={nameUser}
+                    className="border-r-0 py-2 rounded-lg w-10/12 bg-gray-300"
+                    style={{ border: '1px solid gray' }}
+                    disabled
+                  />
+                </div>
+              </div>
+              <div className="mt-5">
+                <p className="font-thin">Tipo de Formulario</p>
+                <div>
+                  <Dropdown
+                    value={selectForm}
+                    options={forms}
+                    onChange={(e) => handleChangeFormType(e.value)}
+                    optionLabel="name"
+                    placeholder="Seleccionar Formulario"
+                    className="w-full md:w-14rem"
+                  />
+                </div>
               </div>
             </div>
-            <div>
-              <p className="font-thin">Cursos</p>
-              <div>
-                <Dropdown
-                  value={selectedCareers}
-                  options={careers}
-                  onChange={(e) => handleChangeCareer(e.value)}
-                  optionLabel="description"
-                  filter
-                  placeholder="Seleccionar Curso"
-                  className="w-full md:w-14rem"
-                />
+            {selectedCareers && (
+              <div className="mt-5 col-span-12">
+                <p className="font-thin">Tabla de precios</p>
+                <div>
+                  <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+                    <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                      <tr>
+                        <th></th>
+                        <th scope="col" className="px-6 py-3">
+                          Nombre
+                        </th>
+                        <th scope="col" className="px-6 py-3">
+                          Matricula
+                        </th>
+                        <th scope="col" className="px-6 py-3">
+                          Descuento
+                        </th>
+                        <th scope="col" className="px-6 py-3">
+                          Valor total
+                        </th>
+                        <th scope="col" className="px-6 py-3">
+                          Comentarios
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {selectedCareers.prices.map((price, index) => {
+                        return (
+                          <tr key={index}>
+                            <td>
+                              <input
+                                type="radio"
+                                name="select-row"
+                                onChange={() => handleChangeRadio(price)}
+                              />
+                            </td>
+                            <td>{price.name}</td>
+                            <td>{price.tuition}</td>
+                            <td>{price.free_discount}</td>
+                            <td>{price.value}</td>
+                            <td>{price.comments}</td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                </div>
               </div>
+            )}
+            <div className="mt-5  w-full flex justify-end">
+              <button
+                className="m-1 px-5 rounded-lg text-white bg-gray-500"
+                style={{ border: '3px solid gray' }}
+                onClick={() => closeModal()}
+              >
+                Cancelar
+              </button>
+              <button
+                type="submit"
+                className="m-1 px-5 rounded-lg text-white bg-green-500"
+                style={{ border: '3px solid rgb(34 197 94)' }}
+              >
+                Editar
+              </button>
             </div>
-            <div className="mt-5">
-              <p className="font-thin">Nombre de usuario</p>
-              <div>
-                <input
-                  type="text"
-                  value={nameUser}
-                  className="border-r-0 py-2 rounded-lg w-10/12 bg-gray-300"
-                  style={{ border: '1px solid gray' }}
-                  disabled
-                />
-              </div>
-            </div>
-            <div className="mt-5">
-              <p className="font-thin">Tipo de Formulario</p>
-              <div>
-                <Dropdown
-                  value={selectForm}
-                  options={forms}
-                  onChange={(e) => handleChangeFormType(e.value)}
-                  optionLabel="name"
-                  placeholder="Seleccionar Formulario"
-                  className="w-full md:w-14rem"
-                />
-              </div>
-            </div>
-          </div>
-          {selectedCareers && (
-            <div className="mt-5 col-span-12">
-              <p className="font-thin">Tabla de precios</p>
-              <div>
-                <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
-                  <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-                    <tr>
-                      <th></th>
-                      <th scope="col" className="px-6 py-3">
-                        Nombre
-                      </th>
-                      <th scope="col" className="px-6 py-3">
-                        Matricula
-                      </th>
-                      <th scope="col" className="px-6 py-3">
-                        Descuento
-                      </th>
-                      <th scope="col" className="px-6 py-3">
-                        Valor total
-                      </th>
-                      <th scope="col" className="px-6 py-3">
-                        Comentarios
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {selectedCareers.prices.map((price, index) => {
-                      return (
-                        <tr key={index}>
-                          <td>
-                            <input
-                              type="radio"
-                              name="select-row"
-                              onChange={() => handleChangeRadio(price)}
-                            />
-                          </td>
-                          <td>{price.name}</td>
-                          <td>{price.tuition}</td>
-                          <td>{price.free_discount}</td>
-                          <td>{price.value}</td>
-                          <td>{price.comments}</td>
-                        </tr>
-                      );
-                    })}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          )}
-          <div className="mt-5  w-full flex justify-end">
-            <button
-              className="m-1 px-5 rounded-lg text-white bg-gray-500"
-              style={{ border: '3px solid gray' }}
-              onClick={() => closeModal()}
-            >
-              Cancelar
-            </button>
-            <button
-              type="submit"
-              className="m-1 px-5 rounded-lg text-white bg-green-500"
-              style={{ border: '3px solid rgb(34 197 94)' }}
-            >
-              Crear
-            </button>
-          </div>
-        </form>
+          </form>
+        )}
       </div>
     </div>
   );

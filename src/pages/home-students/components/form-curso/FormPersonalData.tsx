@@ -1,4 +1,3 @@
-import React from 'react';
 import { GetIdentityTypes } from '../../../../services';
 
 type PropsFormUser = {
@@ -20,7 +19,7 @@ export const FormPersonalData = (props: PropsFormUser) => {
       <div className="grid gap-4 grid-cols-4 ">
         <div className="col-span-2 flex flex-col">
           <label>Nombre</label>
-          <input type="text" disabled />
+          <input type="text" />
         </div>
         <div className="col-span-2 flex flex-col">
           <label>Apellidos</label>

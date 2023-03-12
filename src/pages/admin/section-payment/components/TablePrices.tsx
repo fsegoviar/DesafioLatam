@@ -106,7 +106,7 @@ export const TablePrices = () => {
           ></Column>
         </DataTable>
         <DialogTablePricing />
-        {rowSelected && <DialogEditPricing {...rowSelected} />}
+        {rowSelected && <DialogEditPricing id={rowSelected.id} />}
       </>
     </PaymentFormProvider>
   );

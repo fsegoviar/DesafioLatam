@@ -1,12 +1,16 @@
 import { useState } from 'react';
-import { FormPaymentType, PaymentMethod } from '../../../../interfaces';
+import {
+  FormEditPayment,
+  FormPaymentType,
+  PaymentMethod
+} from '../../../../interfaces';
 import { UseFormPayment } from '../hooks/useFormPayment';
 import axios, { AxiosError } from 'axios';
 import { Tooltip } from 'primereact/tooltip';
 import { BsFillInfoCircleFill } from 'react-icons/bs';
 
 type FormPaymentProgramType = {
-  data: FormPaymentType;
+  data: FormEditPayment;
   close: () => void;
   closeModal: () => void;
 };
@@ -14,53 +18,113 @@ type FormPaymentProgramType = {
 export const FormDataEditPayment = (props: FormPaymentProgramType) => {
   const { state } = UseFormPayment();
   const [checkTransbank, setCheckTransbank] = useState(false);
-  const [supplierTransbank, setSupplierTransbank] = useState<PaymentMethod>({
-    tuition: 0,
-    discount: 0,
-    full_value: 0,
-    quotes: 0,
-    quotes_value: 0,
-    supplier_id: 3
-  });
+  // const [supplierTransbank, setSupplierTransbank] = useState<PaymentMethod>();
+  // () => {
+  //   for (const supplier of props.data.suppliers) {
+  //     if (supplier.description === 'Transbank') {
+  //       setCheckTransbank(true);
+  //       return {
+  //         tuition: supplier.pivot.tuition,
+  //         discount: supplier.pivot.discount,
+  //         full_value: supplier.pivot.full_value,
+  //         quotes: supplier.pivot.quotes,
+  //         quotes_value: supplier.pivot.quotes_value,
+  //         supplier_id: 3
+  //       };
+  //     }
+  //   }
+
+  //   return {
+  //     tuition: 0,
+  //     discount: 0,
+  //     full_value: 0,
+  //     quotes: 0,
+  //     quotes_value: 0,
+  //     supplier_id: 3
+  //   };
+  // }
   const [checkPaypal, setCheckPaypal] = useState(false);
-  const [supplierPaypal, setSupplierPaypal] = useState<PaymentMethod>({
-    tuition: 0,
-    discount: 0,
-    full_value: 0,
-    quotes: 0,
-    quotes_value: 0,
-    supplier_id: 2
+  const [supplierPaypal, setSupplierPaypal] = useState<PaymentMethod>(() => {
+    // for (const supplier of props.data.suppliers) {
+    //   if (supplier.description === 'Paypal') {
+    //     setCheckPaypal(true);
+    //     return {
+    //       tuition: supplier.pivot.tuition,
+    //       discount: supplier.pivot.discount,
+    //       full_value: supplier.pivot.full_value,
+    //       quotes: supplier.pivot.quotes,
+    //       quotes_value: supplier.pivot.quotes_value,
+    //       supplier_id: 2
+    //     };
+    //   }
+    // }
+
+    return {
+      free_discount: null,
+      advance_discount: null,
+      quotes: null,
+      quotes_value: null ,
+      reference_value: null,
+      isa_value: null,
+      isa_percent: null
+    };
   });
   const [checkFlow, setCheckFlow] = useState(false);
-  const [supplierFlow, setSupplierFlow] = useState<PaymentMethod>({
-    tuition: 0,
-    discount: 0,
-    full_value: 0,
-    quotes: 0,
-    quotes_value: 0,
-    supplier_id: 1
+  const [supplierFlow, setSupplierFlow] = useState<PaymentMethod>(() => {
+    // for (const supplier of props.data.suppliers) {
+    //   if (supplier.description === 'Flow') {
+    //     setCheckFlow(true);
+    //     return {
+    //       tuition: supplier.pivot.tuition,
+    //       discount: supplier.pivot.discount,
+    //       full_value: supplier.pivot.full_value,
+    //       quotes: supplier.pivot.quotes,
+    //       quotes_value: supplier.pivot.quotes_value,
+    //       supplier_id: 1
+    //     };
+    //   }
+    // }
+
+    return {
+      free_discount: null,
+      advance_discount: null,
+      quotes: null,
+      quotes_value: null,
+      reference_value: null,
+      isa_value: null,
+      isa_percent: null
+    };
   });
 
   const onSubmit = () => {
     let data: FormPaymentType = state;
     let suppliers: PaymentMethod[] = [];
 
-    if (checkTransbank) suppliers = [...suppliers, supplierTransbank];
+    console.log('Checked => ', checkTransbank, checkPaypal, checkFlow);
+    console.log('Data entrante =>', data);
+
+    // if (checkTransbank) suppliers = [...suppliers, supplierTransbank];
 
     if (checkPaypal) suppliers = [...suppliers, supplierPaypal];
 
     if (checkFlow) suppliers = [...suppliers, supplierFlow];
 
+    console.log('Suppliers => ', suppliers);
+
     data = { ...data, payment_methods: suppliers };
 
-    console.log('Data a ingresar =>', data);
+    console.log('Data enviada =>', data);
 
     axios
-      .post(`${process.env.REACT_APP_API_BACKEND}/prices`, data, {
-        headers: {
-          'Access-Control-Allow-Origin': '*'
+      .post(
+        `${process.env.REACT_APP_API_BACKEND}/prices/${props.data.id}`,
+        data,
+        {
+          headers: {
+            'Access-Control-Allow-Origin': '*'
+          }
         }
-      })
+      )
       .then((response) => {
         console.log('Response Price =>', response.data);
       })
@@ -134,48 +198,52 @@ export const FormDataEditPayment = (props: FormPaymentProgramType) => {
             <td className="px-6 py-4">
               <input
                 type="number"
-                onChange={(event) =>
-                  setSupplierTransbank({
-                    ...supplierTransbank,
-                    tuition: Number(event.target.value)
-                  })
-                }
+                // value={supplierTransbank.tuition}
+                // onChange={(event) =>
+                //   setSupplierTransbank({
+                //     ...supplierTransbank,
+                //     tuition: Number(event.target.value)
+                //   })
+                // }
                 className={'py-3 rounded-lg '}
               />
             </td>
             <td className="px-6 py-4">
               <input
                 type="number"
-                onChange={(event) =>
-                  setSupplierTransbank({
-                    ...supplierTransbank,
-                    quotes: Number(event.target.value)
-                  })
-                }
+                // value={supplierTransbank.quotes}
+                // onChange={(event) =>
+                //   setSupplierTransbank({
+                //     ...supplierTransbank,
+                //     quotes: Number(event.target.value)
+                //   })
+                // }
                 className={'py-3 rounded-lg '}
               />
             </td>
             <td className="px-6 py-4">
               <input
                 type="number"
-                onChange={(event) =>
-                  setSupplierTransbank({
-                    ...supplierTransbank,
-                    quotes_value: Number(event.target.value)
-                  })
-                }
+                // value={supplierTransbank.quotes_value}
+                // onChange={(event) =>
+                //   setSupplierTransbank({
+                //     ...supplierTransbank,
+                //     quotes_value: Number(event.target.value)
+                //   })
+                // }
                 className={'py-3 rounded-lg '}
               />
             </td>
             <td className="px-6 py-4">
               <input
                 type="number"
-                onChange={(event) =>
-                  setSupplierTransbank({
-                    ...supplierTransbank,
-                    full_value: Number(event.target.value)
-                  })
-                }
+                // value={supplierTransbank.full_value}
+                // onChange={(event) =>
+                //   setSupplierTransbank({
+                //     ...supplierTransbank,
+                //     full_value: Number(event.target.value)
+                //   })
+                // }
                 className={'py-3 rounded-lg '}
               />
             </td>
@@ -206,48 +274,52 @@ export const FormDataEditPayment = (props: FormPaymentProgramType) => {
             <td className="px-6 py-4">
               <input
                 type="number"
-                onChange={(event) =>
-                  setSupplierPaypal({
-                    ...supplierPaypal,
-                    tuition: Number(event.target.value)
-                  })
-                }
+                // value={supplierPaypal.tuition}
+                // onChange={(event) =>
+                //   setSupplierPaypal({
+                //     ...supplierPaypal,
+                //     tuition: Number(event.target.value)
+                //   })
+                // }
                 className={'py-3 rounded-lg '}
               />
             </td>
             <td className="px-6 py-4">
               <input
                 type="number"
-                onChange={(event) =>
-                  setSupplierPaypal({
-                    ...supplierPaypal,
-                    quotes: Number(event.target.value)
-                  })
-                }
+                // value={supplierPaypal.quotes}
+                // onChange={(event) =>
+                //   setSupplierPaypal({
+                //     ...supplierPaypal,
+                //     quotes: Number(event.target.value)
+                //   })
+                // }
                 className={'py-3 rounded-lg '}
               />
             </td>
             <td className="px-6 py-4">
               <input
                 type="number"
-                onChange={(event) =>
-                  setSupplierPaypal({
-                    ...supplierPaypal,
-                    quotes_value: Number(event.target.value)
-                  })
-                }
+                // value={supplierPaypal.quotes_value}
+                // onChange={(event) =>
+                //   setSupplierPaypal({
+                //     ...supplierPaypal,
+                //     quotes_value: Number(event.target.value)
+                //   })
+                // }
                 className={'py-3 rounded-lg '}
               />
             </td>
             <td className="px-6 py-4">
               <input
                 type="number"
-                onChange={(event) =>
-                  setSupplierPaypal({
-                    ...supplierPaypal,
-                    full_value: Number(event.target.value)
-                  })
-                }
+                // value={supplierPaypal.full_value}
+                // onChange={(event) =>
+                //   setSupplierPaypal({
+                //     ...supplierPaypal,
+                //     full_value: Number(event.target.value)
+                //   })
+                // }
                 className={'py-3 rounded-lg '}
               />
             </td>
@@ -278,48 +350,52 @@ export const FormDataEditPayment = (props: FormPaymentProgramType) => {
             <td className="px-6 py-4">
               <input
                 type="number"
-                onChange={(event) =>
-                  setSupplierFlow({
-                    ...supplierFlow,
-                    tuition: Number(event.target.value)
-                  })
-                }
+                // value={supplierFlow.tuition}
+                // onChange={(event) =>
+                //   setSupplierFlow({
+                //     ...supplierFlow,
+                //     tuition: Number(event.target.value)
+                //   })
+                // }
                 className={'py-3 rounded-lg '}
               />
             </td>
             <td className="px-6 py-4">
               <input
                 type="number"
-                onChange={(event) =>
-                  setSupplierFlow({
-                    ...supplierFlow,
-                    quotes: Number(event.target.value)
-                  })
-                }
+                // value={supplierFlow.quotes}
+                // onChange={(event) =>
+                //   setSupplierFlow({
+                //     ...supplierFlow,
+                //     quotes: Number(event.target.value)
+                //   })
+                // }
                 className={'py-3 rounded-lg '}
               />
             </td>
             <td className="px-6 py-4">
               <input
                 type="number"
-                onChange={(event) =>
-                  setSupplierFlow({
-                    ...supplierFlow,
-                    quotes_value: Number(event.target.value)
-                  })
-                }
+                // value={supplierFlow.quotes_value}
+                // onChange={(event) =>
+                //   setSupplierFlow({
+                //     ...supplierFlow,
+                //     quotes_value: Number(event.target.value)
+                //   })
+                // }
                 className={'py-3 rounded-lg '}
               />
             </td>
             <td className="px-6 py-4">
               <input
                 type="number"
-                onChange={(event) =>
-                  setSupplierFlow({
-                    ...supplierFlow,
-                    full_value: Number(event.target.value)
-                  })
-                }
+                // value={supplierFlow.full_value}
+                // onChange={(event) =>
+                //   setSupplierFlow({
+                //     ...supplierFlow,
+                //     full_value: Number(event.target.value)
+                //   })
+                // }
                 className={'py-3 rounded-lg '}
               />
             </td>

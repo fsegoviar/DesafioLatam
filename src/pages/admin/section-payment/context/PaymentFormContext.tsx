@@ -8,15 +8,13 @@ import { FormPaymentType, UpdateFormPayment } from '../../../../interfaces';
 // };
 
 export const initialValue: FormPaymentType = {
-  career_id: 1,
-  currency_id: 1,
+  career_id: null,
+  currency_id: null,
   name: '',
-  value: '',
-  free_discount: '',
-  advance_discount: '',
-  tuition: '',
-  comments: '',
-  payment_methods: []
+  tuition: null,
+  comment: '',
+  payment_methods: [],
+  suppliers: []
 };
 
 const enum REDUCE_ACTION_TYPE {

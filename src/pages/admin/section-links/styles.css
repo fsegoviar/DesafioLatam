@@ -26,6 +26,10 @@
   z-index: 10;
 }
 
+.width-form {
+  width: 70vw !important;
+}
+
 .window-container-notification {
   position: relative;
   background-color: #fff;

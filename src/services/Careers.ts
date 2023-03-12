@@ -17,6 +17,7 @@ export const GetCareers = () => {
           }
         }
       );
+
       setCareers(response.data);
     } catch (error) {
       console.log('Error =>', error);

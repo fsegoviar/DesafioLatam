@@ -9,12 +9,14 @@ import { DialogSendEmail } from './DialogSendEmail';
 import axios, { AxiosError } from 'axios';
 import { CgFileDocument } from 'react-icons/cg';
 import { DialogEditLink } from './DialogEditLink';
+import { DialogForm } from './DialogForm';
 
 export const TableLinks = () => {
   const [openCreateLink, setOpenCreateLink] = useState(false);
   const [openSendEmail, setOpenSendEmail] = useState(false);
+  const [openDialogForm, setOpenDialogForm] = useState(false);
   const { registers, loading } = GetRegisters();
-  const [selectedRow, setSelectedRow] = useState();
+  const [idRegister, setIdRegister] = useState();
   const [openEditLink, setOpenEditLink] = useState(false);
 
   const filters = {
@@ -102,7 +104,7 @@ export const TableLinks = () => {
             title="Editar"
             className="p-button-rounded p-button-text p-button-warning"
             onClick={() => {
-              setSelectedRow(rowData);
+              setIdRegister(rowData.id);
               setOpenEditLink(true);
             }}
           />
@@ -124,6 +126,7 @@ export const TableLinks = () => {
     return (
       <div className="flex justify-center">
         <CgFileDocument
+          onClick={() => setOpenDialogForm(true)}
           size={24}
           className="cursor-pointer"
           data-te-toggle="tooltip"
@@ -207,7 +210,7 @@ export const TableLinks = () => {
       )}
       {openEditLink && (
         <DialogEditLink
-          data={selectedRow}
+          idRegister={idRegister}
           open={openEditLink}
           close={() => setOpenEditLink(false)}
         />
@@ -216,6 +219,12 @@ export const TableLinks = () => {
         <DialogSendEmail
           open={openSendEmail}
           close={() => setOpenSendEmail(false)}
+        />
+      )}
+      {openDialogForm && (
+        <DialogForm
+          open={openDialogForm}
+          close={() => setOpenDialogForm(false)}
         />
       )}
     </>
