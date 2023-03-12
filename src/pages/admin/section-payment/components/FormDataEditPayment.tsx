@@ -44,7 +44,7 @@ export const FormDataEditPayment = (props: FormPaymentProgramType) => {
   //   };
   // }
   const [checkPaypal, setCheckPaypal] = useState(false);
-  const [supplierPaypal, setSupplierPaypal] = useState<PaymentMethod>(() => {
+  const [supplierPaypal] = useState<PaymentMethod>(() => {
     // for (const supplier of props.data.suppliers) {
     //   if (supplier.description === 'Paypal') {
     //     setCheckPaypal(true);
@@ -63,14 +63,14 @@ export const FormDataEditPayment = (props: FormPaymentProgramType) => {
       free_discount: null,
       advance_discount: null,
       quotes: null,
-      quotes_value: null ,
+      quotes_value: null,
       reference_value: null,
       isa_value: null,
       isa_percent: null
     };
   });
   const [checkFlow, setCheckFlow] = useState(false);
-  const [supplierFlow, setSupplierFlow] = useState<PaymentMethod>(() => {
+  const [supplierFlow] = useState<PaymentMethod>(() => {
     // for (const supplier of props.data.suppliers) {
     //   if (supplier.description === 'Flow') {
     //     setCheckFlow(true);
