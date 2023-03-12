@@ -78,21 +78,7 @@ export const TablePrices = () => {
             header={'Programa'}
             sortable
           ></Column>
-          <Column
-            field="value"
-            header={'Valor de referencia'}
-            sortable
-          ></Column>
-          <Column
-            field="advance_discount"
-            header={'Dcto. Cuotas'}
-            sortable
-          ></Column>
-          <Column
-            field="free_discount"
-            header={'Dscto. Anticipado'}
-            sortable
-          ></Column>
+
           <Column field="tuition" header={'Matricula'} sortable></Column>
           <Column
             field="comments"

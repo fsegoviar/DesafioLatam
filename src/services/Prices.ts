@@ -17,6 +17,7 @@ export const GetPricesTable = () => {
           }
         }
       );
+
       setListPrices(response.data);
     } catch (error) {
       console.log('Error =>', error);

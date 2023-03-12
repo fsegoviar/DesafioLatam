@@ -6,6 +6,7 @@ import {
   Career,
   Currency,
   FormPaymentType,
+  PaymentMethod,
   SupplierId
 } from '../../../../interfaces';
 import { Dropdown, DropdownChangeParams } from 'primereact/dropdown';
@@ -37,21 +38,51 @@ export const FormDataProgram = () => {
     data.currency_id = cashType.id;
     data.career_id = Number(selectedCareers.id);
 
-    if (checkPaymentQuotes) data.payment_methods.splice(0, 1);
-    if (checkPrepaid) data.payment_methods.splice(0, 1);
     let suppliers: SupplierId[] = [];
 
-    suppliers = getValues('payment_methods').map((v: any) => {
-      return { supplier_id: v };
+    const clearArr: PaymentMethod[] = [];
+
+    if (data.payment_methods[0].quotes && checkPaymentQuotes === false)
+      clearArr.push({
+        payment_method_id: 1,
+        quotes: data.payment_methods[0].quotes_value,
+        reference_value: data.payment_methods[0].reference_value,
+        quotes_value: data.payment_methods[0].quotes_value,
+        advance_discount: null,
+        free_discount: data.payment_methods[0].free_discount,
+        isa_percent: null,
+        isa_value: null
+      });
+    if (data.payment_methods[1].advance_discount && checkPrepaid === false)
+      clearArr.push({
+        payment_method_id: 2,
+        quotes: null,
+        reference_value: data.payment_methods[1].reference_value,
+        quotes_value: null,
+        advance_discount: data.payment_methods[1].advance_discount,
+        free_discount: null,
+        isa_percent: null,
+        isa_value: null
+      });
+    if (data.payment_methods[2].isa_value && checkISA === false)
+      clearArr.push({
+        payment_method_id: 3,
+        quotes: null,
+        reference_value: null,
+        quotes_value: null,
+        advance_discount: null,
+        free_discount: null,
+        isa_percent: data.payment_methods[2].isa_percent,
+        isa_value: data.payment_methods[2].isa_value
+      });
+
+    data.payment_methods = clearArr;
+
+    suppliers = getValues('suppliers').map((v: any) => {
+      return { supplier_id: Number(v) };
     });
 
     data.suppliers = suppliers;
-
-    console.log('Data form =>', data);
-
-    // // data = { ...data, payment_methods: suppliers };
-
-    // console.log('Data a ingresar =>', data);
 
     axios
       .post(`${process.env.REACT_APP_API_BACKEND}/prices`, data, {
@@ -64,7 +95,8 @@ export const FormDataProgram = () => {
       })
       .catch((error: AxiosError) => {
         console.log('Error Price =>', error);
-      });
+      })
+      .finally(() => closeDialog);
   };
 
   const RequiredField = () => {
@@ -452,14 +484,14 @@ export const FormDataProgram = () => {
             <label>Motivo del descuento</label>
             <textarea
               rows={3}
-              {...register('comment', { required: true })}
+              {...register('comments', { required: true })}
               className={
-                errors.comment
+                errors.comments
                   ? 'border-red-500  w-full border-2 rounded-lg p-3'
                   : 'border-2 border-black w-full rounded-lg p-3'
               }
             />
-            {errors.comment && <RequiredField />}
+            {errors.comments && <RequiredField />}
           </div>
         </div>
         {/* Metodos de pago */}
@@ -526,10 +558,5 @@ export const FormDataProgram = () => {
         </div>
       </form>
     </div>
-    // <div className="w-full">
-    //   <form onSubmit={handleSubmit(onSubmit)}>
-
-    //   </form>
-    // </div>
   );
 };

@@ -60,6 +60,7 @@ export const FormDataEditPayment = (props: FormPaymentProgramType) => {
     // }
 
     return {
+      payment_method_id: null,
       free_discount: null,
       advance_discount: null,
       quotes: null,
@@ -86,6 +87,7 @@ export const FormDataEditPayment = (props: FormPaymentProgramType) => {
     // }
 
     return {
+      payment_method_id: null,
       free_discount: null,
       advance_discount: null,
       quotes: null,

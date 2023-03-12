@@ -8,7 +8,6 @@ import axios, { AxiosError } from 'axios';
 
 type PropsEditPrice = {
   data: FormEditPayment;
-  nextStep: (value: boolean) => void;
 };
 
 export const FormDataEditPrice = (props: PropsEditPrice) => {
@@ -32,22 +31,14 @@ export const FormDataEditPrice = (props: PropsEditPrice) => {
     formState: { errors }
   } = useForm<FormEditPayment>({
     defaultValues: {
-      advance_discount: props.data.advance_discount,
       career_id: props.data.career_id,
       comments: props.data.comments,
       currency_id: props.data.currency_id,
       currency: props.data.currency,
-      free_discount: props.data.free_discount,
       career: props.data.career,
       name: props.data.name,
       tuition: props.data.tuition,
-      reference_value: props.data.reference_value,
-      full_value: props.data.full_value,
-      quotes: props.data.quotes,
-      quotes_value: props.data.quotes_value,
-      value: props.data.value,
-      payment_methods: props.data.payment_methods,
-      payment_method: props.data.payment_method
+      payment_methods: props.data.payment_methods
     }
   });
 
@@ -62,18 +53,20 @@ export const FormDataEditPrice = (props: PropsEditPrice) => {
   }, [careers]);
 
   const initRadioButtons = () => {
-    switch (props.data.payment_method) {
-      case 'Anticipado':
-        setCheckAnticipado(true);
-        break;
-      case 'ISA':
-        setCheckISA(true);
-        break;
-      case 'Pago Cuota':
-        setCheckCuotas(true);
-        break;
-      default:
-        break;
+    for (const payment_method of props.data.payment_methods) {
+      switch (payment_method.description) {
+        case 'Anticipado':
+          setCheckAnticipado(true);
+          break;
+        case 'ISA':
+          setCheckISA(true);
+          break;
+        case 'Pago Cuota':
+          setCheckCuotas(true);
+          break;
+        default:
+          break;
+      }
     }
   };
 
@@ -98,57 +91,57 @@ export const FormDataEditPrice = (props: PropsEditPrice) => {
     }
   };
 
-  const onSubmit: SubmitHandler<any> = (data) => {
-    console.log('Edit =>', data);
-    // updateForm(data);
-    // props.nextStep(true);
+  // const onSubmit: SubmitHandler<any> = (data) => {
+  //   console.log('Edit =>', data);
+  //   // updateForm(data);
+  //   // props.nextStep(true);
 
-    const parsePaymentMethods = data.payment_methods.map((data: any) => {
-      return { supplier_id: Number(data) };
-    });
+  //   const parsePaymentMethods = data.payment_methods.map((data: any) => {
+  //     return { supplier_id: Number(data) };
+  //   });
 
-    const prepareData = {
-      career_id: data.career_id,
-      currency_id: data.currency_id,
-      name: data.name,
-      value: Number(data.value),
-      free_discount: data.free_discount,
-      advance_discount: data.advance_discount,
-      tuition: data.tuition,
-      comments: data.comments,
-      payment_methods: parsePaymentMethods,
-      quotes: data.quotes,
-      quotes_value: data.quotes_value,
-      full_value: data.full_value,
-      reference_value: data.reference_value,
-      payment_method: data.payment_method
-    };
+  //   const prepareData = {
+  //     career_id: data.career_id,
+  //     currency_id: data.currency_id,
+  //     name: data.name,
+  //     value: Number(data.value),
+  //     free_discount: data.free_discount,
+  //     advance_discount: data.advance_discount,
+  //     tuition: data.tuition,
+  //     comments: data.comments,
+  //     payment_methods: parsePaymentMethods,
+  //     quotes: data.quotes,
+  //     quotes_value: data.quotes_value,
+  //     full_value: data.full_value,
+  //     reference_value: data.reference_value,
+  //     payment_method: data.payment_method
+  //   };
 
-    axios
-      .post(
-        `${process.env.REACT_APP_API_BACKEND}/prices/${props.data.id}`,
-        prepareData,
-        {
-          headers: {
-            'Access-Control-Allow-Origin': '*'
-          }
-        }
-      )
-      .then((response) => {
-        console.log('Response Price =>', response.data);
-      })
-      .catch((error: AxiosError) => {
-        console.log('Error Price =>', error);
-      });
-  };
+  //   axios
+  //     .post(
+  //       `${process.env.REACT_APP_API_BACKEND}/prices/${props.data.id}`,
+  //       prepareData,
+  //       {
+  //         headers: {
+  //           'Access-Control-Allow-Origin': '*'
+  //         }
+  //       }
+  //     )
+  //     .then((response) => {
+  //       console.log('Response Price =>', response.data);
+  //     })
+  //     .catch((error: AxiosError) => {
+  //       console.log('Error Price =>', error);
+  //     });
+  // };
 
-  const RequiredField = () => {
-    return <span className="text-red-500 text-[12px]">Campo Requerido</span>;
-  };
+  // const RequiredField = () => {
+  //   return <span className="text-red-500 text-[12px]">Campo Requerido</span>;
+  // };
 
   return (
     <div className="w-full">
-      <form onSubmit={handleSubmit(onSubmit)}>
+      {/* <form onSubmit={handleSubmit(onSubmit)}>
         <p className="py-3 font-bold">Datos Principales</p>
         <hr className="py-3" />
         <div className="grid grid-rows-1 grid-flow-col gap-4">
@@ -468,7 +461,7 @@ export const FormDataEditPrice = (props: PropsEditPrice) => {
             Editar
           </button>
         </div>
-      </form>
+      </form> */}
     </div>
   );
 };

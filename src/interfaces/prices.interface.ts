@@ -1,23 +1,9 @@
 export type FormPaymentType = {
-  // career_id: number;
-  // currency_id: number;
-  // name: string;
-  // value: string;
-  // free_discount: string;
-  // advance_discount: string;
-  // tuition: string;
-  // comments: string;
-  // quotes: number;
-  // quotes_value: number;
-  // full_value: number;
-  // reference_value: number;
-  // payment_methods: SupplierId[];
-  // payment_method: string;
   career_id: number | null;
   currency_id: number | null;
   name: string;
   tuition: number | null;
-  comment: string;
+  comments: string;
   payment_methods: PaymentMethod[];
   suppliers: SupplierId[];
 };
@@ -28,23 +14,15 @@ export type SupplierId = {
 
 export type FormEditPayment = {
   id: number;
-  career_id: number;
   career: CareerType;
-  currency_id: number;
-  currency: Currency;
-  name: string;
-  value: string;
-  free_discount: string;
-  advance_discount: string;
-  tuition: string;
+  career_id: number;
   comments: string;
-  quotes: number;
-  quotes_value: number;
-  full_value: number;
-  reference_value: number;
-  payment_methods: SupplierId[];
-  suppliers: any[];
-  payment_method: string;
+  currency: Currency;
+  currency_id: number;
+  name: string;
+  payment_methods: PaymentMethodEdit[];
+  suppliers: SupplierEditType[];
+  tuition: number;
 };
 
 export type Currency = {
@@ -53,13 +31,29 @@ export type Currency = {
   code: string;
 };
 
+export type PaymentMethodEdit = {
+  description: string;
+  id: number;
+  pivot: PivotEditType;
+};
+
+export type PivotEditType = {
+  id: number;
+  advance_discount: number | null;
+  created_at: Date;
+  free_discount: number | null;
+  isa_percent: number | null;
+  isa_value: number | null;
+  payment_method_id: number;
+  price_id: number;
+  quotes: number | null;
+  quotes_value: number | null;
+  reference_value: number | null;
+  updated_at: Date;
+};
+
 export type PaymentMethod = {
-  // supplier_id: number;
-  // tuition: number;
-  // quotes: number;
-  // quotes_value: number;
-  // full_value: number;
-  // discount: number;
+  payment_method_id: number | null;
   free_discount: number | null;
   advance_discount: number | null;
   quotes: number | null;
@@ -73,6 +67,20 @@ export type SupplierType = {
   id: number;
   description: string;
   pivot: PivotType;
+};
+
+export type SupplierEditType = {
+  id: number;
+  description: string;
+  pivot: PivotSupplierEditType;
+};
+
+export type PivotSupplierEditType = {
+  id: number;
+  price_id: number;
+  supplier_id: number;
+  created_at: Date;
+  updated_at: Date;
 };
 
 export type PivotType = {

@@ -12,7 +12,7 @@ export const initialValue: FormPaymentType = {
   currency_id: null,
   name: '',
   tuition: null,
-  comment: '',
+  comments: '',
   payment_methods: [],
   suppliers: []
 };

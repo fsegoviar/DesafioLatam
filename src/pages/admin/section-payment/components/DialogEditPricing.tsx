@@ -15,7 +15,6 @@ type PropsDialog = {
 
 export const DialogEditPricing = ({ id }: PropsDialog) => {
   const { isOpenDialogEdit, closeDialogEdit } = useDialogEditPriceHook();
-  const [showPanel, setShowPanel] = useState<boolean>(false);
   const [data, setData] = useState(null!);
   const [loading, setLoading] = useState(false);
 
@@ -52,22 +51,10 @@ export const DialogEditPricing = ({ id }: PropsDialog) => {
     >
       <PaymentFormProvider {...initialValue}>
         {loading ? (
-          <>Cargando...</>
+          <>Cargando</>
         ) : (
           <>
-            {!showPanel ? (
-              <>
-                <FormDataEditPrice nextStep={setShowPanel} data={data} />
-              </>
-            ) : (
-              <>
-                <FormDataEditPayment
-                  data={data}
-                  closeModal={() => closeDialogEdit()}
-                  close={() => setShowPanel(false)}
-                />
-              </>
-            )}
+            <FormDataEditPrice data={data} />
           </>
         )}
       </PaymentFormProvider>
