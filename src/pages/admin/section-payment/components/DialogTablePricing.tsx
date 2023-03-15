@@ -7,6 +7,7 @@ import {
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { FormPaymentType } from '../../../../interfaces';
 import React from 'react';
+/*
 import {
   PaymentISA,
   PaymentPrepaid,
@@ -15,10 +16,12 @@ import {
 } from './form-create-payment';
 import { PaymentQuotes } from './form-create-payment/PaymentQuotes';
 import { RequiredField } from '../../../../components';
+* */
 import { FormDataProgram } from './FormDataProgram';
 
 export const DialogTablePricing = () => {
   const { isOpenDialog, closeDialog } = useDialogCreateLinkHook();
+  /*
   const {
     handleSubmit,
     register,
@@ -28,10 +31,13 @@ export const DialogTablePricing = () => {
   } = useForm<FormPaymentType>({
     defaultValues: { ...initialValue }
   });
+   */
 
+  /*
   const onSubmit: SubmitHandler<FormPaymentType> = (data) => {
     console.log('DATA => ', data);
   };
+  */
 
   return (
     <Dialog
