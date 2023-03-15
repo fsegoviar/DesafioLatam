@@ -4,7 +4,7 @@ import {
   LaborSituationUser,
   LevelEducationUser,
   LevelEnglishUser
-} from '../interfaces/Miscelaneos';
+} from '../interfaces';
 import axios from 'axios';
 
 export const GetIdentityTypes = () => {

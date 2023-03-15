@@ -1,3 +1,6 @@
+import { FieldErrors, UseFormRegister, UseFormWatch } from 'react-hook-form';
+import { FormPaymentType } from './prices.interface';
+
 export enum IdentityUser {
   RUT = 'RUT',
   CI = 'CI',
@@ -45,3 +48,14 @@ export interface LaborSituationUser {
   id: number;
   description: LaborSituation;
 }
+
+export type PropsPaymentFormTypes = {
+  register: UseFormRegister<FormPaymentType>;
+  errors: FieldErrors<FormPaymentType>;
+  watch: UseFormWatch<FormPaymentType>;
+};
+
+export type PropsSuppliersFormTypes = {
+  register: UseFormRegister<FormPaymentType>;
+  errors: FieldErrors<FormPaymentType>;
+};

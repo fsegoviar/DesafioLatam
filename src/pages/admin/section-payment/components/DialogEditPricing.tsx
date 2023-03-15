@@ -6,7 +6,6 @@ import {
 } from '../context/PaymentFormContext';
 import { FormDataEditPrice } from './FormDataEditPrice';
 import { useDialogEditPriceHook } from '../context/TableContext';
-import { FormDataEditPayment } from './FormDataEditPayment';
 import axios, { AxiosError } from 'axios';
 
 type PropsDialog = {

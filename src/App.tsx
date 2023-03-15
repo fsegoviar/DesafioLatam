@@ -9,21 +9,6 @@ import {
 import { SectionLinks } from './pages/admin/section-links';
 
 function App() {
-  /*   useEffect(() => {
-    const fetch = async () => {
-      await axios
-        .get('http://127.0.0.1:8000/api/clients', {
-          headers: {
-            'Access-Control-Allow-Origin': '*'
-          }
-        })
-        .then((response) => console.log('Respuesta =>', response))
-        .catch((error: any) => console.log('Error =>', error));
-    };
-
-    fetch();
-  }, []);
- */
   return (
     <BrowserRouter>
       <Routes>
