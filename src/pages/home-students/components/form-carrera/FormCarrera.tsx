@@ -8,12 +8,14 @@ import { SignDocument } from '../SignDocument';
 import { SimpleFinishPayment } from '../SimpleFinishPayment';
 import { useSearchParams } from 'react-router-dom';
 import axios, { AxiosError } from 'axios';
+import { FormAval } from './FormAval';
 
 export const FormCarrera = () => {
   const steps = [
     'Datos personales',
     'Educación',
     'Datos laborales',
+    'Aval',
     'Forma de pago',
     'Firma de acuerdo',
     'Finalizar pago'
@@ -32,7 +34,7 @@ export const FormCarrera = () => {
 
   const fetchDataUser = async () => {
     setLoading(true);
-    axios
+    await axios
       .get(
         `${process.env.REACT_APP_API_BACKEND}/registers/${params.get(
           'register'
@@ -97,6 +99,9 @@ export const FormCarrera = () => {
             case 2:
               return (
                 <EducationForm
+                  registerId={String(params.get('register'))}
+                  token={String(params.get('token'))}
+                  dataUser={dataUser[0]}
                   currentStep={currentStep}
                   setComplete={setComplete}
                   setCurrentStep={setCurrentStep}
@@ -106,6 +111,9 @@ export const FormCarrera = () => {
             case 3:
               return (
                 <FormLaborData
+                  registerId={String(params.get('register'))}
+                  token={String(params.get('token'))}
+                  dataUser={dataUser[0]}
                   currentStep={currentStep}
                   setComplete={setComplete}
                   setCurrentStep={setCurrentStep}
@@ -114,19 +122,29 @@ export const FormCarrera = () => {
               );
             case 4:
               return (
+                <FormAval
+                  currentStep={currentStep}
+                  setComplete={setComplete}
+                  setCurrentStep={setCurrentStep}
+                  stepsLength={steps.length}
+                />
+              );
+              break;
+            case 5:
+              return (
                 <SelectPayment
                   currentStep={currentStep}
                   setCurrentStep={setCurrentStep}
                 />
               );
-            case 5:
+            case 6:
               return (
                 <SignDocument
                   currentStep={currentStep}
                   setCurrentStep={setCurrentStep}
                 />
               );
-            case 6:
+            case 7:
               return <SimpleFinishPayment />;
             default:
               break;

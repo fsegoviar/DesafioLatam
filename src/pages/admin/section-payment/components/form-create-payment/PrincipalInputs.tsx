@@ -1,30 +1,30 @@
-import { FieldErrors, UseFormRegister, UseFormSetValue } from 'react-hook-form';
+import {
+  FieldErrors,
+  UseFormRegister,
+  UseFormSetValue,
+  UseFormWatch
+} from 'react-hook-form';
 import { Career, Currency, FormPaymentType } from '../../../../../interfaces';
 import { Dropdown, DropdownChangeParams } from 'primereact/dropdown';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { RequiredField } from '../../../../../components';
 import { GetCareers, GetCurrencies } from '../../../../../services';
 
 type PropsPrincipalTypes = {
-  register: UseFormRegister<FormPaymentType>,
-  errors: FieldErrors<FormPaymentType>,
-  setValue: UseFormSetValue<FormPaymentType>
-}
-export const PrincipalInputs = ({ register, errors, setValue }: PropsPrincipalTypes) => {
-
+  register: UseFormRegister<FormPaymentType>;
+  errors: FieldErrors<FormPaymentType>;
+  setValue: UseFormSetValue<FormPaymentType>;
+  watch: UseFormWatch<FormPaymentType>;
+};
+export const PrincipalInputs = ({
+  register,
+  errors,
+  setValue
+}: PropsPrincipalTypes) => {
   const { currencies } = GetCurrencies();
   const [selectedCareers, setSelectedCareers] = useState<Career>(null!);
   const { careers } = GetCareers();
   const [cashType, setCashType] = useState<Currency>(null!);
-
-
-  useEffect(() => {
-    if(cashType)
-    {
-      console.log("CASHTYPE =>", cashType);
-      setValue("currency_id", cashType.id)
-    }
-  }, [cashType, setValue])
 
   return (
     <div className="grid grid-rows-1 grid-flow-col gap-4">
@@ -34,9 +34,7 @@ export const PrincipalInputs = ({ register, errors, setValue }: PropsPrincipalTy
           type="text"
           {...register('name', { required: true })}
           className={
-            errors.name
-              ? 'border-red-500 py-1 rounded-lg'
-              : 'py-1 rounded-lg '
+            errors.name ? 'border-red-500 py-1 rounded-lg' : 'py-1 rounded-lg '
           }
         />
         {errors.name && <RequiredField />}
@@ -44,7 +42,7 @@ export const PrincipalInputs = ({ register, errors, setValue }: PropsPrincipalTy
       <div className="flex flex-col">
         <label>Tipo de moneda</label>
         <Dropdown
-          value={cashType}
+          value={cashType?.id}
           options={currencies}
           optionLabel="code"
           placeholder="Seleccionar Moneda"
@@ -52,7 +50,10 @@ export const PrincipalInputs = ({ register, errors, setValue }: PropsPrincipalTy
           {...register('currency_id', {
             required: true,
             onChange: (evt: DropdownChangeParams) => {
-              if (evt.value.id) setCashType(evt.value);
+              if (evt.value.id) {
+                setCashType(evt.value);
+                setValue('currency_id', evt.value.id);
+              }
             }
           })}
         />

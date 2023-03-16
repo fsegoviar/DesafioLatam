@@ -1,16 +1,47 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { GetEducationLevel, GetEnglishLevel } from '../../../../services';
+import { SubmitHandler, useForm } from 'react-hook-form';
+import { RequiredField } from '../../../../components';
+import axios, { AxiosError } from 'axios';
+import { Dropdown } from 'primereact/dropdown';
 
 type PropsFormUser = {
   stepsLength: number;
   currentStep: number;
   setCurrentStep: (value: number) => void;
   setComplete: (value: boolean) => void;
+  registerId: string;
+  token: string;
+  dataUser: any;
 };
 
 export const EducationForm = (props: PropsFormUser) => {
   const { englishLevel } = GetEnglishLevel();
   const { educationLevel } = GetEducationLevel();
+  const [educationLevelSelected, setEducationLevelSelected] = useState<any>();
+  const [englishLevelSelected, setEnglishLevelSelected] = useState<any>();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors }
+  } = useForm({
+    defaultValues: {
+      register_id: props.registerId,
+      educational_level_id: props.dataUser.user.education.educational_level_id,
+      english_level_id: props.dataUser.user.education.english_level_id,
+      description: props.dataUser.user.education.description,
+      previous_knowledge: true
+    }
+  });
+
+  useEffect(() => {
+    console.log(
+      'education =>',
+      props.dataUser.user.education.educational_level
+    );
+    setEducationLevelSelected(props.dataUser.user.education.educational_level);
+    setEnglishLevelSelected(props.dataUser.user.education.english_level);
+  }, []);
 
   const prevStep = () => {
     props.setCurrentStep(props.currentStep - 1);
@@ -20,69 +51,123 @@ export const EducationForm = (props: PropsFormUser) => {
     props.setCurrentStep(props.currentStep + 1);
   };
 
+  const onSubmit: SubmitHandler<any> = async (data) => {
+    console.log('DATA =>', data);
+    await axios
+      .post(
+        `${process.env.REACT_APP_API_BACKEND}/register_form/education`,
+        data,
+        {
+          headers: {
+            'Access-Control-Allow-Origin': '*',
+            Authorization: `Bearer ${props.token}`
+          }
+        }
+      )
+      .then((response: any) => {
+        console.log('Response User =>', response.data);
+      })
+      .catch((error: AxiosError) =>
+        console.log('Error fetchDataUser =>', error)
+      )
+      .finally(() => nextStep());
+  };
+
   return (
-    <div>
-      <div className="mt-10">
-        <div className="grid gap-4 grid-cols-4">
-          <div className="col-span-2 flex flex-col">
-            <label>Nivel de educación</label>
-            <select
-              name=""
-              id=""
-              className="py-1.5 border-2 rounded-lg border-black"
-            >
-              <option value="">Seleccionar</option>
-              {educationLevel &&
-                educationLevel.map((niv, index) => (
-                  <option key={index} value={niv.id}>
-                    {niv.description}
-                  </option>
-                ))}
-            </select>
-          </div>
-          <div className="col-span-2 flex flex-col">
-            <label>Nivel de ingles</label>
-            <select
-              name=""
-              id=""
-              className=" py-1.5 border-2 rounded-lg border-black"
-            >
-              <option value="">Seleccionar</option>
-              {englishLevel &&
-                englishLevel.map((niv, index) => (
-                  <option key={index} value={niv.id}>
-                    {niv.description}
-                  </option>
-                ))}
-            </select>
-          </div>
+    <form className="mt-10" onSubmit={handleSubmit(onSubmit)}>
+      <div className="grid gap-4 grid-cols-4">
+        <div className="col-span-2 flex flex-col">
+          <label>Nivel de educación</label>
+          {/*          <select
+            value={educationLevelSelected}
+            className="py-1.5 border-2 rounded-lg border-black"
+            {...register('educational_level_id', { required: true })}
+          >
+            <option value="">Seleccionar</option>
+            {educationLevel &&
+              educationLevel.map((niv, index) => (
+                <option
+                  key={index}
+                  value={niv.id}
+                  selected={
+                    educationLevelSelected.id === niv.id &&
+                    educationLevelSelected
+                  }
+                >
+                  {niv.description}
+                </option>
+              ))}
+          </select>*/}
+          <Dropdown
+            value={educationLevelSelected}
+            options={educationLevel}
+            optionLabel="description"
+            className="w-full dropdown-form md:w-14rem"
+            {...register('educational_level_id', {
+              required: true,
+              onChange: (evt) => {
+                if (evt.value.id) setEducationLevelSelected(evt.value);
+              }
+            })}
+          />
+          {errors.educational_level_id && <RequiredField />}
         </div>
-        <div className="mt-3">
-          <div>
-            <textarea
-              className="w-full rounded-lg border-2 border-black p-2"
-              name=""
-              placeholder="¿Posee conocimientos previos?. ¿Cuales?"
-              id=""
-              rows={4}
-            ></textarea>
-          </div>
+        <div className="col-span-2 flex flex-col">
+          <label>Nivel de ingles</label>
+          {/*<select
+            id=""
+            className=" py-1.5 border-2 rounded-lg border-black"
+            {...register('english_level_id', { required: true })}
+          >
+            <option value="">Seleccionar</option>
+            {englishLevel &&
+              englishLevel.map((niv, index) => (
+                <option key={index} value={niv.id}>
+                  {niv.description}
+                </option>
+              ))}
+          </select>*/}
+          <Dropdown
+            value={englishLevelSelected}
+            options={englishLevel}
+            optionLabel="description"
+            className="w-full dropdown-form md:w-14rem"
+            {...register('english_level_id', {
+              required: true,
+              onChange: (evt) => {
+                if (evt.value.id) setEducationLevelSelected(evt.value);
+              }
+            })}
+          />
+          {errors.english_level_id && <RequiredField />}
         </div>
-        <div className="flex justify-center">
-          <p className="mt-3 text-sm font-light">
-            ( * ) Esta información ayuda a nuestro equipo de asesores/as de
-            empleabilidad a buscar las mejores alternativas laborales para ti
-          </p>
+      </div>
+      <div className="mt-3">
+        <div>
+          <textarea
+            className="w-full rounded-lg border-2 border-black p-2"
+            placeholder="¿Posee conocimientos previos?. ¿Cuales?"
+            id=""
+            rows={4}
+            {...register('description', { required: true })}
+          ></textarea>
+          {errors.description && <RequiredField />}
         </div>
+      </div>
+      <div className="flex justify-center">
+        <p className="mt-3 text-sm font-light">
+          ( * ) Esta información ayuda a nuestro equipo de asesores/as de
+          empleabilidad a buscar las mejores alternativas laborales para ti
+        </p>
       </div>
       <div className="flex justify-end mt-5">
         <button className="btn-prev m-1" onClick={() => prevStep()}>
           Atras
         </button>
-        <button className="btn m-1" type="button" onClick={() => nextStep()}>
+        <button className="btn m-1" type="submit">
           Siguiente
         </button>
       </div>
-    </div>
+    </form>
   );
 };

@@ -15,7 +15,7 @@ import { useState } from 'react';
 import { GetPricesTable } from '../../../../services/Prices';
 
 export const TablePrices = () => {
-  const { listPrices, loading } = GetPricesTable();
+  let { listPrices, loading } = GetPricesTable();
   const { openDialogEdit } = useDialogEditPriceHook();
   const { updateForm } = UseFormPayment();
   const [rowSelected, setRowSelected] = useState<any>(null!);

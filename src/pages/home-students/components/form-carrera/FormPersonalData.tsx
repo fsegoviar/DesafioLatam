@@ -66,10 +66,11 @@ export const FormPersonalData = (props: PropsFormUser) => {
   });
 
   const { indentityTypes } = GetIdentityTypes();
-  const [birthday, setBirthday] = useState<Date>();
+  const [birthday, setBirthday] = useState<Date | null>(null);
   const [listCountries, setListCountries] = useState([]);
   const [countrySelected, setCountrySelected] = useState<any>(null!);
   const [nationalitySelected, setNationalitySelected] = useState<any>(null!);
+  const [codePhone, setCodePhone] = useState('');
   const {
     register,
     setValue,
@@ -190,18 +191,51 @@ export const FormPersonalData = (props: PropsFormUser) => {
           {errors.dni && <RenderRequiredField />}
         </div>
       </div>
+      <div className="grid grid-cols-4 gap-4 mt-5">
+        <div className="flex flex-col col-span-2">
+          <label>País de residencia</label>
+          <Dropdown
+            value={countrySelected}
+            options={listCountries}
+            optionLabel="description"
+            filter
+            className="dropdown-form"
+            onChange={(evt: DropdownChangeParams) => {
+              if (evt.value.id) {
+                setCountrySelected(evt.value);
+                setValue('country_id', Number(evt.value.id));
+                setCodePhone(String(evt.value.number_code));
+              }
+            }}
+            required
+          />
+          {errors.country_id && <RenderRequiredField />}
+        </div>
+        <div className="flex flex-col col-span-2">
+          <label>Nacionalidad</label>
+          <Dropdown
+            value={nationalitySelected}
+            options={listCountries}
+            optionLabel="nationality"
+            filter
+            className="dropdown-form"
+            {...register('nationality', {
+              required: true,
+              onChange: (evt: DropdownChangeParams) => {
+                if (evt.value.id) {
+                  setNationalitySelected(evt.value);
+                  setValue('nationality', evt.value.nationality);
+                }
+              }
+            })}
+          />
+          {errors.nationality && <RenderRequiredField />}
+        </div>
+      </div>
       <div className="grid gap-4 grid-cols-4 mt-5">
         <div className="w-full flex flex-col col-span-2">
           <label>Código teléfonico</label>
-          <select
-            name=""
-            id=""
-            className="w-full py-1.5 border-2 rounded-lg border-black "
-          >
-            <option value="">Seleccionar</option>
-            <option value="">(+569)</option>
-            <option value="">(+521)</option>
-          </select>
+          <input type="text" value={codePhone} disabled />
         </div>
         <div className="col-span-2 flex flex-col">
           <label>Número teléfonico</label>
@@ -242,46 +276,7 @@ export const FormPersonalData = (props: PropsFormUser) => {
           {errors.city && <RenderRequiredField />}
         </div>
       </div>
-      <div className="grid grid-cols-4 gap-4 mt-5">
-        <div className="flex flex-col col-span-2">
-          <label>País de residencia</label>
-          <Dropdown
-            value={countrySelected}
-            options={listCountries}
-            optionLabel="description"
-            filter
-            className="dropdown-form"
-            onChange={(evt: DropdownChangeParams) => {
-              if (evt.value.id) {
-                setCountrySelected(evt.value);
-                setValue('country_id', Number(evt.value.id));
-              }
-            }}
-            required
-          />
-          {errors.country_id && <RenderRequiredField />}
-        </div>
-        <div className="flex flex-col col-span-2">
-          <label>Nacionalidad</label>
-          <Dropdown
-            value={nationalitySelected}
-            options={listCountries}
-            optionLabel="nationality"
-            filter
-            className="dropdown-form"
-            {...register('nationality', {
-              required: true,
-              onChange: (evt: DropdownChangeParams) => {
-                if (evt.value.id) {
-                  setNationalitySelected(evt.value);
-                  setValue('nationality', evt.value.nationality);
-                }
-              }
-            })}
-          />
-          {errors.nationality && <RenderRequiredField />}
-        </div>
-      </div>
+
       <div className="grid grid-cols-3 mt-5">
         <div className="flex flex-col col-span-3">
           <label>Dirección</label>

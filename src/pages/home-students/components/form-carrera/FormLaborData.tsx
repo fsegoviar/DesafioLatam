@@ -1,15 +1,29 @@
 import React from 'react';
 import { GetWorkSituations } from '../../../../services';
+import { useForm } from 'react-hook-form';
 
 type PropsFormUser = {
   stepsLength: number;
   currentStep: number;
   setCurrentStep: (value: number) => void;
   setComplete: (value: boolean) => void;
+  registerId: string;
+  token: string;
+  dataUser: any;
 };
 
 export const FormLaborData = (props: PropsFormUser) => {
   const { workSituations } = GetWorkSituations();
+  const {} = useForm({
+    defaultValues: {
+      register_id: props.registerId,
+      work_situation_id: null,
+      linkedin: null,
+      organization: null,
+      position: null,
+      rent: null
+    }
+  });
 
   const prevStep = () => {
     props.setCurrentStep(props.currentStep - 1);

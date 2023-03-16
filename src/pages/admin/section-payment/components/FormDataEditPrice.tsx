@@ -11,7 +11,7 @@ import {
 import { useDialogEditPriceHook } from '../context/TableContext';
 import { Dropdown, DropdownChangeParams } from 'primereact/dropdown';
 import { GetCareers, GetCurrencies } from '../../../../services';
-import axios, { AxiosError } from 'axios';
+// import axios, { AxiosError } from 'axios';
 
 type PropsEditPrice = {
   data: FormEditPayment;
@@ -37,9 +37,10 @@ export const FormDataEditPrice = (props: PropsEditPrice) => {
   // const [checkISA, setCheckISA] = useState(() =>
   //   props.data.payment_methods[2]?.pivot?.isa_value ? true : false
   // );
-  const [checkPaymentQuotes, setCheckPaymentQuotes] = useState(true);
-  const [checkPrepaid, setCheckPrepaid] = useState(true);
-  const [checkISA, setCheckISA] = useState(true);
+  const [checkPaymentQuotes, setCheckPaymentQuotes] = useState(false);
+  const [checkPrepaid, setCheckPrepaid] = useState(false);
+  const [checkISA, setCheckISA] = useState(false);
+  const [defaultISAValue, setDefaultISAValue] = useState<any>();
 
   const {
     handleSubmit,
@@ -70,13 +71,31 @@ export const FormDataEditPrice = (props: PropsEditPrice) => {
     for (const payment_method of props.data.payment_methods) {
       switch (payment_method.description) {
         case 'Anticipado':
-          setCheckPrepaid(false);
+          setCheckPrepaid(true);
           break;
         case 'Pago Cuota':
-          setCheckPaymentQuotes(false);
+          setCheckPaymentQuotes(true);
           break;
         case 'ISA':
-          setCheckISA(false);
+          setCheckISA(true);
+          setDefaultISAValue({
+            id: 3,
+            description: 'ISA',
+            pivot: {
+              id: 1,
+              quotes: null,
+              advance_discount: null,
+              free_discount: null,
+              isa_percent: payment_method.pivot.isa_percent,
+              isa_value: payment_method.pivot.isa_value,
+              quotes_value: null,
+              payment_method_id: 3,
+              price_id: payment_method.pivot.price_id,
+              reference_value: null,
+              created_at: payment_method.pivot.created_at,
+              updated_at: payment_method.pivot.updated_at
+            }
+          });
           break;
       }
     }
@@ -163,7 +182,7 @@ export const FormDataEditPrice = (props: PropsEditPrice) => {
 
     console.log('Data a enviar =>', requestData);
 
-    await axios
+    /*    await axios
       .post(
         `${process.env.REACT_APP_API_BACKEND}/prices/${props.data.id}`,
         requestData,
@@ -178,7 +197,7 @@ export const FormDataEditPrice = (props: PropsEditPrice) => {
       })
       .catch((error: AxiosError) => {
         console.log('Error Price =>', error);
-      });
+      });*/
   };
 
   const getTotalValueQuotes = () => {
@@ -509,6 +528,7 @@ export const FormDataEditPrice = (props: PropsEditPrice) => {
             <label>Valor ISA</label>
             <input
               type="number"
+              value={defaultISAValue?.pivot?.isa_value}
               disabled={!checkISA}
               {...register(`payment_methods.2.pivot.isa_value`, {
                 required: checkISA ?? true,
