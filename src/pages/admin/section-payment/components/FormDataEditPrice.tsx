@@ -11,6 +11,7 @@ import {
 import { useDialogEditPriceHook } from '../context/TableContext';
 import { Dropdown, DropdownChangeParams } from 'primereact/dropdown';
 import { GetCareers, GetCurrencies } from '../../../../services';
+import axios, { AxiosError } from 'axios';
 // import axios, { AxiosError } from 'axios';
 
 type PropsEditPrice = {
@@ -40,7 +41,6 @@ export const FormDataEditPrice = (props: PropsEditPrice) => {
   const [checkPaymentQuotes, setCheckPaymentQuotes] = useState(false);
   const [checkPrepaid, setCheckPrepaid] = useState(false);
   const [checkISA, setCheckISA] = useState(false);
-  const [defaultISAValue, setDefaultISAValue] = useState<any>();
 
   const {
     handleSubmit,
@@ -53,12 +53,12 @@ export const FormDataEditPrice = (props: PropsEditPrice) => {
 
   useEffect(() => {
     const findCareer = careers?.find(
-      (career) => career.id === props.data.career_id
+      (career) => career.id === props.data.price.career_id
     );
 
     if (findCareer) setSelectedCareers(findCareer);
 
-    setCashType(props.data.currency);
+    setCashType(props.data.price.currency);
     // setSelectedCareers(props.data.career);
     // console.log('Effect =>', props.data.career);
     // console.log('Careers =>', careers);
@@ -69,40 +69,27 @@ export const FormDataEditPrice = (props: PropsEditPrice) => {
 
   const initPaymentMethods = () => {
     for (const payment_method of props.data.payment_methods) {
-      switch (payment_method.description) {
-        case 'Anticipado':
-          setCheckPrepaid(true);
-          break;
-        case 'Pago Cuota':
-          setCheckPaymentQuotes(true);
-          break;
-        case 'ISA':
-          setCheckISA(true);
-          setDefaultISAValue({
-            id: 3,
-            description: 'ISA',
-            pivot: {
-              id: 1,
-              quotes: null,
-              advance_discount: null,
-              free_discount: null,
-              isa_percent: payment_method.pivot.isa_percent,
-              isa_value: payment_method.pivot.isa_value,
-              quotes_value: null,
-              payment_method_id: 3,
-              price_id: payment_method.pivot.price_id,
-              reference_value: null,
-              created_at: payment_method.pivot.created_at,
-              updated_at: payment_method.pivot.updated_at
-            }
-          });
-          break;
+      if (
+        payment_method.description === 'Pago Cuota' &&
+        payment_method.quotes_value
+      ) {
+        setCheckPaymentQuotes(true);
+      }
+
+      if (
+        payment_method.description === 'Anticipado' &&
+        payment_method.advance_discount
+      ) {
+        setCheckPrepaid(true);
+      }
+      if (payment_method.description === 'ISA' && payment_method.isa_value) {
+        setCheckISA(true);
       }
     }
   };
 
   const initSuppliers = () => {
-    for (const supplier of props.data.suppliers) {
+    for (const supplier of props.data.price.suppliers) {
       switch (supplier.description) {
         case 'Transbank':
           setCheckTransbank(true);
@@ -126,41 +113,41 @@ export const FormDataEditPrice = (props: PropsEditPrice) => {
     console.log('Edit =>', data);
 
     let requestData: FormPaymentType = {
-      career_id: data.career_id,
-      comments: data.comments,
-      currency_id: data.currency_id,
+      career_id: data.price.career_id,
+      comments: data.price.comments,
+      currency_id: data.price.currency_id,
       payment_methods: [],
-      name: data.name,
+      name: data.price.name,
       suppliers: [],
-      tuition: data.tuition
+      tuition: data.price.tuition
     };
 
     let suppliers: SupplierId[] = [];
     const clearArr: PaymentMethod[] = [];
 
-    if (data.payment_methods[0].pivot.quotes && checkPaymentQuotes === true)
+    if (data.payment_methods[0].quotes && checkPaymentQuotes === true)
       clearArr.push({
         payment_method_id: 1,
-        quotes: data.payment_methods[0].pivot.quotes_value,
-        reference_value: data.payment_methods[0].pivot.reference_value,
-        quotes_value: data.payment_methods[0].pivot.quotes_value,
+        quotes: data.payment_methods[0].quotes_value,
+        reference_value: data.payment_methods[0].reference_value,
+        quotes_value: data.payment_methods[0].quotes_value,
         advance_discount: null,
-        free_discount: data.payment_methods[0].pivot.free_discount,
+        free_discount: data.payment_methods[0].free_discount,
         isa_percent: null,
         isa_value: null
       });
-    if (data.payment_methods[1].pivot.advance_discount && checkPrepaid === true)
+    if (data.payment_methods[1].advance_discount && checkPrepaid === true)
       clearArr.push({
         payment_method_id: 2,
         quotes: null,
-        reference_value: data.payment_methods[1].pivot.reference_value,
+        reference_value: data.payment_methods[1].reference_value,
         quotes_value: null,
-        advance_discount: data.payment_methods[1].pivot.advance_discount,
+        advance_discount: data.payment_methods[1].advance_discount,
         free_discount: null,
         isa_percent: null,
         isa_value: null
       });
-    if (data.payment_methods[2].pivot.isa_value && checkISA === true)
+    if (data.payment_methods[2].isa_value && checkISA === true)
       clearArr.push({
         payment_method_id: 3,
         quotes: null,
@@ -168,23 +155,25 @@ export const FormDataEditPrice = (props: PropsEditPrice) => {
         quotes_value: null,
         advance_discount: null,
         free_discount: null,
-        isa_percent: data.payment_methods[2].pivot.isa_percent,
-        isa_value: data.payment_methods[2].pivot.isa_value
+        isa_percent: data.payment_methods[2].isa_percent,
+        isa_value: data.payment_methods[2].isa_value
       });
 
     requestData.payment_methods = clearArr;
 
-    suppliers = data.suppliers.map((v: any) => {
-      return { supplier_id: Number(v.id) };
+    console.log(data.price.suppliers);
+
+    suppliers = data.price.suppliers.map((v: any) => {
+      return { supplier_id: Number(v) };
     });
 
     requestData.suppliers = suppliers;
 
     console.log('Data a enviar =>', requestData);
 
-    /*    await axios
+    await axios
       .post(
-        `${process.env.REACT_APP_API_BACKEND}/prices/${props.data.id}`,
+        `${process.env.REACT_APP_API_BACKEND}/prices/${props.data.price.id}`,
         requestData,
         {
           headers: {
@@ -197,18 +186,18 @@ export const FormDataEditPrice = (props: PropsEditPrice) => {
       })
       .catch((error: AxiosError) => {
         console.log('Error Price =>', error);
-      });*/
+      });
   };
 
   const getTotalValueQuotes = () => {
     if (
-      watch('payment_methods.0.pivot.reference_value') &&
-      watch('payment_methods.0.pivot.free_discount')
+      watch('payment_methods.0.reference_value') &&
+      watch('payment_methods.0.free_discount')
     ) {
       return Math.round(
-        Number(watch('payment_methods.0.pivot.reference_value')) -
-          (Number(watch('payment_methods.0.pivot.free_discount')) / 100) *
-            Number(watch('payment_methods.0.pivot.reference_value'))
+        Number(watch('payment_methods.0.reference_value')) -
+          (Number(watch('payment_methods.0.free_discount')) / 100) *
+            Number(watch('payment_methods.0.reference_value'))
       );
     }
     return 0;
@@ -216,13 +205,13 @@ export const FormDataEditPrice = (props: PropsEditPrice) => {
 
   const getTotalValuePrepaid = () => {
     if (
-      watch('payment_methods.1.pivot.reference_value') &&
-      watch('payment_methods.1.pivot.advance_discount')
+      watch('payment_methods.1.reference_value') &&
+      watch('payment_methods.1.advance_discount')
     ) {
       return Math.round(
-        Number(watch('payment_methods.1.pivot.reference_value')) -
-          (Number(watch('payment_methods.1.pivot.advance_discount')) / 100) *
-            Number(watch('payment_methods.1.pivot.reference_value'))
+        Number(watch('payment_methods.1.reference_value')) -
+          (Number(watch('payment_methods.1.advance_discount')) / 100) *
+            Number(watch('payment_methods.1.reference_value'))
       );
     }
     return 0;
@@ -230,13 +219,13 @@ export const FormDataEditPrice = (props: PropsEditPrice) => {
 
   const getTotalValueIsa = () => {
     if (
-      watch('payment_methods.2.pivot.isa_value') &&
-      watch('payment_methods.2.pivot.isa_percent')
+      watch('payment_methods.2.isa_value') &&
+      watch('payment_methods.2.isa_percent')
     ) {
       return Math.round(
-        Number(watch('payment_methods.2.pivot.isa_value')) -
-          (Number(watch('payment_methods.2.pivot.isa_percent')) / 100) *
-            Number(watch('payment_methods.2.pivot.isa_value'))
+        Number(watch('payment_methods.2.isa_value')) -
+          (Number(watch('payment_methods.2.isa_percent')) / 100) *
+            Number(watch('payment_methods.2.isa_value'))
       );
     }
     return 0;
@@ -257,14 +246,14 @@ export const FormDataEditPrice = (props: PropsEditPrice) => {
             <label>Nombre</label>
             <input
               type="text"
-              {...register('name', { required: true })}
+              {...register('price.name', { required: true })}
               className={
-                errors.name
+                errors.price?.name
                   ? 'border-red-500 py-1 rounded-lg'
                   : 'py-1 rounded-lg '
               }
             />
-            {errors.name && <RequiredField />}
+            {errors.price?.name && <RequiredField />}
           </div>
           <div className="flex flex-col">
             <label>Tipo de moneda</label>
@@ -274,27 +263,30 @@ export const FormDataEditPrice = (props: PropsEditPrice) => {
               optionLabel="code"
               placeholder="Seleccionar Moneda"
               className="w-full dropdown-form md:w-14rem"
-              {...register('currency_id', {
+              {...register('price.currency_id', {
                 required: true,
                 onChange: (evt: DropdownChangeParams) => {
                   if (evt.value.id) setCashType(evt.value);
                 }
               })}
             />
-            {errors.currency_id && <RequiredField />}
+            {errors.price?.currency_id && <RequiredField />}
           </div>
           <div className={'flex flex-col'}>
             <label>Matricula</label>
             <input
               type="number"
-              {...register('tuition', { required: true, valueAsNumber: true })}
+              {...register('price.tuition', {
+                required: true,
+                valueAsNumber: true
+              })}
               className={
-                errors.tuition
+                errors.price?.tuition
                   ? 'border-red-500 py-1 rounded-lg'
                   : 'py-1 rounded-lg '
               }
             />
-            {errors.tuition && <RequiredField />}
+            {errors.price?.tuition && <RequiredField />}
           </div>
           <div className="flex flex-col">
             <label>Programa</label>
@@ -305,14 +297,14 @@ export const FormDataEditPrice = (props: PropsEditPrice) => {
               filter
               placeholder="Seleccionar Curso"
               className="w-full dropdown-form md:w-14rem"
-              {...register('career_id', {
+              {...register('price.career_id', {
                 required: true,
                 onChange: (evt: DropdownChangeParams) => {
                   if (evt.value.id) setSelectedCareers(evt.value);
                 }
               })}
             />
-            {errors.career_id && <RequiredField />}
+            {errors.price?.career_id && <RequiredField />}
           </div>
         </div>
         {/* Formas de Pago */}
@@ -333,12 +325,12 @@ export const FormDataEditPrice = (props: PropsEditPrice) => {
             <input
               type="text"
               disabled={!checkPaymentQuotes}
-              {...register(`payment_methods.0.pivot.reference_value`, {
+              {...register(`payment_methods.0.reference_value`, {
                 required: checkPaymentQuotes ?? true,
                 valueAsNumber: true
               })}
               className={
-                errors.name
+                errors.price?.name
                   ? 'border-red-500 py-1 rounded-lg'
                   : 'py-1 rounded-lg '
               }
@@ -346,7 +338,7 @@ export const FormDataEditPrice = (props: PropsEditPrice) => {
             {(() => {
               if (
                 errors.payment_methods &&
-                errors.payment_methods[0]?.pivot?.reference_value &&
+                errors.payment_methods[0]?.reference_value &&
                 checkPaymentQuotes
               )
                 return <RequiredField />;
@@ -357,13 +349,12 @@ export const FormDataEditPrice = (props: PropsEditPrice) => {
             <input
               type="number"
               disabled={!checkPaymentQuotes}
-              {...register(`payment_methods.0.pivot.quotes`, {
+              {...register(`payment_methods.0.quotes`, {
                 required: checkPaymentQuotes ?? true,
                 valueAsNumber: true
               })}
               className={
-                errors.payment_methods &&
-                errors.payment_methods[0]?.pivot?.quotes
+                errors.payment_methods && errors.payment_methods[0]?.quotes
                   ? 'border-red-500 py-1 rounded-lg'
                   : 'py-1 rounded-lg '
               }
@@ -371,7 +362,7 @@ export const FormDataEditPrice = (props: PropsEditPrice) => {
             {(() => {
               if (
                 errors.payment_methods &&
-                errors.payment_methods[0]?.pivot?.quotes &&
+                errors.payment_methods[0]?.quotes &&
                 checkPaymentQuotes
               )
                 return <RequiredField />;
@@ -383,13 +374,13 @@ export const FormDataEditPrice = (props: PropsEditPrice) => {
             <input
               type="number"
               disabled={!checkPaymentQuotes}
-              {...register(`payment_methods.0.pivot.quotes_value`, {
+              {...register(`payment_methods.0.quotes_value`, {
                 required: checkPaymentQuotes ?? true,
                 valueAsNumber: true
               })}
               className={
                 errors.payment_methods &&
-                errors.payment_methods[0]?.pivot?.quotes_value
+                errors.payment_methods[0]?.quotes_value
                   ? 'border-red-500 py-1 rounded-lg'
                   : 'py-1 rounded-lg '
               }
@@ -397,7 +388,7 @@ export const FormDataEditPrice = (props: PropsEditPrice) => {
             {(() => {
               if (
                 errors.payment_methods &&
-                errors.payment_methods[0]?.pivot?.quotes_value &&
+                errors.payment_methods[0]?.quotes_value &&
                 checkPaymentQuotes
               )
                 return <RequiredField />;
@@ -408,13 +399,13 @@ export const FormDataEditPrice = (props: PropsEditPrice) => {
             <input
               type="number"
               disabled={!checkPaymentQuotes}
-              {...register(`payment_methods.0.pivot.free_discount`, {
+              {...register(`payment_methods.0.free_discount`, {
                 required: checkPaymentQuotes ?? true,
                 valueAsNumber: true
               })}
               className={
                 errors.payment_methods &&
-                errors.payment_methods[0]?.pivot?.free_discount
+                errors.payment_methods[0]?.free_discount
                   ? 'border-red-500 py-1 rounded-lg'
                   : 'py-1 rounded-lg '
               }
@@ -422,7 +413,7 @@ export const FormDataEditPrice = (props: PropsEditPrice) => {
             {(() => {
               if (
                 errors.payment_methods &&
-                errors.payment_methods[0]?.pivot?.free_discount &&
+                errors.payment_methods[0]?.free_discount &&
                 checkPaymentQuotes
               )
                 return <RequiredField />;
@@ -456,13 +447,13 @@ export const FormDataEditPrice = (props: PropsEditPrice) => {
               <input
                 type="text"
                 disabled={!checkPrepaid}
-                {...register(`payment_methods.1.pivot.reference_value`, {
+                {...register(`payment_methods.1.reference_value`, {
                   required: checkPrepaid ?? true,
                   valueAsNumber: true
                 })}
                 className={
                   errors.payment_methods &&
-                  errors.payment_methods[1]?.pivot?.reference_value
+                  errors.payment_methods[1]?.reference_value
                     ? 'border-red-500 py-1 rounded-lg'
                     : 'py-1 rounded-lg '
                 }
@@ -470,7 +461,7 @@ export const FormDataEditPrice = (props: PropsEditPrice) => {
               {(() => {
                 if (
                   errors.payment_methods &&
-                  errors.payment_methods[1]?.pivot?.reference_value &&
+                  errors.payment_methods[1]?.reference_value &&
                   checkPrepaid
                 )
                   return <RequiredField />;
@@ -481,13 +472,13 @@ export const FormDataEditPrice = (props: PropsEditPrice) => {
               <input
                 type="number"
                 disabled={!checkPrepaid}
-                {...register(`payment_methods.1.pivot.advance_discount`, {
+                {...register(`payment_methods.1.advance_discount`, {
                   required: checkPrepaid ?? true,
                   valueAsNumber: true
                 })}
                 className={
                   errors.payment_methods &&
-                  errors.payment_methods[1]?.pivot?.advance_discount
+                  errors.payment_methods[1]?.advance_discount
                     ? 'border-red-500 py-1 rounded-lg'
                     : 'py-1 rounded-lg '
                 }
@@ -495,7 +486,7 @@ export const FormDataEditPrice = (props: PropsEditPrice) => {
               {(() => {
                 if (
                   errors.payment_methods &&
-                  errors.payment_methods[1]?.pivot?.advance_discount &&
+                  errors.payment_methods[1]?.advance_discount &&
                   checkPrepaid
                 )
                   return <RequiredField />;
@@ -528,15 +519,13 @@ export const FormDataEditPrice = (props: PropsEditPrice) => {
             <label>Valor ISA</label>
             <input
               type="number"
-              value={defaultISAValue?.pivot?.isa_value}
               disabled={!checkISA}
-              {...register(`payment_methods.2.pivot.isa_value`, {
+              {...register(`payment_methods.2.isa_value`, {
                 required: checkISA ?? true,
                 valueAsNumber: true
               })}
               className={
-                errors.payment_methods &&
-                errors.payment_methods[2]?.pivot?.isa_value
+                errors.payment_methods && errors.payment_methods[2]?.isa_value
                   ? 'border-red-500 py-1 rounded-lg'
                   : 'py-1 rounded-lg '
               }
@@ -544,7 +533,7 @@ export const FormDataEditPrice = (props: PropsEditPrice) => {
             {(() => {
               if (
                 errors.payment_methods &&
-                errors.payment_methods[2]?.pivot?.isa_value &&
+                errors.payment_methods[2]?.isa_value &&
                 checkISA
               )
                 return <RequiredField />;
@@ -555,13 +544,12 @@ export const FormDataEditPrice = (props: PropsEditPrice) => {
             <input
               type="number"
               disabled={!checkISA}
-              {...register(`payment_methods.2.pivot.isa_percent`, {
+              {...register(`payment_methods.2.isa_percent`, {
                 required: checkISA ?? true,
                 valueAsNumber: true
               })}
               className={
-                errors.payment_methods &&
-                errors.payment_methods[2]?.pivot?.isa_percent
+                errors.payment_methods && errors.payment_methods[2]?.isa_percent
                   ? 'border-red-500 py-1 rounded-lg'
                   : 'py-1 rounded-lg '
               }
@@ -569,7 +557,7 @@ export const FormDataEditPrice = (props: PropsEditPrice) => {
             {(() => {
               if (
                 errors.payment_methods &&
-                errors.payment_methods[2]?.pivot?.isa_percent &&
+                errors.payment_methods[2]?.isa_percent &&
                 checkISA
               )
                 return <RequiredField />;
@@ -592,63 +580,70 @@ export const FormDataEditPrice = (props: PropsEditPrice) => {
             <label>Motivo del descuento</label>
             <textarea
               rows={3}
-              {...register('comments', { required: true })}
+              {...register('price.comments', { required: true })}
               className={
-                errors.comments
+                errors.price?.comments
                   ? 'border-red-500  w-full border-2 rounded-lg p-3'
                   : 'border-2 border-black w-full rounded-lg p-3'
               }
             />
-            {errors.comments && <RequiredField />}
+            {errors.price?.comments && <RequiredField />}
           </div>
         </div>
         {/* Metodos de pago */}
         <p className="py-3 font-bold"> Métodos de Pago</p>
         <div>
-          <label className="mx-2">
+          <label
+            className="mx-2"
+            onChange={() => setCheckTransbank(!checkTransbank)}
+          >
             <input
               type="checkbox"
               value={'3'}
-              {...register('suppliers', {
+              {...register('price.suppliers', {
                 required: true
               })}
               checked={checkTransbank}
             />
             Transbank
           </label>
-          <label className="mx-2">
+          <label className="mx-2" onChange={() => setCheckPaypal(!checkPaypal)}>
             <input
               type="checkbox"
               value={'2'}
-              {...register('suppliers', {
+              checked={checkPaypal}
+              {...register('price.suppliers', {
                 required: true
               })}
-              checked={checkPaypal}
             />{' '}
             Paypal
           </label>
-          <label className="mx-2">
+          <label className="mx-2" onChange={() => setCheckFlow(!checkFlow)}>
             <input
               type="checkbox"
               value={'1'}
               checked={checkFlow}
-              {...register('suppliers', { required: true })}
+              {...register('price.suppliers', {
+                required: true
+              })}
             />{' '}
             Flow
           </label>
-          <label className="mx-2">
+          <label
+            className="mx-2"
+            onChange={() => setCheckOtherMethods(!checkOtherMethods)}
+          >
             <input
               type="checkbox"
               value={'4'}
-              {...register('suppliers', {
-                required: true,
-                onChange: (evt) => setCheckOtherMethods(evt.target.checked)
-              })}
               checked={checkOtherMethods}
+              {...register('price.suppliers', {
+                required: true
+              })}
             />{' '}
             Otro medio de pago
           </label>
-          {errors.suppliers && (
+          {errors.price?.suppliers && (
             <div>
               <RequiredField />
             </div>

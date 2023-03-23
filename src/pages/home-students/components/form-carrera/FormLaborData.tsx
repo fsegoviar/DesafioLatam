@@ -1,6 +1,9 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { GetWorkSituations } from '../../../../services';
-import { useForm } from 'react-hook-form';
+import { SubmitHandler, useForm } from 'react-hook-form';
+import { Dropdown } from 'primereact/dropdown';
+import { RequiredField } from '../../../../components';
+import axios, { AxiosError } from 'axios';
 
 type PropsFormUser = {
   stepsLength: number;
@@ -14,16 +17,38 @@ type PropsFormUser = {
 
 export const FormLaborData = (props: PropsFormUser) => {
   const { workSituations } = GetWorkSituations();
-  const {} = useForm({
+  const [laborSituation, setLaborSituation] = useState<any>();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors }
+  } = useForm({
     defaultValues: {
       register_id: props.registerId,
-      work_situation_id: null,
-      linkedin: null,
-      organization: null,
-      position: null,
-      rent: null
+      work_situation_id: props.dataUser.user.empleability
+        ? props.dataUser.user.empleability.work_situation_id
+        : null,
+      linkedin: props.dataUser.user.empleability
+        ? props.dataUser.user.empleability.linkedin
+        : null,
+      organization: props.dataUser.user.empleability
+        ? props.dataUser.user.empleability.organization
+        : null,
+      position: props.dataUser.user.empleability
+        ? props.dataUser.user.empleability.position
+        : null,
+      rent: props.dataUser.user.empleability
+        ? props.dataUser.user.empleability.rent
+        : null
     }
   });
+
+  useEffect(() => {
+    setLaborSituation({
+      id: props.dataUser.user.empleability.work_situation.id,
+      description: props.dataUser.user.empleability.work_situation.description
+    });
+  }, [props.dataUser.user.empleability]);
 
   const prevStep = () => {
     props.setCurrentStep(props.currentStep - 1);
@@ -33,14 +58,35 @@ export const FormLaborData = (props: PropsFormUser) => {
     props.setCurrentStep(props.currentStep + 1);
   };
 
+  const onSubmit: SubmitHandler<any> = async (data) => {
+    data.work_situation_id = laborSituation.id;
+
+    await axios
+      .post(
+        `${process.env.REACT_APP_API_BACKEND}/register_form/empleability`,
+        data,
+        {
+          headers: {
+            'Access-Control-Allow-Origin': '*',
+            Authorization: `Bearer ${props.token}`
+          }
+        }
+      )
+      .then((response: any) => {
+        console.log('Response =>', response.data);
+        nextStep();
+      })
+      .catch((error: AxiosError) => console.log('Error =>', error));
+  };
+
   return (
-    <div>
+    <form onSubmit={handleSubmit(onSubmit)}>
       {/* Paso 3 - Empleabilidad */}
       <div className="mt-10">
         <div className="grid grid-cols-4 gap-4">
           <div className="col-span-2 flex flex-col">
             <label>Situación Laboral</label>
-            <select
+            {/*<select
               name=""
               id=""
               className="w-full py-1.5 border-2 rounded-lg  border-black"
@@ -52,25 +98,48 @@ export const FormLaborData = (props: PropsFormUser) => {
                     {niv.description}
                   </option>
                 ))}
-            </select>
+            </select>*/}
+            <Dropdown
+              value={laborSituation}
+              options={workSituations}
+              optionLabel="description"
+              className="w-full dropdown-form md:w-14rem"
+              {...register('work_situation_id', {
+                required: true,
+                onChange: (evt) => {
+                  if (evt.value.id) setLaborSituation(evt.value);
+                }
+              })}
+            />
+            {errors.work_situation_id && <RequiredField />}
           </div>
           <div className="col-span-2 flex flex-col">
             <label>Renta Actual</label>
-            <input type="text" />
+            <input
+              type="number"
+              {...register('rent', { required: true, min: 0 })}
+            />
+            {errors.rent && <RequiredField />}
           </div>
         </div>
         <div className="col-span-2 flex flex-col mt-3">
           <label>Enlace LinkedIn</label>
-          <input type="text" />
+          <input type="text" {...register('linkedin', { required: true })} />
+          {errors.linkedin && <RequiredField />}
         </div>
         <div className="grid grid-cols-4 mt-3 gap-4">
           <div className="col-span-2 flex flex-col">
             <label>Empresa donde trabaja</label>
-            <input type="text" />
+            <input
+              type="text"
+              {...register('organization', { required: true })}
+            />
+            {errors.organization && <RequiredField />}
           </div>
           <div className="col-span-2 flex flex-col">
             <label>Cargo</label>
-            <input type="text" />
+            <input type="text" {...register('position', { required: true })} />
+            {errors.position && <RequiredField />}
           </div>
         </div>
         <div className="flex justify-end">
@@ -85,10 +154,10 @@ export const FormLaborData = (props: PropsFormUser) => {
         <button className="btn-prev m-1" onClick={() => prevStep()}>
           Atras
         </button>
-        <button className="btn m-1" type="button" onClick={() => nextStep()}>
+        <button className="btn m-1" type="submit">
           Siguiente
         </button>
       </div>
-    </div>
+    </form>
   );
 };

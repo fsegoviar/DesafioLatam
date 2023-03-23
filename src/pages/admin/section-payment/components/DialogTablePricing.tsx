@@ -4,98 +4,51 @@ import {
   PaymentFormProvider,
   initialValue
 } from '../context/PaymentFormContext';
-/*
-import { SubmitHandler, useForm } from 'react-hook-form';
-import { FormPaymentType } from '../../../../interfaces';
-*/
-import React from 'react';
 import { FormDataProgram } from './FormDataProgram';
-/*import {
-  PaymentISA,
-  PaymentPrepaid,
-  PrincipalInputs,
-  SuppliersInput
-} from './form-create-payment';
-import { PaymentQuotes } from './form-create-payment/PaymentQuotes';
-import { RequiredField } from '../../../../components';*/
+import { ProgressSpinner } from 'primereact/progressspinner';
+import { useState } from 'react';
 
-export const DialogTablePricing = () => {
+type PropsDialogPrice = {
+  actionToast: (action: string) => void;
+  addData: (data: any) => void;
+};
+
+export const DialogTablePricing = ({
+  actionToast,
+  addData
+}: PropsDialogPrice) => {
   const { isOpenDialog, closeDialog } = useDialogCreateLinkHook();
-  /*  const {
-    handleSubmit,
-    register,
-    watch,
-    setValue,
-    formState: { errors }
-  } = useForm<FormPaymentType>({
-    defaultValues: { ...initialValue }
-  });*/
-
-  /*  const onSubmit: SubmitHandler<FormPaymentType> = (data) => {
-    console.log('DATA => ', data);
-  };*/
+  const [loading, setLoading] = useState(false);
 
   return (
-    <Dialog
-      visible={isOpenDialog}
-      header={'Crear tabla de precios'}
-      draggable={false}
-      resizable={false}
-      modal
-      className="p-fluid w-9/12 relative"
-      onHide={closeDialog}
-    >
-      <PaymentFormProvider {...initialValue}>
-        <FormDataProgram />
-
-        {/* <form onSubmit={handleSubmit(onSubmit)}>
-          <p className="py-3 font-bold">Datos Principales</p>
-          <hr className="py-3" />
-          <PrincipalInputs
-            register={register}
-            errors={errors}
-            setValue={setValue}
-            watch={watch}
-          />
-          <p className="font-bold text-xl py-3">Formas de pago</p>
-          <hr className="py-3" />
-          <PaymentQuotes register={register} errors={errors} watch={watch} />
-          <PaymentPrepaid register={register} errors={errors} watch={watch} />
-          <PaymentISA register={register} errors={errors} watch={watch} />
-          <div className={'grid pt-5'}>
-            <div className={'flex flex-col '}>
-              <label>Motivo del descuento</label>
-              <textarea
-                rows={3}
-                {...register('comments', { required: true })}
-                className={
-                  errors.comments
-                    ? 'border-red-500  w-full border-2 rounded-lg p-3'
-                    : 'border-2 border-black w-full rounded-lg p-3'
-                }
-              />
-              {errors.comments && <RequiredField />}
-            </div>
-          </div>
-          <SuppliersInput register={register} errors={errors} />
-          <div className={'flex justify-end mt-5'}>
-            <button
-              className="m-1 px-5 rounded-lg text-white bg-gray-500"
-              style={{ border: '3px solid gray' }}
-              onClick={closeDialog}
-            >
-              Cancelar
-            </button>
-            <button
-              type="submit"
-              className="m-1 px-5 rounded-lg text-white bg-green-500"
-              style={{ border: '3px solid rgb(34 197 94)' }}
-            >
-              Crear
-            </button>
-          </div>
-        </form>*/}
-      </PaymentFormProvider>
-    </Dialog>
+    <>
+      <Dialog
+        visible={isOpenDialog}
+        header={'Crear tabla de precios'}
+        draggable={false}
+        resizable={false}
+        modal
+        className="p-fluid w-9/12 relative"
+        onHide={closeDialog}
+      >
+        <PaymentFormProvider {...initialValue}>
+          <>
+            {loading && (
+              <div className="absolute top-0 left-0 w-full h-full bg-white z-10 grid place-items-center rounded-xl">
+                <div className="flex flex-col items-center">
+                  <ProgressSpinner />
+                  <h1>Cargando..</h1>
+                </div>
+              </div>
+            )}
+            <FormDataProgram
+              actionToast={actionToast}
+              isLoad={setLoading}
+              addData={addData}
+            />
+          </>
+        </PaymentFormProvider>
+      </Dialog>
+    </>
   );
 };

@@ -119,7 +119,7 @@ export const FormDataEditPayment = (props: FormPaymentProgramType) => {
 
     axios
       .post(
-        `${process.env.REACT_APP_API_BACKEND}/prices/${props.data.id}`,
+        `${process.env.REACT_APP_API_BACKEND}/prices/${props.data.price.id}`,
         data,
         {
           headers: {

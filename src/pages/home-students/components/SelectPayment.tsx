@@ -3,6 +3,9 @@ import { ReactNode, useState } from 'react';
 type PropsFormUser = {
   currentStep: number;
   setCurrentStep: (value: number) => void;
+  registerId: string;
+  token: string;
+  prices: any[];
 };
 
 export const SelectPayment = (props: PropsFormUser) => {
@@ -55,7 +58,8 @@ export const SelectPayment = (props: PropsFormUser) => {
           Forma de pago
         </label>
       </div>
-      <div className="flex">
+
+      {/*<div className="flex justify-center">
         <div
           className={`card m-4 p-3 ${cardSelected1 && 'card-selected'}`}
           onClick={() => selectCard('1')}
@@ -126,7 +130,7 @@ export const SelectPayment = (props: PropsFormUser) => {
             Hasta pagar $3.500.000
           </p>
         </div>
-      </div>
+      </div>*/}
       {activeCount && (
         <>
           <div className="flex flex-col items-center justify-center mt-5">

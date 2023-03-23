@@ -11,21 +11,55 @@ import {
   initialValue
 } from '../context/PaymentFormContext';
 import { UseFormPayment } from '../hooks/useFormPayment';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { GetPricesTable } from '../../../../services/Prices';
+import { NotificationComponent } from '../../../../components/NotificationComponent';
+import { Toast } from 'primereact/toast';
+import { PaymentType } from '../../../../interfaces';
 
 export const TablePrices = () => {
   let { listPrices, loading } = GetPricesTable();
   const { openDialogEdit } = useDialogEditPriceHook();
   const { updateForm } = UseFormPayment();
   const [rowSelected, setRowSelected] = useState<any>(null!);
+  const { toast, showSuccess, showSuccessEdit } = NotificationComponent();
+  const [newValue, setNewValue] = useState();
+  const [arrPrices, setArrPrices] = useState<PaymentType[]>([]);
+
+  useEffect(() => {
+    if (listPrices) setArrPrices(listPrices);
+  }, [listPrices]);
+
+  useEffect(() => {
+    if (newValue) {
+      console.log('NewValue =>', newValue);
+
+      let newArr = arrPrices;
+      newArr.push(newValue);
+      setArrPrices(newArr);
+    }
+  }, [arrPrices, newValue]);
+
+  const actionToast = (action: string) => {
+    switch (action) {
+      case 'success':
+        showSuccess();
+        break;
+      case 'edit':
+        showSuccessEdit();
+        break;
+
+      default:
+        break;
+    }
+  };
 
   const filters = {
-    nombre: {
+    name: {
       value: '',
       matchMode: FilterMatchMode.CONTAINS
     },
-    curso: {
+    'career.description': {
       value: '',
       matchMode: FilterMatchMode.CONTAINS
     }
@@ -50,8 +84,9 @@ export const TablePrices = () => {
   return (
     <PaymentFormProvider {...initialValue}>
       <>
+        <Toast ref={toast} />
         <DataTable
-          value={listPrices}
+          value={arrPrices}
           responsiveLayout="stack"
           breakpoint="960px"
           dataKey="id"
@@ -67,6 +102,7 @@ export const TablePrices = () => {
           <Column
             field="name"
             filter
+            showFilterMenu={false}
             filterPlaceholder={'Buscar por tabla'}
             header={'Tabla de precios'}
             sortable
@@ -74,6 +110,7 @@ export const TablePrices = () => {
           <Column
             field={'career.description'}
             filter
+            showFilterMenu={false}
             filterPlaceholder={'Buscar por programa'}
             header={'Programa'}
             sortable
@@ -91,7 +128,7 @@ export const TablePrices = () => {
             style={{ minWidth: '8rem' }}
           ></Column>
         </DataTable>
-        <DialogTablePricing />
+        <DialogTablePricing actionToast={actionToast} addData={setNewValue} />
         {rowSelected && <DialogEditPricing id={rowSelected.id} />}
       </>
     </PaymentFormProvider>

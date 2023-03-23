@@ -5,6 +5,7 @@ import { SelectPayment } from '../SelectPayment';
 import { SignDocument } from '../SignDocument';
 import { FormBilling } from './FormBilling';
 import { FinishPayment } from './FinishPayment';
+import { useSearchParams } from 'react-router-dom';
 
 export const FormReintegro = () => {
   const steps = [
@@ -17,6 +18,8 @@ export const FormReintegro = () => {
 
   const [currentStep, setCurrentStep] = useState(1);
   const [complete, setComplete] = useState(false);
+  const [dataUser, setDataUser] = useState<any>([]);
+  const [params] = useSearchParams();
 
   return (
     <div>
@@ -64,6 +67,9 @@ export const FormReintegro = () => {
           case 3:
             return (
               <SelectPayment
+                registerId={String(params.get('register'))}
+                token={String(params.get('token'))}
+                prices={[...dataUser[0].price]}
                 currentStep={currentStep}
                 setCurrentStep={setCurrentStep}
               />

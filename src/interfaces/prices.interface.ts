@@ -13,16 +13,18 @@ export type SupplierId = {
 };
 
 export type FormEditPayment = {
-  id: number;
-  career: CareerType;
-  career_id: number;
-  comments: string;
-  currency: Currency;
-  currency_id: number;
-  name: string;
+  // id: number;
+  // career: CareerType;
+  // career_id: number;
+  // comments: string;
+  // currency: Currency;
+  // currency_id: number;
+  // name: string;
+  // payment_methods: PaymentMethodEdit[];
+  // suppliers: SupplierEditType[];
+  // tuition: number;
   payment_methods: PaymentMethodEdit[];
-  suppliers: SupplierEditType[];
-  tuition: number;
+  price: PriceEdit;
 };
 
 export type Currency = {
@@ -32,9 +34,29 @@ export type Currency = {
 };
 
 export type PaymentMethodEdit = {
-  description: string;
   id: number;
-  pivot: PivotEditType;
+  advance_discount: number;
+  description: string;
+  free_discount: number;
+  isa_percent: number;
+  isa_value: number;
+  payment_method_id: number;
+  price_id: number;
+  quotes: number;
+  quotes_value: number;
+  reference_value: number;
+};
+
+export type PriceEdit = {
+  id: number;
+  career: CareerType;
+  career_id: number;
+  comments: string;
+  currency: Currency;
+  currency_id: number;
+  name: string;
+  tuition: number;
+  suppliers: SupplierEditType[];
 };
 
 export type PivotEditType = {

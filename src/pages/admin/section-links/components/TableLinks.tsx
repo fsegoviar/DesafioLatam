@@ -20,15 +20,15 @@ export const TableLinks = () => {
   const [openEditLink, setOpenEditLink] = useState(false);
 
   const filters = {
-    usuario: {
+    'user.name': {
       value: '',
       matchMode: FilterMatchMode.CONTAINS
     },
-    fecha: {
+    created_at: {
       value: '',
       matchMode: FilterMatchMode.CONTAINS
     },
-    curso: {
+    'career.description': {
       value: '',
       matchMode: FilterMatchMode.CONTAINS
     }
@@ -169,6 +169,7 @@ export const TableLinks = () => {
         <Column
           field="created_at"
           filter
+          showFilterMenu={false}
           filterPlaceholder={'Buscar por fecha'}
           header={'Fecha'}
           sortable
@@ -176,6 +177,7 @@ export const TableLinks = () => {
         <Column
           field="user.name"
           filter
+          showFilterMenu={false}
           filterPlaceholder={'Buscar por nombre'}
           header={'Usuario'}
           sortable
@@ -183,6 +185,7 @@ export const TableLinks = () => {
         <Column
           field="career.description"
           filter
+          showFilterMenu={false}
           filterPlaceholder={'Buscar por programa'}
           header={'Programa'}
           sortable

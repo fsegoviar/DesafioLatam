@@ -201,7 +201,7 @@ export const DialogCreateLink = (props: DialogCreateLinkTypes) => {
             </div>
           </div>
           {selectedCareers && (
-            <div className="mt-5 col-span-12">
+            <div className="mt-5 col-span-12 max-h-[200px] overflow-scroll">
               <p className="font-thin">Tabla de precios</p>
               <div>
                 <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">

@@ -14,7 +14,17 @@ import { GetCareers, GetCurrencies } from '../../../../services';
 import '../payment-styles.css';
 import axios, { AxiosError } from 'axios';
 
-export const FormDataProgram = () => {
+type PropsFormDataProgram = {
+  actionToast: (action: string) => void;
+  isLoad: (value: boolean) => void;
+  addData: (data: any) => void;
+};
+
+export const FormDataProgram = ({
+  actionToast,
+  isLoad,
+  addData
+}: PropsFormDataProgram) => {
   const { closeDialog } = useDialogCreateLinkHook();
   const { currencies } = GetCurrencies();
   const [selectedCareers, setSelectedCareers] = useState<Career>(null!);
@@ -84,6 +94,8 @@ export const FormDataProgram = () => {
 
     data.suppliers = suppliers;
 
+    isLoad(true);
+
     axios
       .post(`${process.env.REACT_APP_API_BACKEND}/prices`, data, {
         headers: {
@@ -92,15 +104,20 @@ export const FormDataProgram = () => {
       })
       .then((response) => {
         console.log('Response Price =>', response.data);
+        actionToast('success');
+        addData(response.data);
       })
       .catch((error: AxiosError) => {
         console.log('Error Price =>', error);
       })
-      .finally(() => closeDialog);
+      .finally(() => {
+        isLoad(false);
+        closeDialog();
+      });
   };
 
   const RequiredField = () => {
-    return <span className="text-red-500 text-[12px]">Campo Requerido</span>;
+    return <span className="text-red-500 text-[12px]">Campo requerido</span>;
   };
 
   const getTotalValueQuotes = () => {
@@ -147,7 +164,7 @@ export const FormDataProgram = () => {
 
   return (
     <div className="w-full">
-      <form onSubmit={handleSubmit(onSubmit)}>
+      <form onSubmit={handleSubmit(onSubmit)} className="relative">
         <p className="py-3 font-bold">Datos Principales</p>
         <hr className="py-3" />
         {/* Datos Principales */}
@@ -183,17 +200,26 @@ export const FormDataProgram = () => {
             {errors.currency_id && <RequiredField />}
           </div>
           <div className={'flex flex-col'}>
-            <label>Matricula</label>
+            <label>Matrícula</label>
             <input
               type="number"
-              {...register('tuition', { required: true, valueAsNumber: true })}
+              {...register('tuition', {
+                required: true,
+                valueAsNumber: true,
+                min: 1
+              })}
               className={
                 errors.tuition
                   ? 'border-red-500 py-1 rounded-lg'
                   : 'py-1 rounded-lg '
               }
             />
-            {errors.tuition && <RequiredField />}
+            {errors.tuition?.type === 'required' && <RequiredField />}
+            {errors.tuition?.type === 'min' && (
+              <span className="text-red-500 text-[12px]">
+                Valor debe ser positivo y mayor a 0
+              </span>
+            )}
           </div>
           <div className="flex flex-col">
             <label>Programa</label>
@@ -279,7 +305,7 @@ export const FormDataProgram = () => {
             <label>Valor por cuota</label>
             <input
               type="number"
-              disabled={checkPaymentQuotes}
+              disabled
               {...register(`payment_methods.0.quotes_value`, {
                 required: !checkPaymentQuotes ?? true,
                 valueAsNumber: true

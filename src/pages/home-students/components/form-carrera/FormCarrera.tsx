@@ -15,15 +15,15 @@ export const FormCarrera = () => {
     'Datos personales',
     'Educación',
     'Datos laborales',
-    'Aval',
     'Forma de pago',
+    'Aval',
     'Firma de acuerdo',
     'Finalizar pago'
   ];
 
   const [currentStep, setCurrentStep] = useState(1);
   const [complete, setComplete] = useState(false);
-  const [dataUser, setDataUser] = useState([]);
+  const [dataUser, setDataUser] = useState<any>([]);
   const [params] = useSearchParams();
   const [loading, setLoading] = useState(false);
 
@@ -122,19 +122,22 @@ export const FormCarrera = () => {
               );
             case 4:
               return (
-                <FormAval
+                <SelectPayment
+                  registerId={String(params.get('register'))}
+                  token={String(params.get('token'))}
+                  prices={[dataUser[0].price]}
                   currentStep={currentStep}
-                  setComplete={setComplete}
                   setCurrentStep={setCurrentStep}
-                  stepsLength={steps.length}
                 />
               );
               break;
             case 5:
               return (
-                <SelectPayment
+                <FormAval
                   currentStep={currentStep}
+                  setComplete={setComplete}
                   setCurrentStep={setCurrentStep}
+                  stepsLength={steps.length}
                 />
               );
             case 6:

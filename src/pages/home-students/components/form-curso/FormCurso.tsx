@@ -5,6 +5,7 @@ import { SelectPayment } from '../SelectPayment';
 import { SignDocument } from '../SignDocument';
 import { FormBilling } from './FormBilling';
 import { SimpleFinishPayment } from '../SimpleFinishPayment';
+import { useSearchParams } from 'react-router-dom';
 
 export const FormCurso = () => {
   const steps = [
@@ -17,6 +18,9 @@ export const FormCurso = () => {
 
   const [currentStep, setCurrentStep] = useState(1);
   const [complete, setComplete] = useState(false);
+  const [dataUser, setDataUser] = useState<any>([]);
+  const [params] = useSearchParams();
+
   return (
     <div>
       <div className="flex flex-col justify-center items-center">
@@ -63,6 +67,9 @@ export const FormCurso = () => {
           case 3:
             return (
               <SelectPayment
+                registerId={String(params.get('register'))}
+                token={String(params.get('token'))}
+                prices={[...dataUser[0].price]}
                 currentStep={currentStep}
                 setCurrentStep={setCurrentStep}
               />
