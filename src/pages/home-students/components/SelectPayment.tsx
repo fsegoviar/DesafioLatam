@@ -1,4 +1,5 @@
-import { ReactNode, useState } from 'react';
+import axios from 'axios';
+import { ReactNode, useEffect, useState } from 'react';
 
 type PropsFormUser = {
   currentStep: number;
@@ -6,16 +7,33 @@ type PropsFormUser = {
   registerId: string;
   token: string;
   prices: any[];
+  dataUser: any;
 };
 
 export const SelectPayment = (props: PropsFormUser) => {
-  const [cardSelected1, setCardSelected1] = useState(false);
   const [cardSelected2, setCardSelected2] = useState(false);
-  const [cardSelected3, setCardSelected3] = useState(false);
   const [totalValue, setTotalValue] = useState(0);
   const [discount, setDiscount] = useState(0);
   const [count, setCount] = useState(0);
   const [activeCount, setActiveCount] = useState(false);
+  const [listPaymentMethods, setListPaymentMethods] = useState([]);
+
+  const fetchData = async () => {
+    await axios
+      .get(
+        `${process.env.REACT_APP_API_BACKEND}/registers/${props.registerId}/payment_methods`
+      )
+      .then((response) => {
+        console.log('Response PAyment =>', response.data);
+
+        setListPaymentMethods(response.data);
+      });
+  };
+
+  useEffect(() => {
+    fetchData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const prevStep = () => {
     props.setCurrentStep(props.currentStep - 1);
@@ -26,14 +44,11 @@ export const SelectPayment = (props: PropsFormUser) => {
   };
 
   const selectCard = (key: string) => {
-    setCardSelected1(false);
     setCardSelected2(false);
-    setCardSelected3(false);
 
     switch (key) {
       case '1':
         setTotalValue(1_250_000);
-        setCardSelected1(true);
         setActiveCount(true);
         setDiscount(90);
         break;
@@ -45,8 +60,6 @@ export const SelectPayment = (props: PropsFormUser) => {
         break;
       case '3':
         setDiscount(0);
-        setCardSelected3(true);
-        setActiveCount(false);
         break;
     }
   };
@@ -58,7 +71,55 @@ export const SelectPayment = (props: PropsFormUser) => {
           Forma de pago
         </label>
       </div>
-
+      <div className="flex justify-center">
+        {listPaymentMethods.map((element: any, index) => {
+          switch (element.description) {
+            case 'Anticipado':
+              return (
+                <div
+                  key={index}
+                  className={`card m-4 p-3 ${cardSelected2 && 'card-selected'}`}
+                  onClick={() => selectCard('2')}
+                >
+                  <p className="font-bold text-sky-500 text-[18px] text-center">
+                    Pago anticipado tarjetas o transferencia
+                  </p>
+                  <p className="text-[12px] font-light text-center py-2 text-gray-500">
+                    Paga antes de comenzar y obtén un descuento especial. Todos
+                    los medios de pago disponibles.
+                  </p>
+                  <p className="text-[14px] font-bold">
+                    Matrícula ${props.dataUser.price.tuition}{' '}
+                    {props.dataUser.price.currency.code}
+                  </p>
+                  <p className="text-sky-500 font-bold text-lg">+</p>
+                  <p className="text-sky-500 font-bold text-2xl text-center">
+                    ${element.pivot.reference_value}{' '}
+                    {props.dataUser.price.currency.code}
+                  </p>
+                  <p className="text-sm pt-2">
+                    Valor Referencia:{' '}
+                    <span className="line-through">
+                      ${element.pivot.reference_value}{' '}
+                      {props.dataUser.price.currency.code}
+                    </span>
+                  </p>
+                  <p className="font-bold">
+                    Descuento: {element.pivot.advance_discount}%
+                  </p>
+                  <p className="font-bold text-center text-sky-500 text-sm pt-2">
+                    Total a Pagar $
+                    {element.pivot.reference_value -
+                      (element.pivot.advance_discount / 100) *
+                        element.pivot.reference_value}
+                  </p>
+                </div>
+              );
+            default:
+              return <></>;
+          }
+        })}
+      </div>
       {/*<div className="flex justify-center">
         <div
           className={`card m-4 p-3 ${cardSelected1 && 'card-selected'}`}

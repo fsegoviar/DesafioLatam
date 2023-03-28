@@ -126,11 +126,11 @@ export const FormCarrera = () => {
                   registerId={String(params.get('register'))}
                   token={String(params.get('token'))}
                   prices={[dataUser[0].price]}
+                  dataUser={dataUser[0]}
                   currentStep={currentStep}
                   setCurrentStep={setCurrentStep}
                 />
               );
-              break;
             case 5:
               return (
                 <FormAval

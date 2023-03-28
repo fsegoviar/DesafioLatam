@@ -25,30 +25,24 @@ export const FormLaborData = (props: PropsFormUser) => {
   } = useForm({
     defaultValues: {
       register_id: props.registerId,
-      work_situation_id: props.dataUser.user.empleability
-        ? props.dataUser.user.empleability.work_situation_id
-        : null,
-      linkedin: props.dataUser.user.empleability
-        ? props.dataUser.user.empleability.linkedin
-        : null,
-      organization: props.dataUser.user.empleability
-        ? props.dataUser.user.empleability.organization
-        : null,
-      position: props.dataUser.user.empleability
-        ? props.dataUser.user.empleability.position
-        : null,
-      rent: props.dataUser.user.empleability
-        ? props.dataUser.user.empleability.rent
-        : null
+      work_situation_id:
+        props.dataUser.user.empleability?.work_situation_id ?? null,
+      linkedin: props.dataUser.user.empleability?.linkedin ?? '',
+      organization: props.dataUser.user.empleability?.organization ?? '',
+      position: props.dataUser.user.empleability?.position ?? '',
+      rent: props.dataUser.user.empleability?.rent ?? null
     }
   });
 
   useEffect(() => {
-    setLaborSituation({
-      id: props.dataUser.user.empleability.work_situation.id,
-      description: props.dataUser.user.empleability.work_situation.description
-    });
-  }, [props.dataUser.user.empleability]);
+    if (props.dataUser.user.empleability) {
+      setLaborSituation({
+        id: props.dataUser.user.empleability.work_situation.id,
+        description: props.dataUser.user.empleability.work_situation.description
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const prevStep = () => {
     props.setCurrentStep(props.currentStep - 1);
@@ -86,19 +80,6 @@ export const FormLaborData = (props: PropsFormUser) => {
         <div className="grid grid-cols-4 gap-4">
           <div className="col-span-2 flex flex-col">
             <label>Situación Laboral</label>
-            {/*<select
-              name=""
-              id=""
-              className="w-full py-1.5 border-2 rounded-lg  border-black"
-            >
-              <option value="">Seleccionar</option>
-              {workSituations &&
-                workSituations.map((niv, index) => (
-                  <option key={index} value={niv.id}>
-                    {niv.description}
-                  </option>
-                ))}
-            </select>*/}
             <Dropdown
               value={laborSituation}
               options={workSituations}

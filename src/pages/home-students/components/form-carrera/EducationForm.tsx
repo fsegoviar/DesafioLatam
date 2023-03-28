@@ -26,22 +26,29 @@ export const EducationForm = (props: PropsFormUser) => {
     formState: { errors }
   } = useForm({
     defaultValues: {
+      // register_id: props.registerId,
+      // educational_level_id:
+      //   props.dataUser.user.education.educational_level_id ?? '',
+      // english_level_id: props.dataUser.user.education.english_level_id ?? '',
+      // description: props.dataUser.user.education.description ?? '',
+      // previous_knowledge: true
       register_id: props.registerId,
-      educational_level_id: props.dataUser.user.education.educational_level_id,
-      english_level_id: props.dataUser.user.education.english_level_id,
-      description: props.dataUser.user.education.description,
+      educational_level_id:
+        props.dataUser.user.education?.educational_level_id ?? null,
+      english_level_id: props.dataUser.user.education?.english_level_id ?? null,
+      description: props.dataUser.user.education?.description ?? '',
       previous_knowledge: true
     }
   });
 
   useEffect(() => {
-    console.log(
-      'education =>',
-      props.dataUser.user.education.educational_level
-    );
-    setEducationLevelSelected(props.dataUser.user.education.educational_level);
-    setEnglishLevelSelected(props.dataUser.user.education.english_level);
-  }, []);
+    if (props.dataUser.user.education) {
+      setEducationLevelSelected(
+        props.dataUser.user.education.educational_level
+      );
+      setEnglishLevelSelected(props.dataUser.user.education.english_level);
+    }
+  }, [props.dataUser.user.education]);
 
   const prevStep = () => {
     props.setCurrentStep(props.currentStep - 1);
@@ -53,6 +60,18 @@ export const EducationForm = (props: PropsFormUser) => {
 
   const onSubmit: SubmitHandler<any> = async (data) => {
     console.log('DATA =>', data);
+
+    const findEnglishLevel = englishLevel?.find(
+      (item) => item.id === englishLevelSelected.id
+    );
+
+    const findEducationLevel = educationLevel?.find(
+      (item) => item.id === educationLevelSelected.id
+    );
+
+    data.english_level_id = findEnglishLevel?.id;
+    data.educational_level_id = findEducationLevel?.id;
+
     await axios
       .post(
         `${process.env.REACT_APP_API_BACKEND}/register_form/education`,
@@ -78,26 +97,7 @@ export const EducationForm = (props: PropsFormUser) => {
       <div className="grid gap-4 grid-cols-4">
         <div className="col-span-2 flex flex-col">
           <label>Nivel de educación</label>
-          {/*          <select
-            value={educationLevelSelected}
-            className="py-1.5 border-2 rounded-lg border-black"
-            {...register('educational_level_id', { required: true })}
-          >
-            <option value="">Seleccionar</option>
-            {educationLevel &&
-              educationLevel.map((niv, index) => (
-                <option
-                  key={index}
-                  value={niv.id}
-                  selected={
-                    educationLevelSelected.id === niv.id &&
-                    educationLevelSelected
-                  }
-                >
-                  {niv.description}
-                </option>
-              ))}
-          </select>*/}
+
           <Dropdown
             value={educationLevelSelected}
             options={educationLevel}
@@ -114,19 +114,7 @@ export const EducationForm = (props: PropsFormUser) => {
         </div>
         <div className="col-span-2 flex flex-col">
           <label>Nivel de ingles</label>
-          {/*<select
-            id=""
-            className=" py-1.5 border-2 rounded-lg border-black"
-            {...register('english_level_id', { required: true })}
-          >
-            <option value="">Seleccionar</option>
-            {englishLevel &&
-              englishLevel.map((niv, index) => (
-                <option key={index} value={niv.id}>
-                  {niv.description}
-                </option>
-              ))}
-          </select>*/}
+
           <Dropdown
             value={englishLevelSelected}
             options={englishLevel}
@@ -135,7 +123,7 @@ export const EducationForm = (props: PropsFormUser) => {
             {...register('english_level_id', {
               required: true,
               onChange: (evt) => {
-                if (evt.value.id) setEducationLevelSelected(evt.value);
+                if (evt.value.id) setEnglishLevelSelected(evt.value);
               }
             })}
           />
