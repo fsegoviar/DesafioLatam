@@ -52,6 +52,7 @@ export const FormAval = (props: PropsFormUser) => {
 
   const onSubmit: SubmitHandler<AvalType> = (data) => {
     if (isBilling) nextStep();
+    console.log('DATA AVAL =>', data);
 
     let formData = new FormData();
     formData.append('name', data.name);
@@ -86,7 +87,28 @@ export const FormAval = (props: PropsFormUser) => {
         console.log('Response Aval =>', response.data);
       })
       .catch((error: AxiosError) => console.log('Error Aval =>', error))
-      .finally(() => nextStep()); //! Despues esto para para el then
+      .finally(async () => {
+        await axios
+          .post(
+            `${
+              process.env.REACT_APP_API_BACKEND
+            }/registers/${localStorage.getItem('register_id')}/step`,
+            {
+              step: 6
+            },
+            {
+              headers: {
+                'Access-Control-Allow-Origin': '*'
+              }
+            }
+          )
+          .then((response: any) => {
+            console.log('Step =>', response.data);
+          })
+          .catch((error: AxiosError) => console.log('Error Aval =>', error));
+      });
+
+    // .finally(() => nextStep()); //! Despues esto para para el then
   };
 
   const RequiredField = () => {
