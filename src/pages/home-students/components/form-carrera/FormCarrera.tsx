@@ -29,6 +29,9 @@ export const FormCarrera = () => {
 
   useEffect(() => {
     fetchDataUser();
+    localStorage.setItem('type_form', 'registro_carrera');
+    localStorage.setItem('register_id', String(params.get('register')));
+    localStorage.setItem('token_user_latam', String(params.get('token')));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

@@ -7,6 +7,7 @@ import {
   SectionPayment
 } from './pages';
 import { SectionLinks } from './pages/admin/section-links';
+import { FormularioResponsePage } from './pages/home-students/FormularioResponse.page';
 
 function App() {
   return (
@@ -14,9 +15,10 @@ function App() {
       <Routes>
         <Route path={'/servicio_cliente'} element={<SectionLinks />} />
         <Route path={'/formulario/:typeForm'} element={<HomeStudentsPage />} />
+        <Route path={'/formulario'} element={<FormularioResponsePage />} />
         <Route path={'login'} element={<Login />} />
         <Route path={'tabla_precios'} element={<SectionPayment />} />
-        <Route path={'pago_finalizado'} element={<FinishPaymentPage />} />
+        <Route path={'pago_aprobado'} element={<FinishPaymentPage />} />
       </Routes>
     </BrowserRouter>
   );
