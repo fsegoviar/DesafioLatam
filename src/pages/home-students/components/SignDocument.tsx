@@ -44,7 +44,7 @@ export const SignDocument = (props: PropsFormUser) => {
         },
         {
           headers: {
-            Authorization: `Bearer ${localStorage.getItem('token_user_latam')}`
+            Authorization: `Bearer ${localStorage.getItem('token_ds')}`
           }
         }
       )
