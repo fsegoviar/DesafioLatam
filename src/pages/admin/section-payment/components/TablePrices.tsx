@@ -24,6 +24,7 @@ export const TablePrices = () => {
   const [rowSelected, setRowSelected] = useState<any>(null!);
   const { toast, showSuccess, showSuccessEdit } = NotificationComponent();
   const [newValue, setNewValue] = useState();
+  const [editValue, setEditValue] = useState<any>();
   const [arrPrices, setArrPrices] = useState<PaymentType[]>([]);
 
   useEffect(() => {
@@ -39,6 +40,19 @@ export const TablePrices = () => {
       setArrPrices(newArr);
     }
   }, [arrPrices, newValue]);
+
+  useEffect(() => {
+    if (editValue) {
+      const findIndex = arrPrices.findIndex(
+        (price) => price.id === editValue.id
+      );
+      if (findIndex) {
+        let newArr = arrPrices;
+        newArr[findIndex] = editValue;
+        setArrPrices(newArr);
+      }
+    }
+  }, [arrPrices, editValue]);
 
   const actionToast = (action: string) => {
     switch (action) {
@@ -90,6 +104,7 @@ export const TablePrices = () => {
           responsiveLayout="stack"
           breakpoint="960px"
           dataKey="id"
+          emptyMessage={'No se encontraron datos'}
           rows={15}
           filters={filters}
           loading={loading}
@@ -129,7 +144,13 @@ export const TablePrices = () => {
           ></Column>
         </DataTable>
         <DialogTablePricing actionToast={actionToast} addData={setNewValue} />
-        {rowSelected && <DialogEditPricing id={rowSelected.id} />}
+        {rowSelected && (
+          <DialogEditPricing
+            actionToast={actionToast}
+            addData={setEditValue}
+            id={rowSelected.id}
+          />
+        )}
       </>
     </PaymentFormProvider>
   );

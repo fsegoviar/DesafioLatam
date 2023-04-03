@@ -8,6 +8,7 @@ type PropsFormUser = {
   currentStep: number;
   setCurrentStep: (value: number) => void;
   setComplete: (value: boolean) => void;
+  registerId: string;
 };
 
 type AvalType = {
@@ -61,15 +62,16 @@ export const FormAval = (props: PropsFormUser) => {
     formData.append('lastname', data.lastname);
     formData.append('dni', data.dni);
     formData.append('phone', String(data.phone));
+    formData.append('register_id', String(props.registerId));
     if (data.liquidaciones) {
       for (const liquidacion of data.liquidaciones) {
-        formData.append('liquidaciones', new Blob([liquidacion]));
+        formData.append('liquidaciones[]', new Blob([liquidacion]));
       }
     }
 
     if (data.historiales) {
       for (const historiales of data.historiales) {
-        formData.append('historiales', new Blob([historiales]));
+        formData.append('historiales[]', new Blob([historiales]));
       }
     }
 
@@ -79,7 +81,8 @@ export const FormAval = (props: PropsFormUser) => {
         formData,
         {
           headers: {
-            'Access-Control-Allow-Origin': '*'
+            'Access-Control-Allow-Origin': '*',
+            'Content-Type': 'multipart/form-data'
           }
         }
       )

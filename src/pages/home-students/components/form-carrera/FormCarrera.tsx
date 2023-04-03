@@ -137,6 +137,7 @@ export const FormCarrera = () => {
             case 5:
               return (
                 <FormAval
+                  registerId={String(params.get('register'))}
                   currentStep={currentStep}
                   setComplete={setComplete}
                   setCurrentStep={setCurrentStep}

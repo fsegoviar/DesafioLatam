@@ -187,6 +187,7 @@ export const FormDataProgram = ({
             <Dropdown
               value={cashType}
               options={currencies}
+              emptyMessage={'Sin resultado'}
               optionLabel="code"
               placeholder="Seleccionar Moneda"
               className="w-full dropdown-form md:w-14rem"
@@ -206,7 +207,8 @@ export const FormDataProgram = ({
               {...register('tuition', {
                 required: true,
                 valueAsNumber: true,
-                min: 1
+                min: 1,
+                max: 999999999
               })}
               className={
                 errors.tuition
@@ -215,11 +217,12 @@ export const FormDataProgram = ({
               }
             />
             {errors.tuition?.type === 'required' && <RequiredField />}
-            {errors.tuition?.type === 'min' && (
-              <span className="text-red-500 text-[12px]">
-                Valor debe ser positivo y mayor a 0
-              </span>
-            )}
+            {errors.tuition?.type === 'min' ||
+              (errors.tuition?.type === 'max' && (
+                <span className="text-red-500 text-[12px]">
+                  El valor estar entre 1 y 999999999
+                </span>
+              ))}
           </div>
           <div className="flex flex-col">
             <label>Programa</label>

@@ -7,12 +7,19 @@ import {
 import { FormDataEditPrice } from './FormDataEditPrice';
 import { useDialogEditPriceHook } from '../context/TableContext';
 import axios, { AxiosError } from 'axios';
+import { ProgressSpinner } from 'primereact/progressspinner';
 
 type PropsDialog = {
   id: number;
+  actionToast: (actino: string) => void;
+  addData: (data: any) => void;
 };
 
-export const DialogEditPricing = ({ id }: PropsDialog) => {
+export const DialogEditPricing = ({
+  id,
+  actionToast,
+  addData
+}: PropsDialog) => {
   const { isOpenDialogEdit, closeDialogEdit } = useDialogEditPriceHook();
   const [data, setData] = useState(null!);
   const [loading, setLoading] = useState(false);
@@ -50,10 +57,20 @@ export const DialogEditPricing = ({ id }: PropsDialog) => {
     >
       <PaymentFormProvider {...initialValue}>
         {loading ? (
-          <>Cargando</>
+          <div className="absolute top-0 left-0 w-full h-full bg-white z-10 grid place-items-center rounded-xl">
+            <div className="flex flex-col items-center">
+              <ProgressSpinner />
+              <h1>Cargando..</h1>
+            </div>
+          </div>
         ) : (
           <>
-            <FormDataEditPrice data={data} />
+            <FormDataEditPrice
+              actionToast={actionToast}
+              isLoad={setLoading}
+              addData={addData}
+              data={data}
+            />
           </>
         )}
       </PaymentFormProvider>

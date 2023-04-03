@@ -15,6 +15,9 @@ import axios, { AxiosError } from 'axios';
 // import axios, { AxiosError } from 'axios';
 
 type PropsEditPrice = {
+  actionToast: (action: string) => void;
+  isLoad: (value: boolean) => void;
+  addData: (data: any) => void;
   data: FormEditPayment;
 };
 
@@ -170,7 +173,7 @@ export const FormDataEditPrice = (props: PropsEditPrice) => {
     requestData.suppliers = suppliers;
 
     console.log('Data a enviar =>', requestData);
-
+    props.isLoad(true);
     await axios
       .post(
         `${process.env.REACT_APP_API_BACKEND}/prices/${props.data.price.id}`,
@@ -183,9 +186,15 @@ export const FormDataEditPrice = (props: PropsEditPrice) => {
       )
       .then((response) => {
         console.log('Response Price =>', response.data);
+        props.actionToast('edit');
+        props.addData(response.data);
       })
       .catch((error: AxiosError) => {
         console.log('Error Price =>', error);
+      })
+      .finally(() => {
+        props.isLoad(false);
+        closeDialogEdit();
       });
   };
 

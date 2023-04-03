@@ -158,6 +158,7 @@ export const TableLinks = () => {
         responsiveLayout="stack"
         breakpoint="960px"
         dataKey="id"
+        emptyMessage={'No se encontraron datos'}
         rows={15}
         filters={filters}
         filterDisplay="row"

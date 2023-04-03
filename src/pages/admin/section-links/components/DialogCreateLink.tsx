@@ -19,6 +19,8 @@ export const DialogCreateLink = (props: DialogCreateLinkTypes) => {
   const [selectForm, setSelectForm] = useState<any>(null!);
   const [nameUser, setNameUser] = useState<string | number>(null!);
   const { careers } = GetCareers();
+  const [disabledInput, setdisabledInput] = useState(true);
+  const [errorEmail, setErrorEmail] = useState(false);
   const { handleSubmit, setValue } = useForm<RegisterLinkType>();
 
   const forms = [
@@ -69,25 +71,34 @@ export const DialogCreateLink = (props: DialogCreateLinkTypes) => {
     const email = inputEmail;
     setValue('email', email);
 
-    const response = await axios.get(
-      `${process.env.REACT_APP_API_BACKEND}/hubspot/client/${inputEmail}/email`,
-      {
-        headers: {
-          Accept: 'application/json'
+    await axios
+      .get(
+        `${process.env.REACT_APP_API_BACKEND}/hubspot/client/${inputEmail}/email`,
+        {
+          headers: {
+            Accept: 'application/json'
+          }
         }
-      }
-    );
-    console.log('Response Search by Email =>!', response.data);
+      )
+      .then((response: any) => {
+        console.log('Response Search by Email =>!', response.data);
 
-    setNameUser(
-      `${response.data.results[0].properties.firstname} ${response.data.results[0].properties.lastname}`
-    );
+        setNameUser(
+          `${response.data.results[0].properties.firstname} ${response.data.results[0].properties.lastname}`
+        );
 
-    setValue('name', response.data.results[0].properties.firstname);
-    setValue('lastname', response.data.results[0].properties.lastname);
-    setValue('lastname2', '');
+        setValue('name', response.data.results[0].properties.firstname);
+        setValue('lastname', response.data.results[0].properties.lastname);
+        setValue('lastname2', '');
 
-    console.log('Response Hubspot by Email =>', response);
+        console.log('Response Hubspot by Email =>', response);
+        setdisabledInput(false);
+        setErrorEmail(false);
+      })
+      .catch((error: AxiosError) => {
+        console.log('Error ingress Email =>', error);
+        setErrorEmail(true);
+      });
   };
 
   const handleChangeCareer = async (value: Career) => {
@@ -144,7 +155,7 @@ export const DialogCreateLink = (props: DialogCreateLinkTypes) => {
               <p className="font-thin">Usuario</p>
               <div>
                 <input
-                  type="text"
+                  type="email"
                   value={inputEmail}
                   placeholder="Correo electrónico"
                   onChange={(e) => setInputEmail(e.target.value)}
@@ -159,6 +170,11 @@ export const DialogCreateLink = (props: DialogCreateLinkTypes) => {
                   Buscar
                 </button>
               </div>
+              {errorEmail && (
+                <span className="text-red-500 text-sm font-sm">
+                  Usuario no encontrado
+                </span>
+              )}
             </div>
             <div>
               <p className="font-thin">Cursos</p>
@@ -166,6 +182,7 @@ export const DialogCreateLink = (props: DialogCreateLinkTypes) => {
                 <Dropdown
                   value={selectedCareers}
                   options={careers}
+                  disabled={disabledInput}
                   onChange={(e) => handleChangeCareer(e.value)}
                   optionLabel="description"
                   filter
@@ -192,6 +209,7 @@ export const DialogCreateLink = (props: DialogCreateLinkTypes) => {
                 <Dropdown
                   value={selectForm}
                   options={forms}
+                  disabled={disabledInput}
                   onChange={(e) => handleChangeFormType(e.value)}
                   optionLabel="name"
                   placeholder="Seleccionar Formulario"
