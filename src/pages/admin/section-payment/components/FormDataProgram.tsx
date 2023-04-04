@@ -34,11 +34,13 @@ export const FormDataProgram = ({
   const [checkPaymentQuotes, setcheckPaymentQuotes] = useState(true);
   const [checkPrepaid, setCheckPrepaid] = useState(true);
   const [checkISA, setCheckISA] = useState(true);
+  const [valueQuotes, setValueQuotes] = useState(0);
   const {
     handleSubmit,
     register,
     watch,
     getValues,
+    setValue,
     formState: { errors }
   } = useForm<FormPaymentType>({
     defaultValues: { ...initialValue }
@@ -160,6 +162,14 @@ export const FormDataProgram = ({
       );
     }
     return 0;
+  };
+
+  const calculateValueQuotes = () => {
+    const value =
+      Number(getValues(`payment_methods.0.reference_value`)) /
+      Number(getValues(`payment_methods.0.quotes`));
+    setValueQuotes(value);
+    setValue('payment_methods.0.quotes_value', value);
   };
 
   return (
@@ -286,7 +296,8 @@ export const FormDataProgram = ({
               disabled={checkPaymentQuotes}
               {...register(`payment_methods.0.quotes`, {
                 required: !checkPaymentQuotes ?? true,
-                valueAsNumber: true
+                valueAsNumber: true,
+                onChange: calculateValueQuotes
               })}
               className={
                 errors.payment_methods && errors.payment_methods[0]?.quotes
@@ -309,6 +320,12 @@ export const FormDataProgram = ({
             <input
               type="number"
               disabled
+              value={valueQuotes}
+              className={'py-1 rounded-lg '}
+            />
+            {/* <input
+              type="number"
+              disabled
               {...register(`payment_methods.0.quotes_value`, {
                 required: !checkPaymentQuotes ?? true,
                 valueAsNumber: true
@@ -327,7 +344,7 @@ export const FormDataProgram = ({
                 !checkPaymentQuotes
               )
                 return <RequiredField />;
-            })()}
+            })()} */}
           </div>
           <div className={'flex flex-col'}>
             <label>Descuento cuotas (%)</label>
