@@ -57,7 +57,7 @@ export const FormDataProgram = ({
     if (data.payment_methods[0].quotes && checkPaymentQuotes === false)
       clearArr.push({
         payment_method_id: 1,
-        quotes: data.payment_methods[0].quotes_value,
+        quotes: data.payment_methods[0].quotes,
         reference_value: data.payment_methods[0].reference_value,
         quotes_value: data.payment_methods[0].quotes_value,
         advance_discount: null,
