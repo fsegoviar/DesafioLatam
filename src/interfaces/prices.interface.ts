@@ -91,6 +91,20 @@ export type SupplierType = {
   pivot: PivotType;
 };
 
+export type SupplierTypeUser = {
+  id: number;
+  description: string;
+  pivot: PivotPaymentUser;
+};
+
+export type PivotPaymentUser = {
+  id: number;
+  created_at: string;
+  updated_at: string;
+  supplier_id: number;
+  price_id: number;
+};
+
 export type SupplierEditType = {
   id: number;
   description: string;

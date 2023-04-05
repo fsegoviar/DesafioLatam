@@ -8,10 +8,13 @@ type PropsFormUser = {
   token: string;
   prices: any[];
   dataUser: any;
+  paymentSelected: (value: string) => void;
 };
 
 export const SelectPayment = (props: PropsFormUser) => {
+  const [cardSelected1, setCardSelected1] = useState(false);
   const [cardSelected2, setCardSelected2] = useState(false);
+  const [cardSelected3, setCardSelected3] = useState(false);
   const [totalValue, setTotalValue] = useState(0);
   const [discount, setDiscount] = useState(0);
   const [count, setCount] = useState(0);
@@ -50,6 +53,7 @@ export const SelectPayment = (props: PropsFormUser) => {
       case '1':
         setTotalValue(1_250_000);
         setActiveCount(true);
+        setCardSelected1(true);
         setDiscount(90);
         break;
       case '2':
@@ -60,6 +64,7 @@ export const SelectPayment = (props: PropsFormUser) => {
         break;
       case '3':
         setDiscount(0);
+        setCardSelected3(true);
         break;
     }
   };
@@ -74,6 +79,34 @@ export const SelectPayment = (props: PropsFormUser) => {
       <div className="flex justify-center">
         {listPaymentMethods.map((element: any, index) => {
           switch (element.description) {
+            case 'Pago Cuota':
+              return (
+                <div
+                  className={`card m-4 p-3 ${cardSelected1 && 'card-selected'}`}
+                  onClick={() => selectCard('1')}
+                >
+                  <p className="font-bold text-sky-500 text-[18px] text-center">
+                    Cuotas mensuales
+                  </p>
+                  <p className="text-[12px] font-light text-center py-2 text-gray-500">
+                    Paga en hasta 12 cuotas mensuales con diferentes medios de
+                    pago en la fecha que más te convenga
+                  </p>
+                  <p className="text-[14px] font-bold">Matrícula $22.500 CLP</p>
+                  <p className="text-sky-500 font-bold text-lg">+</p>
+                  <p className="text-sky-500 font-bold text-2xl text-center">
+                    10 cuotas de $125.000 CLP
+                  </p>
+                  <p className="text-sm pt-2">
+                    Valor Referencia:{' '}
+                    <span className="line-through">$9.000.000 CLP</span>
+                  </p>
+                  <p className="font-bold">Descuento: 90%</p>
+                  <p className="font-bold text-center text-sky-500 text-sm pt-2">
+                    Total a pagar: $1.250.000 CLP
+                  </p>
+                </div>
+              );
             case 'Anticipado':
               return (
                 <div
@@ -112,6 +145,29 @@ export const SelectPayment = (props: PropsFormUser) => {
                     {element.pivot.reference_value -
                       (element.pivot.advance_discount / 100) *
                         element.pivot.reference_value}
+                  </p>
+                </div>
+              );
+            case 'ISA':
+              return (
+                <div
+                  className={`card m-4 p-3 ${cardSelected3 && 'card-selected'}`}
+                  onClick={() => selectCard('3')}
+                >
+                  <p className="font-bold text-sky-500 text-[18px] text-center">
+                    Acuerdo ingresos compartidos (ISA)
+                  </p>
+                  <p className="text-[12px] font-light text-center py-2 text-gray-500">
+                    Modelo de financiamiento donde solo comienzas a pagar una
+                    vez consigues trabajo, sin costo inicial
+                  </p>
+                  <p className="text-[14px] font-bold">Matrícula $22.500 CLP</p>
+                  <p className="text-sky-500 font-bold text-lg">+</p>
+                  <p className="text-sky-500 font-bold text-2xl text-center">
+                    15% de tus ingresos
+                  </p>
+                  <p className="font-bold text-center text-sky-500 text-sm pt-2">
+                    Hasta pagar $3.500.000
                   </p>
                 </div>
               );

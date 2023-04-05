@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { TiTick } from 'react-icons/ti';
 import { FormPersonalData } from './FormPersonalData';
-import { SignDocument } from '../SignDocument';
+// import { SignDocument } from '../SignDocument';
 import { FormBilling } from './FormBilling';
-import { SimpleFinishPayment } from '../SimpleFinishPayment';
+// import { SimpleFinishPayment } from '../SimpleFinishPayment';
 
 export const FormCurso = () => {
   const steps = [
@@ -73,13 +73,15 @@ export const FormCurso = () => {
             );
           case 4:
             return (
-              <SignDocument
-                currentStep={currentStep}
-                setCurrentStep={setCurrentStep}
-              />
+              // <SignDocument
+              //   currentStep={currentStep}
+              //   setCurrentStep={setCurrentStep}
+              // />
+              <></>
             );
           case 5:
-            return <SimpleFinishPayment />;
+            // return <SimpleFinishPayment />
+            return <></>;
           default:
             break;
         }

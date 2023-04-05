@@ -1,10 +1,21 @@
 import axios, { AxiosError } from 'axios';
+import { SupplierTypeUser } from '../../../interfaces';
+import { useEffect } from 'react';
 // import React, { useState } from 'react';
 // import { useNavigate } from 'react-router-dom';
 
-export const SimpleFinishPayment = () => {
+type PropsFinishPayment = {
+  suppliers: SupplierTypeUser[];
+};
+
+export const SimpleFinishPayment = ({ suppliers }: PropsFinishPayment) => {
   // const navigate = useNavigate();
   // const [setLoadingTransbank, setSetLoadingTransbank] = useState(false);
+
+  useEffect(() => {
+    console.log('Suppliers FinishPayment', suppliers);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const handleTransbankTransaction = () => {
     axios
@@ -114,7 +125,66 @@ export const SimpleFinishPayment = () => {
       <div className={'mt-5'}>
         <label className={'font-bold text-lg'}>Pasarela de pago</label>
         <div className={'mt-5 flex justify-center '}>
-          <div className="relative w-[200px] h-[100px] m-4">
+          {suppliers.map((supplier) => {
+            switch (supplier.description) {
+              case 'Transbank':
+                return (
+                  <div className="relative w-[200px] h-[100px] m-4 ">
+                    <div
+                      className="w-full h-full bg-center bg-cover bg-no-repeat rounded-xl shadow-xl cursor-pointer"
+                      style={{
+                        backgroundImage: `url(${require('../../../assets/images/webpay.png')})`
+                      }}
+                      onClick={() => handleTransbankTransaction()}
+                    ></div>
+                  </div>
+                );
+              case 'Paypal':
+                return (
+                  <>
+                    <div className="relative bg-white rounded-xl m-4 w-[200px] h-[100px]">
+                      <div
+                        className="w-full h-full bg-center bg-contain bg-no-repeat rounded-xl shadow-xl cursor-pointer"
+                        style={{
+                          backgroundImage: `url(${require('../../../assets/images/new-paypal-logo.jpg')})`
+                        }}
+                        onClick={() => handleTransactionPaypal()}
+                      ></div>
+                    </div>
+                  </>
+                );
+              case 'Flow':
+                return (
+                  <>
+                    <div className="relative bg-white rounded-xl m-4 w-[200px] h-[100px]">
+                      <div
+                        className="w-full h-full bg-center bg-contain bg-no-repeat rounded-xl shadow-xl cursor-pointer"
+                        style={{
+                          backgroundImage: `url(${require('../../../assets/images/flow.png')})`
+                        }}
+                        onClick={() => handleTransactionFlow()}
+                      ></div>
+                    </div>
+                  </>
+                );
+              case 'Otro medio':
+                return (
+                  <>
+                    <div className="relative bg-white rounded-xl m-4 w-[200px] h-[100px]">
+                      <div
+                        className="w-full h-full flex justify-center items-center rounded-xl shadow-xl cursor-pointer"
+                        onClick={() => handleOtherMethodPayment()}
+                      >
+                        <p>Otro medio de pago</p>
+                      </div>
+                    </div>
+                  </>
+                );
+              default:
+                return <></>;
+            }
+          })}
+          {/* <div className="relative w-[200px] h-[100px] m-4">
             <div
               className="w-full h-full bg-center bg-cover bg-no-repeat rounded-xl shadow-xl cursor-pointer"
               style={{
@@ -122,7 +192,6 @@ export const SimpleFinishPayment = () => {
               }}
               onClick={() => handleTransbankTransaction()}
             ></div>
-          </div>
           <div className="relative bg-white rounded-xl m-4 w-[200px] h-[100px]">
             <div
               className="w-full h-full bg-center bg-contain bg-no-repeat rounded-xl shadow-xl"
@@ -148,7 +217,7 @@ export const SimpleFinishPayment = () => {
             >
               <p>Otro medio de pago</p>
             </div>
-          </div>
+          </div> */}
         </div>
       </div>
       <div className={'mt-5 flex flex-col items-end'}>

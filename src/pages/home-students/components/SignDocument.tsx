@@ -3,6 +3,7 @@ import axios, { AxiosError } from 'axios';
 type PropsFormUser = {
   currentStep: number;
   setCurrentStep: (value: number) => void;
+  paymentMethod: string;
 };
 
 export const SignDocument = (props: PropsFormUser) => {

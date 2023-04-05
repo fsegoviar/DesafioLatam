@@ -26,6 +26,7 @@ export const FormCarrera = () => {
   const [dataUser, setDataUser] = useState<any>([]);
   const [params] = useSearchParams();
   const [loading, setLoading] = useState(false);
+  const [paymentMethodSelected, setPaymentMethodSelected] = useState('');
 
   useEffect(() => {
     fetchDataUser();
@@ -132,6 +133,7 @@ export const FormCarrera = () => {
                   dataUser={dataUser[0]}
                   currentStep={currentStep}
                   setCurrentStep={setCurrentStep}
+                  paymentSelected={setPaymentMethodSelected}
                 />
               );
             case 5:
@@ -148,11 +150,14 @@ export const FormCarrera = () => {
               return (
                 <SignDocument
                   currentStep={currentStep}
+                  paymentMethod={paymentMethodSelected}
                   setCurrentStep={setCurrentStep}
                 />
               );
             case 7:
-              return <SimpleFinishPayment />;
+              return (
+                <SimpleFinishPayment suppliers={dataUser[0].price.suppliers} />
+              );
             default:
               break;
           }

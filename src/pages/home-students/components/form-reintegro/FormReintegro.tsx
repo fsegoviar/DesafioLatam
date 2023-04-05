@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { TiTick } from 'react-icons/ti';
 import { FormPersonalData } from './FormPersonalData';
-import { SignDocument } from '../SignDocument';
+// import { SignDocument } from '../SignDocument';
 import { FormBilling } from './FormBilling';
 import { FinishPayment } from './FinishPayment';
 
@@ -73,10 +73,11 @@ export const FormReintegro = () => {
             );
           case 4:
             return (
-              <SignDocument
-                currentStep={currentStep}
-                setCurrentStep={setCurrentStep}
-              />
+              // <SignDocument
+              //   currentStep={currentStep}
+              //   setCurrentStep={setCurrentStep}
+              // />
+              <></>
             );
           case 5:
             return <FinishPayment />;
