@@ -46,6 +46,10 @@ export const SelectPayment = (props: PropsFormUser) => {
     props.setCurrentStep(props.currentStep + 1);
   };
 
+  const handleNextStep = () => {
+    cardSelected2 ? props.setCurrentStep(props.currentStep + 2) : nextStep();
+  };
+
   const selectCard = (key: string) => {
     setCardSelected2(false);
 
@@ -298,7 +302,7 @@ export const SelectPayment = (props: PropsFormUser) => {
         <button className="btn-prev m-1" onClick={() => prevStep()}>
           Atras
         </button>
-        <button className="btn m-1" type="button" onClick={() => nextStep()}>
+        <button className="btn m-1" type="button" onClick={handleNextStep}>
           Siguiente
         </button>
       </div>
