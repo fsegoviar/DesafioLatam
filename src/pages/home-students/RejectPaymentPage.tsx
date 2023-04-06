@@ -1,7 +1,19 @@
-import React from 'react';
 import { Navbar } from '../../components';
+import { useNavigate } from 'react-router-dom';
 
 export const RejectPaymentPage = () => {
+  const navigate = useNavigate();
+
+  const handleRestart = () => {
+    navigate(
+      `/formulario/${localStorage.getItem(
+        'type_form'
+      )}?register=${localStorage.getItem(
+        'register_id'
+      )}&token=${localStorage.getItem('token_user_latam')}`
+    );
+  };
+
   return (
     <>
       <Navbar />
@@ -13,7 +25,9 @@ export const RejectPaymentPage = () => {
           <h1 className={'text-4xl'}>
             Ha ocurrido un problema al realizar el pago{' '}
           </h1>
-          <button className="btn">Reintentar</button>
+          <button className="btn" onSubmit={handleRestart}>
+            Reintentar
+          </button>
         </div>
       </div>
     </>

@@ -9,12 +9,14 @@ import { SimpleFinishPayment } from '../SimpleFinishPayment';
 import { useSearchParams } from 'react-router-dom';
 import axios, { AxiosError } from 'axios';
 import { FormAval } from './FormAval';
+import { FormBilling } from './FormBilling';
 
 export const FormCarrera = () => {
   const steps = [
     'Datos personales',
     'Educación',
     'Datos laborales',
+    'Documento a emitir',
     'Forma de pago',
     'Aval',
     'Firma de acuerdo',
@@ -126,6 +128,15 @@ export const FormCarrera = () => {
               );
             case 4:
               return (
+                <FormBilling
+                  registerId={String(params.get('register'))}
+                  dataUser={dataUser[0]}
+                  currentStep={currentStep}
+                  setCurrentStep={setCurrentStep}
+                />
+              );
+            case 5:
+              return (
                 <SelectPayment
                   registerId={String(params.get('register'))}
                   token={String(params.get('token'))}
@@ -136,7 +147,7 @@ export const FormCarrera = () => {
                   paymentSelected={setPaymentMethodSelected}
                 />
               );
-            case 5:
+            case 6:
               return (
                 <FormAval
                   registerId={String(params.get('register'))}
@@ -146,7 +157,7 @@ export const FormCarrera = () => {
                   stepsLength={steps.length}
                 />
               );
-            case 6:
+            case 7:
               return (
                 <SignDocument
                   currentStep={currentStep}
@@ -154,7 +165,7 @@ export const FormCarrera = () => {
                   setCurrentStep={setCurrentStep}
                 />
               );
-            case 7:
+            case 8:
               return (
                 <SimpleFinishPayment suppliers={dataUser[0].price.suppliers} />
               );

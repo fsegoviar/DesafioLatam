@@ -107,6 +107,7 @@ export const FormAval = (props: PropsFormUser) => {
           )
           .then((response: any) => {
             console.log('Step =>', response.data);
+            nextStep();
           })
           .catch((error: AxiosError) => console.log('Error Aval =>', error));
       });
