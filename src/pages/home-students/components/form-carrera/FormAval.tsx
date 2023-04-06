@@ -137,7 +137,7 @@ export const FormAval = (props: PropsFormUser) => {
             onChange={() => setIsBilling(false)}
           />
           <label htmlFor="si" className="ml-1">
-            Quiero Aval
+            Necesito Aval
           </label>
         </div>
         <div className="mt-1 mx-5">
