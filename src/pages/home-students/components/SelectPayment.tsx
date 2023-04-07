@@ -93,21 +93,26 @@ export const SelectPayment = (props: PropsFormUser) => {
                     Cuotas mensuales
                   </p>
                   <p className="text-[12px] font-light text-center py-2 text-gray-500">
-                    Paga en hasta 12 cuotas mensuales con diferentes medios de
-                    pago en la fecha que más te convenga
+                    Paga en hasta {element.pivot.quotes} cuotas mensuales con
+                    diferentes medios de pago en la fecha que más te convenga
                   </p>
                   <p className="text-[14px] font-bold">Matrícula $22.500 CLP</p>
                   <p className="text-sky-500 font-bold text-lg">+</p>
-                  <p className="text-sky-500 font-bold text-2xl text-center">
-                    10 cuotas de $125.000 CLP
+                  <p className="text-sky-500 font-bo1ld text-2xl text-center">
+                    {element.pivot.quotes} cuotas de $
+                    {element.pivot.quotes_value} CLP
                   </p>
                   <p className="text-sm pt-2">
                     Valor Referencia:{' '}
-                    <span className="line-through">$9.000.000 CLP</span>
+                    <span className="line-through">
+                      ${element.pivot.reference_value} CLP
+                    </span>
                   </p>
-                  <p className="font-bold">Descuento: 90%</p>
+                  <p className="font-bold">
+                    Descuento: {element.pivot.free_discount}%
+                  </p>
                   <p className="font-bold text-center text-sky-500 text-sm pt-2">
-                    Total a pagar: $1.250.000 CLP
+                    Total a pagar: ${element.pivot.reference_value} CLP
                   </p>
                 </div>
               );

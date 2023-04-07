@@ -146,7 +146,7 @@ export const FormPersonalData = (props: PropsFormUser) => {
   };
 
   const RenderRequiredField = () => {
-    return <span className="font-thin text-red-500">Campo requerido</span>;
+    return <span className="font-light text-red-500">Campo requerido</span>;
   };
 
   return (
@@ -239,15 +239,43 @@ export const FormPersonalData = (props: PropsFormUser) => {
         </div>
         <div className="col-span-2 flex flex-col">
           <label>Número teléfonico</label>
-          <input type="number" {...register('phone', { required: true })} />
-          {errors.phone && <RenderRequiredField />}
+          <input
+            type="number"
+            {...register('phone', {
+              required: true,
+              minLength: 5,
+              maxLength: 15
+            })}
+          />
+          {errors.phone?.type === 'required' && <RenderRequiredField />}
+          {errors.phone?.type === 'maxLength' && (
+            <span className="text-red-500 text-sm font-light">
+              Debe tener menos de 15 digitos
+            </span>
+          )}
+          {errors.phone?.type === 'minLength' && (
+            <span className="text-red-500 text-sm font-light">
+              Debe tener más de 5 digitos
+            </span>
+          )}
         </div>
       </div>
       <div className="grid grid-cols-4 mt-5">
         <div className="col-span-4 flex flex-col">
           <label>Correo electrónico</label>
-          <input type="email" {...register('email', { required: true })} />
-          {errors.email && <RenderRequiredField />}
+          <input
+            type="email"
+            {...register('email', {
+              required: true,
+              pattern: /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$/
+            })}
+          />
+          {errors.email?.type === 'required' && <RenderRequiredField />}
+          {errors.email?.type === 'pattern' && (
+            <span className="text-red-500 text-sm font-light">
+              Formato de correo no valido
+            </span>
+          )}
         </div>
       </div>
       <div className="grid grid-cols-4 gap-4 mt-5">

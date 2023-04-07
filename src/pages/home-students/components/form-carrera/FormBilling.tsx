@@ -165,9 +165,23 @@ export const FormBilling = (props: PropsFormUser) => {
             <input
               type="number"
               disabled={isBilling}
-              {...register('phone', { required: !isBilling ?? true })}
+              {...register('phone', {
+                required: !isBilling ?? true,
+                minLength: !isBilling ? 5 : 0,
+                maxLength: !isBilling ? 15 : 999
+              })}
             />
-            {errors.phone && <RequiredField />}
+            {errors.phone?.type === 'required' && <RequiredField />}
+            {errors.phone?.type === 'maxLength' && (
+              <span className="text-red-500 text-sm font-light">
+                Debe tener menos de 15 digitos
+              </span>
+            )}
+            {errors.phone?.type === 'minLength' && (
+              <span className="text-red-500 text-sm font-light">
+                Debe tener más de 5 digitos
+              </span>
+            )}
           </div>
         </div>
       </div>

@@ -105,8 +105,19 @@ export const FormLaborData = (props: PropsFormUser) => {
         </div>
         <div className="col-span-2 flex flex-col mt-3">
           <label>Enlace LinkedIn</label>
-          <input type="text" {...register('linkedin', { required: true })} />
-          {errors.linkedin && <RequiredField />}
+          <input
+            type="text"
+            {...register('linkedin', {
+              required: true,
+              pattern: /^https?:\/\/[\w]+(\.[\w]+)+[/#?]?.*$/
+            })}
+          />
+          {errors.linkedin?.type === 'required' && <RequiredField />}
+          {errors.linkedin?.type === 'pattern' && (
+            <span className="text-red-500 text-sm font-light">
+              Formato URL no valido
+            </span>
+          )}
         </div>
         <div className="grid grid-cols-4 mt-3 gap-4">
           <div className="col-span-2 flex flex-col">
