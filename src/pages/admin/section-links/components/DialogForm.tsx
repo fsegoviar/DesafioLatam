@@ -9,6 +9,7 @@ import { HiOutlineDocumentText } from 'react-icons/hi';
 import { MdAttachMoney } from 'react-icons/md';
 import { RiLockFill } from 'react-icons/ri';
 import { CursoPersonal } from './panels/view-curso/CursoPersonal';
+import { CursoEducacion } from './panels/view-curso/CursoEducacion';
 
 type DialogType = {
   open: boolean;
@@ -146,7 +147,7 @@ export const DialogForm = (props: DialogType) => {
             <CursoPersonal />
           </TabPanel>
           <TabPanel header="Educación" headerTemplate={renderIconEducacion}>
-            <p>Panel 2 </p>
+            <CursoEducacion />
           </TabPanel>
           <TabPanel
             header="Empleabilidad"
