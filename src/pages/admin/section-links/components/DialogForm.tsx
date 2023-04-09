@@ -14,6 +14,7 @@ import { CursoEducacion } from './panels/view-curso/CursoEducacion';
 type DialogType = {
   open: boolean;
   close: () => void;
+  userData: any;
 };
 
 export const DialogForm = (props: DialogType) => {
@@ -21,6 +22,8 @@ export const DialogForm = (props: DialogType) => {
   const containerRef = useRef<HTMLDivElement>(null!);
 
   useEffect(() => {
+    console.log('Data Selected =>', props.userData);
+
     if (props.open) modalRef.current.style.display = 'flex';
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

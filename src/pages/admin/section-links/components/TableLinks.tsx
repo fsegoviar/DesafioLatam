@@ -18,6 +18,7 @@ export const TableLinks = () => {
   const { registers, loading } = GetRegisters();
   const [idRegister, setIdRegister] = useState();
   const [openEditLink, setOpenEditLink] = useState(false);
+  const [userSelected, setUserSelected] = useState(null!);
 
   const filters = {
     'user.name': {
@@ -49,6 +50,11 @@ export const TableLinks = () => {
         setOpenSendEmail(true);
       })
       .catch((error: AxiosError) => console.log('Error => ', error));
+  };
+
+  const handleOpenFormUser = (dataUser: any) => {
+    setOpenDialogForm(true);
+    setUserSelected(dataUser);
   };
 
   const renderState = (rowData: any) => {
@@ -126,7 +132,7 @@ export const TableLinks = () => {
     return (
       <div className="flex justify-center">
         <CgFileDocument
-          onClick={() => setOpenDialogForm(true)}
+          onClick={() => handleOpenFormUser(rowData)}
           size={24}
           className="cursor-pointer"
           data-te-toggle="tooltip"
@@ -228,6 +234,7 @@ export const TableLinks = () => {
       {openDialogForm && (
         <DialogForm
           open={openDialogForm}
+          userData={userSelected}
           close={() => setOpenDialogForm(false)}
         />
       )}
