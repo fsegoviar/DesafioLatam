@@ -219,15 +219,13 @@ export const FormPersonalData = (props: PropsFormUser) => {
             optionLabel="nationality"
             filter
             className="dropdown-form"
-            {...register('nationality', {
-              required: true,
-              onChange: (evt: DropdownChangeParams) => {
-                if (evt.value.id) {
-                  setNationalitySelected(evt.value);
-                  setValue('nationality', evt.value.nationality);
-                }
+            onChange={(evt: DropdownChangeParams) => {
+              if (evt.value.id) {
+                setNationalitySelected(evt.value);
+                setValue('nationality', evt.value.id);
               }
-            })}
+            }}
+            required
           />
           {errors.nationality && <RenderRequiredField />}
         </div>

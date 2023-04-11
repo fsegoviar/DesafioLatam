@@ -25,6 +25,7 @@ export const FormTaller = () => {
   const [params] = useSearchParams();
   const [loading, setLoading] = useState(false);
   const [paymentMethodSelected, setPaymentMethodSelected] = useState('');
+  const [error, setError] = useState(false);
 
   useEffect(() => {
     fetchDataUser();
@@ -52,9 +53,10 @@ export const FormTaller = () => {
         console.log('Response User =>', response.data);
         setDataUser(response.data);
       })
-      .catch((error: AxiosError) =>
-        console.log('Error fetchDataUser =>', error)
-      )
+      .catch((error: AxiosError) => {
+        console.log('Error fetchDataUser =>', error);
+        setError(true);
+      })
       .finally(() => setLoading(false));
   };
 
@@ -85,53 +87,61 @@ export const FormTaller = () => {
         if (loading) {
           return <span>Cargando...</span>;
         } else {
-          switch (currentStep) {
-            case 1:
-              return (
-                <FormPersonalData
-                  registerId={String(params.get('register'))}
-                  token={String(params.get('token'))}
-                  dataUser={dataUser[0]}
-                  currentStep={currentStep}
-                  setComplete={setComplete}
-                  setCurrentStep={setCurrentStep}
-                  stepsLength={steps.length}
-                />
-              );
-            case 2:
-              return (
-                <FormBilling
-                  registerId={String(params.get('register'))}
-                  dataUser={dataUser[0]}
-                  currentStep={currentStep}
-                  setCurrentStep={setCurrentStep}
-                />
-              );
-            case 3:
-              return (
-                <SelectPayment
-                  registerId={String(params.get('register'))}
-                  token={String(params.get('token'))}
-                  prices={[dataUser[0].price]}
-                  dataUser={dataUser[0]}
-                  currentStep={currentStep}
-                  setCurrentStep={setCurrentStep}
-                  paymentSelected={setPaymentMethodSelected}
-                />
-              );
-            case 4:
-              return (
-                <SignDocument
-                  currentStep={currentStep}
-                  paymentMethod={paymentMethodSelected}
-                  setCurrentStep={setCurrentStep}
-                />
-              );
-            case 5:
-              <SimpleFinishPayment suppliers={dataUser[0].price.suppliers} />;
-              return <></>;
-            default:
-              break;
+          if (!error) {
+            switch (currentStep) {
+              case 1:
+                return (
+                  <FormPersonalData
+                    registerId={String(params.get('register'))}
+                    token={String(params.get('token'))}
+                    dataUser={dataUser[0]}
+                    currentStep={currentStep}
+                    setComplete={setComplete}
+                    setCurrentStep={setCurrentStep}
+                    stepsLength={steps.length}
+                  />
+                );
+              case 2:
+                return (
+                  <FormBilling
+                    registerId={String(params.get('register'))}
+                    dataUser={dataUser[0]}
+                    currentStep={currentStep}
+                    setCurrentStep={setCurrentStep}
+                  />
+                );
+              case 3:
+                return (
+                  <SelectPayment
+                    registerId={String(params.get('register'))}
+                    token={String(params.get('token'))}
+                    prices={[dataUser[0].price]}
+                    dataUser={dataUser[0]}
+                    currentStep={currentStep}
+                    setCurrentStep={setCurrentStep}
+                    paymentSelected={setPaymentMethodSelected}
+                  />
+                );
+              case 4:
+                return (
+                  <SignDocument
+                    currentStep={currentStep}
+                    paymentMethod={paymentMethodSelected}
+                    setCurrentStep={setCurrentStep}
+                  />
+                );
+              case 5:
+                <SimpleFinishPayment suppliers={dataUser[0].price.suppliers} />;
+                return <></>;
+              default:
+                break;
+            }
+          } else {
+            return (
+              <div className="text-center font-bold w-100 py-40">
+                <p>Hubo un error al cargar los datos</p>
+              </div>
+            );
           }
         }
       })()}
