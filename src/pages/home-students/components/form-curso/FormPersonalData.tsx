@@ -17,10 +17,12 @@ export const FormPersonalData = (props: PropsFormUser) => {
   const {
     register,
     handleSubmit,
+    getValues,
     formState: { errors }
   } = useForm({
     defaultValues: {
       register_id: props.registerId,
+      career: props.dataUser?.user.career,
       name: props.dataUser?.user.name,
       identity_type_id: 1,
       lastname: props.dataUser?.user.lastname,
@@ -167,13 +169,13 @@ export const FormPersonalData = (props: PropsFormUser) => {
       <div className="mt-3">
         <div>
           <div className="grid grid-cols-4 gap-4">
-            <div className="col-span-2 flex flex-col">
+            <div className="col-span-4 flex flex-col">
               <label>Carrera a la cual te estas matriculando</label>
-              <input type="text" />
-            </div>
-            <div className="col-span-2 flex flex-col">
-              <label>Generación a la que matrícula</label>
-              <input type="text" />
+              <input
+                type="text"
+                value={getValues('career.description')}
+                disabled
+              />
             </div>
           </div>
         </div>

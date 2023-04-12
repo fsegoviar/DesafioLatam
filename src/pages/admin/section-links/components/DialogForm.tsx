@@ -1,15 +1,6 @@
-import { useEffect, useRef } from 'react';
-import { TabView, TabPanel } from 'primereact/tabview';
-import {
-  BsFillPersonFill,
-  BsFillPersonPlusFill,
-  BsCreditCard2BackFill
-} from 'react-icons/bs';
-import { HiOutlineDocumentText } from 'react-icons/hi';
-import { MdAttachMoney } from 'react-icons/md';
-import { RiLockFill } from 'react-icons/ri';
-import { CursoPersonal } from './panels/view-curso/CursoPersonal';
-import { CursoEducacion } from './panels/view-curso/CursoEducacion';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import axios, { AxiosError } from 'axios';
+import { PanelCarrera } from './panels/PanelCarrera';
 
 type DialogType = {
   open: boolean;
@@ -20,13 +11,34 @@ type DialogType = {
 export const DialogForm = (props: DialogType) => {
   const modalRef = useRef<HTMLDivElement>(null!);
   const containerRef = useRef<HTMLDivElement>(null!);
+  const [infoPanel, setInfoPanel] = useState<any>(null!);
+  const [loading, setLoading] = useState(false);
+
+  useLayoutEffect(() => {
+    if (!infoPanel) fetchDataUser();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [setInfoPanel]);
 
   useEffect(() => {
-    console.log('Data Selected =>', props.userData);
-
     if (props.open) modalRef.current.style.display = 'flex';
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const fetchDataUser = async () => {
+    setLoading(true);
+    await axios
+      .get(
+        `${process.env.REACT_APP_API_BACKEND}/registers/${props.userData.id}`
+      )
+      .then((response: any) => {
+        console.log('Response User =>', response.data[0]);
+        setInfoPanel(response.data[0]);
+        setLoading(false);
+      })
+      .catch((error: AxiosError) =>
+        console.log('Error Fetch Data User =>', error)
+      );
+  };
 
   const closeModal = (): void => {
     containerRef.current.classList.add('close');
@@ -42,96 +54,16 @@ export const DialogForm = (props: DialogType) => {
     (e: any) => e.target === modalRef.current && closeModal()
   );
 
-  //Renders
-  const renderIconEducacion = (options: any) => {
-    return (
-      <button
-        type="button"
-        className="flex items-center mx-2"
-        onClick={options.onClick}
-      >
-        <BsFillPersonFill size={32} className="mr-2" />
-        {options.titleElement}
-      </button>
-    );
-  };
-
-  const renderIconEmpleabilidad = (options: any) => {
-    return (
-      <button
-        type="button"
-        className="flex items-center mx-2"
-        onClick={options.onClick}
-      >
-        <BsFillPersonPlusFill size={32} className="mr-2" />
-        {options.titleElement}
-      </button>
-    );
-  };
-
-  const renderIconRegistro = (options: any) => {
-    return (
-      <button
-        type="button"
-        className="flex items-center  mx-2"
-        onClick={options.onClick}
-      >
-        <HiOutlineDocumentText size={32} className="mr-2" />
-        {options.titleElement}
-      </button>
-    );
-  };
-
-  const renderIconDeuda = (options: any) => {
-    return (
-      <button
-        type="button"
-        className="flex items-center  mx-2"
-        onClick={options.onClick}
-      >
-        <BsCreditCard2BackFill size={32} className="mr-2" />
-        {options.titleElement}
-      </button>
-    );
-  };
-
-  const renderIconFacturacion = (options: any) => {
-    return (
-      <button
-        type="button"
-        className="flex items-center  mx-2"
-        onClick={options.onClick}
-      >
-        <MdAttachMoney size={32} className="mr-2" />
-        {options.titleElement}
-      </button>
-    );
-  };
-
-  const renderIconInfoPago = (options: any) => {
-    return (
-      <button
-        type="button"
-        className="flex items-center mx-2"
-        onClick={options.onClick}
-      >
-        <RiLockFill size={32} className="mr-2" />
-        {options.titleElement}
-      </button>
-    );
-  };
-
-  const renderIconPersonal = (options: any) => {
-    return (
-      <button
-        type="button"
-        className="flex items-center"
-        onClick={options.onClick}
-      >
-        <BsFillPersonFill size={32} className="mr-2" />
-        {options.titleElement}
-      </button>
-    );
+  const RenderPanel = () => {
+    if (infoPanel !== null) {
+      switch (infoPanel.form_type.description) {
+        case 'Carrera':
+          return <PanelCarrera />;
+        default:
+          return <>default</>;
+      }
+    }
+    return <>nodata</>;
   };
 
   return (
@@ -142,35 +74,7 @@ export const DialogForm = (props: DialogType) => {
         indow-container"
         ref={containerRef}
       >
-        <p className="text-xl font-bold text-center pb-5">
-          Formulario de Curso
-        </p>
-        <TabView>
-          <TabPanel header="Personal" headerTemplate={renderIconPersonal}>
-            <CursoPersonal />
-          </TabPanel>
-          <TabPanel header="Educación" headerTemplate={renderIconEducacion}>
-            <CursoEducacion />
-          </TabPanel>
-          <TabPanel
-            header="Empleabilidad"
-            headerTemplate={renderIconEmpleabilidad}
-          >
-            <p>Panel 3</p>
-          </TabPanel>
-          <TabPanel header="Registro" headerTemplate={renderIconRegistro}>
-            <p>Panel 4</p>
-          </TabPanel>
-          <TabPanel header="Deuda" headerTemplate={renderIconDeuda}>
-            <p>Panel 5</p>
-          </TabPanel>
-          <TabPanel header="Facturación" headerTemplate={renderIconFacturacion}>
-            <p>Panel 6</p>
-          </TabPanel>
-          <TabPanel header="Info de pago" headerTemplate={renderIconInfoPago}>
-            <p>Panel 7</p>
-          </TabPanel>
-        </TabView>
+        {loading ? <p>Cargando</p> : <RenderPanel />}
         <div className="mt-5  w-full flex justify-end">
           <button
             className="m-1 px-5 rounded-lg text-white bg-gray-500"
