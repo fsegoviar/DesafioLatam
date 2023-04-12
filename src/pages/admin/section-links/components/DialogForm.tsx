@@ -1,6 +1,7 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import axios, { AxiosError } from 'axios';
 import { PanelCarrera } from './panels/PanelCarrera';
+import { PanelCurso } from './panels/PanelCurso';
 
 type DialogType = {
   open: boolean;
@@ -58,7 +59,13 @@ export const DialogForm = (props: DialogType) => {
     if (infoPanel !== null) {
       switch (infoPanel.form_type.description) {
         case 'Carrera':
-          return <PanelCarrera />;
+          return <PanelCarrera infoUser={infoPanel} />;
+        case 'Curso':
+          return <PanelCurso title={'Curso'} />;
+        case 'Taller':
+          return <PanelCurso title={'Taller'} />;
+        case 'Reintegro':
+          return <PanelCurso title={'Reintegro'} />;
         default:
           return <>default</>;
       }
@@ -70,8 +77,7 @@ export const DialogForm = (props: DialogType) => {
     <div className="window-background" id="window-background" ref={modalRef}>
       <div
         className="window-container width-form"
-        id="w
-        indow-container"
+        id="window-container"
         ref={containerRef}
       >
         {loading ? <p>Cargando</p> : <RenderPanel />}

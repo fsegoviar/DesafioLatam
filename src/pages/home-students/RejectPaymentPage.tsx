@@ -1,5 +1,6 @@
 import { Navbar } from '../../components';
 import { useNavigate } from 'react-router-dom';
+import React from 'react';
 
 export const RejectPaymentPage = () => {
   const navigate = useNavigate();
@@ -25,6 +26,10 @@ export const RejectPaymentPage = () => {
           <h1 className={'text-4xl'}>
             Ha ocurrido un problema al realizar el pago{' '}
           </h1>
+          <img
+            src={require('../../assets/images/pago_rechazado.png')}
+            alt={'pago_rechazado'}
+          />
           <button className="btn" onSubmit={handleRestart}>
             Reintentar
           </button>
