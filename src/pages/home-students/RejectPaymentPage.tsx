@@ -24,10 +24,11 @@ export const RejectPaymentPage = () => {
       >
         <div className={'flex flex-col items-center'}>
           <h1 className={'text-4xl'}>
-            Ha ocurrido un problema al realizar el pago{' '}
+            ¡Ups, algo salió mal!{' '}
           </h1>
           <img
             src={require('../../assets/images/pago_rechazado.png')}
+            className={"my-5"}
             alt={'pago_rechazado'}
           />
           <button className="btn" onSubmit={handleRestart}>
