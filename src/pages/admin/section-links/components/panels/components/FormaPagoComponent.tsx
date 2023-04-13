@@ -1,6 +1,10 @@
 import React from 'react';
 
-export const FormaPagoComponent = () => {
+type PropsPanel = {
+  dataUser: any;
+};
+
+export const FormaPagoComponent = (props: PropsPanel) => {
   return (
     <>
       <div className="grid gap-4 grid-cols-8 ">

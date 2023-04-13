@@ -8,6 +8,7 @@ import { CursoPersonal } from './view-curso/CursoPersonal';
 
 type PropsPanelCurso = {
   title: string;
+  infoUser: any;
 };
 export const PanelCurso = (props: PropsPanelCurso) => {
   return (
@@ -17,16 +18,16 @@ export const PanelCurso = (props: PropsPanelCurso) => {
       </p>
       <TabView>
         <TabPanel header="Datos personales" headerTemplate={RenderIconPersonal}>
-          <CursoPersonal />
+          <CursoPersonal dataUser={props.infoUser} />
         </TabPanel>
         <TabPanel
           header="Documento a emitir"
           headerTemplate={RenderIconRegistro}
         >
-          <DocumentoEmitirComponent />
+          <DocumentoEmitirComponent dataUser={props.infoUser} />
         </TabPanel>
         <TabPanel header="Forma de pago" headerTemplate={RenderIconDeuda}>
-          <FormaPagoComponent />
+          <FormaPagoComponent dataUser={props.infoUser} />
         </TabPanel>
       </TabView>
     </>

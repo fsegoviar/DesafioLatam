@@ -61,11 +61,11 @@ export const DialogForm = (props: DialogType) => {
         case 'Carrera':
           return <PanelCarrera infoUser={infoPanel} />;
         case 'Curso':
-          return <PanelCurso title={'Curso'} />;
+          return <PanelCurso title={'Curso'} infoUser={infoPanel} />;
         case 'Taller':
-          return <PanelCurso title={'Taller'} />;
+          return <PanelCurso title={'Taller'} infoUser={infoPanel} />;
         case 'Reintegro':
-          return <PanelCurso title={'Reintegro'} />;
+          return <PanelCurso title={'Reintegro'} infoUser={infoPanel} />;
         default:
           return <>default</>;
       }

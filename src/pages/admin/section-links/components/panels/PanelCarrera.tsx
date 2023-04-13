@@ -33,19 +33,19 @@ export const PanelCarrera = (props: PanelCarreraProps) => {
           header="Datos laborales"
           headerTemplate={RenderIconEmpleabilidad}
         >
-          <LaboralComponent />
+          <LaboralComponent dataUser={props.infoUser} />
         </TabPanel>
         <TabPanel
           header="Documento a emitir"
           headerTemplate={RenderIconRegistro}
         >
-          <DocumentoEmitirComponent />
+          <DocumentoEmitirComponent dataUser={props.infoUser} />
         </TabPanel>
         <TabPanel header="Forma de pago" headerTemplate={RenderIconDeuda}>
-          <FormaPagoComponent />
+          <FormaPagoComponent dataUser={props.infoUser} />
         </TabPanel>
         <TabPanel header="Aval" headerTemplate={RenderIconFacturacion}>
-          <AvalComponent />
+          <AvalComponent dataUser={props.infoUser} />
         </TabPanel>
       </TabView>
     </>
