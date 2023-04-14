@@ -1,19 +1,32 @@
 import axios, { AxiosError } from 'axios';
 import { SupplierTypeUser } from '../../../interfaces';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 // import React, { useState } from 'react';
 // import { useNavigate } from 'react-router-dom';
 
 type PropsFinishPayment = {
   suppliers: SupplierTypeUser[];
+  dataUser: any;
 };
 
-export const SimpleFinishPayment = ({ suppliers }: PropsFinishPayment) => {
+export const SimpleFinishPayment = ({
+  suppliers,
+  dataUser
+}: PropsFinishPayment) => {
   // const navigate = useNavigate();
   // const [setLoadingTransbank, setSetLoadingTransbank] = useState(false);
+  const [paymentMethod, setPaymentMethod] = useState({
+    description: '',
+    quotes: ''
+  });
 
   useEffect(() => {
     console.log('Suppliers FinishPayment', suppliers);
+    console.log('dataUser FinishPayment', dataUser);
+    setPaymentMethod({
+      description: String(localStorage.getItem('paymentMethod')),
+      quotes: String(localStorage.getItem('paymentQuotes'))
+    });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -103,23 +116,23 @@ export const SimpleFinishPayment = ({ suppliers }: PropsFinishPayment) => {
     <form method={'post'} className={'mt-5 w-full'}>
       <label className={'font-bold text-lg'}>Resumen</label>
       <div className="grid gap-4 grid-cols-2 mt-3">
-        <div className="flex flex-col">
+        <div className="flex flex-col col-span-2">
           <label>Carrera</label>
-          <input type="text" placeholder="Carrera" readOnly />
-        </div>
-        <div className="flex flex-col">
-          <label>Generación de matrícula</label>
-          <input type="text" placeholder="Generación" readOnly />
+          <input
+            type="text"
+            placeholder={dataUser.career.description}
+            readOnly
+          />
         </div>
       </div>
       <div className="grid gap-4 grid-cols-2 mt-3">
         <div className="flex flex-col">
           <label>Forma de pago</label>
-          <input type="text" placeholder="Cuotas mensuales" readOnly />
+          <input type="text" placeholder={paymentMethod.description} readOnly />
         </div>
         <div className="flex flex-col">
           <label>Número de cuotas</label>
-          <input type="text" placeholder="Cuotas mensuales" readOnly />
+          <input type="text" placeholder={paymentMethod.quotes} readOnly />
         </div>
       </div>
       <div className={'mt-5'}>

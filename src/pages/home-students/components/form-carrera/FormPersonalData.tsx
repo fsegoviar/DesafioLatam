@@ -125,6 +125,7 @@ export const FormPersonalData = (props: PropsFormUser) => {
 
   const onSubmit: SubmitHandler<PersonalDataUser> = async (data) => {
     console.log('data submit =>', data);
+    data.nationality = nationalitySelected.description;
     await axios
       .post(
         `${process.env.REACT_APP_API_BACKEND}/register_form/personal_info`,

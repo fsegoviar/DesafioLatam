@@ -131,7 +131,10 @@ export const FormTaller = () => {
                   />
                 );
               case 5:
-                <SimpleFinishPayment suppliers={dataUser[0].price.suppliers} />;
+                <SimpleFinishPayment
+                  dataUser={dataUser[0]}
+                  suppliers={dataUser[0].price.suppliers}
+                />;
                 return <></>;
               default:
                 break;

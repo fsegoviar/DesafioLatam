@@ -131,6 +131,7 @@ export const FormReintegro = () => {
               case 5:
                 return (
                   <SimpleFinishPayment
+                    dataUser={dataUser[0]}
                     suppliers={dataUser[0].price.suppliers}
                   />
                 );

@@ -107,6 +107,7 @@ export const FormLaborData = (props: PropsFormUser) => {
           <label>Enlace LinkedIn</label>
           <input
             type="text"
+            placeholder={'https://www.google.com'}
             {...register('linkedin', {
               required: true,
               pattern: /^https?:\/\/[\w]+(\.[\w]+)+[/#?]?.*$/

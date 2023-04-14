@@ -171,6 +171,7 @@ export const FormCarrera = () => {
               case 8:
                 return (
                   <SimpleFinishPayment
+                    dataUser={dataUser[0]}
                     suppliers={dataUser[0].price.suppliers}
                   />
                 );

@@ -122,7 +122,7 @@ export const FormAval = (props: PropsFormUser) => {
 
   return (
     <>
-      <div className="bg-gray-200 py-5 px-3 rounded-lg">
+      <div className="bg-gray-200 py-5 px-3 rounded-lg mt-10">
         <p>
           Si no cuentas con una renta mínima mensual de $450.000 demosteable o
           tienes tu historial crediticio con deuda, necesitas un aval.
@@ -200,7 +200,9 @@ export const FormAval = (props: PropsFormUser) => {
             <label>Tipo de Identificación</label>
             <select
               id=""
-              className="w-full p-1.5 border-2 rounded-lg border-black"
+              className={`w-full p-1.5 border-2 rounded-lg ${
+                isBilling ? 'border-gray-400' : ' border-black'
+              }`}
               disabled={isBilling}
               {...register('identity_type_id', {
                 required: !isBilling ?? true
