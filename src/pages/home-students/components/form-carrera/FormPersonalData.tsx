@@ -315,13 +315,13 @@ export const FormPersonalData = (props: PropsFormUser) => {
       <div className="mt-3">
         <div>
           <div className="grid grid-cols-4 gap-4">
-            <div className="col-span-2 flex flex-col">
+            <div className="col-span-4 flex flex-col">
               <label>Carrera a la cual te estas matriculando</label>
-              <input type="text" />
-            </div>
-            <div className="col-span-2 flex flex-col">
-              <label>Generación a la que matrículas</label>
-              <input type="text" />
+              <input
+                type="text"
+                placeholder={props.dataUser?.career?.description ?? ''}
+                disabled={true}
+              />
             </div>
           </div>
         </div>

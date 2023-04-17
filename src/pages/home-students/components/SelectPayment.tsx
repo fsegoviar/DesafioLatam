@@ -9,6 +9,7 @@ type PropsFormUser = {
   prices: any[];
   dataUser: any;
   paymentSelected: (value: string) => void;
+  tuition: number;
 };
 
 export const SelectPayment = (props: PropsFormUser) => {
@@ -50,26 +51,26 @@ export const SelectPayment = (props: PropsFormUser) => {
     cardSelected2 ? props.setCurrentStep(props.currentStep + 2) : nextStep();
   };
 
-  const selectCard = (key: string) => {
+  const selectCard = (key: string, element: any) => {
     setCardSelected2(false);
 
     switch (key) {
       case '1':
-        setTotalValue(1_250_000);
+        setTotalValue(element.pivot.reference_value);
         localStorage.setItem('paymentMethod', 'Pago en cuotas');
         setActiveCount(true);
         setCardSelected1(true);
-        setDiscount(90);
+        setDiscount(element.pivot.free_discount);
         break;
       case '2':
-        setTotalValue(1_100_000);
+        setTotalValue(element.pivot.reference_value);
         localStorage.setItem('paymentMethod', 'Pago anticipado');
-        setDiscount(95);
+        setDiscount(element.pivot.advance_discount);
         setCardSelected2(true);
         setActiveCount(true);
         break;
       case '3':
-        setDiscount(0);
+        setDiscount(element.pivot.isa_percent);
         localStorage.setItem('paymentMethod', 'Pago en ISA');
         setCardSelected3(true);
         break;
@@ -90,7 +91,7 @@ export const SelectPayment = (props: PropsFormUser) => {
               return (
                 <div
                   className={`card m-4 p-3 ${cardSelected1 && 'card-selected'}`}
-                  onClick={() => selectCard('1')}
+                  onClick={() => selectCard('1', element)}
                 >
                   <p className="font-bold text-sky-500 text-[18px] text-center">
                     Cuotas mensuales
@@ -99,7 +100,9 @@ export const SelectPayment = (props: PropsFormUser) => {
                     Paga en hasta {element.pivot.quotes} cuotas mensuales con
                     diferentes medios de pago en la fecha que más te convenga
                   </p>
-                  <p className="text-[14px] font-bold">Matrícula $22.500 CLP</p>
+                  <p className="text-[14px] font-bold">
+                    Matrícula ${props.tuition}
+                  </p>
                   <p className="text-sky-500 font-bold text-lg">+</p>
                   <p className="text-sky-500 font-bo1ld text-2xl text-center">
                     {element.pivot.quotes} cuotas de $
@@ -124,7 +127,7 @@ export const SelectPayment = (props: PropsFormUser) => {
                 <div
                   key={index}
                   className={`card m-4 p-3 ${cardSelected2 && 'card-selected'}`}
-                  onClick={() => selectCard('2')}
+                  onClick={() => selectCard('2', element)}
                 >
                   <p className="font-bold text-sky-500 text-[18px] text-center">
                     Pago anticipado tarjetas o transferencia
@@ -164,7 +167,7 @@ export const SelectPayment = (props: PropsFormUser) => {
               return (
                 <div
                   className={`card m-4 p-3 ${cardSelected3 && 'card-selected'}`}
-                  onClick={() => selectCard('3')}
+                  onClick={() => selectCard('3', element)}
                 >
                   <p className="font-bold text-sky-500 text-[18px] text-center">
                     Acuerdo ingresos compartidos (ISA)
@@ -173,7 +176,9 @@ export const SelectPayment = (props: PropsFormUser) => {
                     Modelo de financiamiento donde solo comienzas a pagar una
                     vez consigues trabajo, sin costo inicial
                   </p>
-                  <p className="text-[14px] font-bold">Matrícula $22.500 CLP</p>
+                  <p className="text-[14px] font-bold">
+                    Matrícula ${props.tuition}
+                  </p>
                   <p className="text-sky-500 font-bold text-lg">+</p>
                   <p className="text-sky-500 font-bold text-2xl text-center">
                     15% de tus ingresos
@@ -215,7 +220,9 @@ export const SelectPayment = (props: PropsFormUser) => {
           {count > 0 && (
             <div className="flex flex-col justify-end items-end mt-5">
               <div className="border-2 rounded-lg flex flex-col justify-end items-end ">
-                <p className="py-2 px-7 rounded-lg m-1">Matrícula $22.500</p>
+                <p className="py-2 px-7 rounded-lg m-1">
+                  Matrícula ${props.tuition}
+                </p>
                 <p className="py-2 px-7 rounded-lg m-1">{`${count} cuotas de $ ${Math.round(
                   Number(totalValue / count)
                 )}`}</p>
@@ -227,7 +234,7 @@ export const SelectPayment = (props: PropsFormUser) => {
                 </label>
               </div>
               <p className="font-bold mt-5 text-3xl">
-                Total: ${22_500 + totalValue}
+                Total: ${props.tuition + totalValue}
               </p>
             </div>
           )}

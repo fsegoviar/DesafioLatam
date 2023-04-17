@@ -45,20 +45,33 @@ export const FormBilling = (props: PropsFormUser) => {
     console.log('Submit Billing =>', data);
 
     if (isBilling) {
-      nextStep();
+      await axios
+        .post(`${process.env.REACT_APP_API_BACKEND}/register_form/billing`, {
+          document_type_id: '1',
+          register_id: props.registerId,
+          address: '',
+          business_line: '',
+          business_name: '',
+          dni: '',
+          email: '',
+          phone: '',
+          representative_dni: '',
+          representative_fullname: ''
+        })
+        .then((response: any) => {
+          console.log('Response Billing =>', response.data);
+          nextStep();
+        })
+        .catch((error: AxiosError) => console.log('Error Billing =>', error));
     } else {
       console.log('DATA BILLING =>', {
         ...data,
-        register_id: props.registerId,
-        representative_dni: '1.111.111-1',
-        representative_fullname: 'Felipe Segovia'
+        register_id: props.registerId
       });
       await axios
         .post(`${process.env.REACT_APP_API_BACKEND}/register_form/billing`, {
           ...data,
-          register_id: props.registerId,
-          representative_dni: '1.111.111-1',
-          representative_fullname: 'Felipe Segovia'
+          register_id: props.registerId
         })
         .then((response: any) => {
           console.log('Response Billing =>', response.data);
@@ -181,6 +194,34 @@ export const FormBilling = (props: PropsFormUser) => {
               <span className="text-red-500 text-sm font-light">
                 Debe tener más de 5 digitos
               </span>
+            )}
+          </div>
+        </div>
+        <div className="grid gap-4 grid-cols-4 ">
+          <div className="col-span-2 flex flex-col">
+            <label>Nombre representante</label>
+            <input
+              type="text"
+              disabled={isBilling}
+              {...register('representative_fullname', {
+                required: !isBilling ?? true
+              })}
+            />
+            {errors.representative_fullname?.type === 'required' && (
+              <RequiredField />
+            )}
+          </div>
+          <div className="col-span-2 flex flex-col">
+            <label>Rut del representante</label>
+            <input
+              type="number"
+              disabled={isBilling}
+              {...register('representative_dni', {
+                required: !isBilling ?? true
+              })}
+            />
+            {errors.representative_dni?.type === 'required' && (
+              <RequiredField />
             )}
           </div>
         </div>

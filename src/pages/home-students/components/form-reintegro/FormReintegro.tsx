@@ -118,6 +118,7 @@ export const FormReintegro = () => {
                     currentStep={currentStep}
                     setCurrentStep={setCurrentStep}
                     paymentSelected={setPaymentMethodSelected}
+                    tuition={dataUser[0].price.tuition}
                   />
                 );
               case 4:
