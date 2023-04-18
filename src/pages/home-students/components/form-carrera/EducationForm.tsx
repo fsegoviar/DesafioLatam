@@ -54,10 +54,6 @@ export const EducationForm = (props: PropsFormUser) => {
     props.setCurrentStep(props.currentStep - 1);
   };
 
-  const nextStep = () => {
-    props.setCurrentStep(props.currentStep + 1);
-  };
-
   const onSubmit: SubmitHandler<any> = async (data) => {
     console.log('DATA =>', data);
 
