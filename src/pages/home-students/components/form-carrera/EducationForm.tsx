@@ -85,11 +85,29 @@ export const EducationForm = (props: PropsFormUser) => {
       )
       .then((response: any) => {
         console.log('Response User =>', response.data);
+        axios
+          .post(
+            `${
+              process.env.REACT_APP_API_BACKEND
+            }/registers/${localStorage.getItem('register_id')}/step`,
+            {
+              step: 3
+            },
+            {
+              headers: {
+                'Access-Control-Allow-Origin': '*'
+              }
+            }
+          )
+          .then((response: any) => {
+            console.log('Step =>', response.data);
+            props.setCurrentStep(props.currentStep + 1);
+          })
+          .catch((error: AxiosError) => console.log('Error Aval =>', error));
       })
       .catch((error: AxiosError) =>
         console.log('Error fetchDataUser =>', error)
-      )
-      .finally(() => nextStep());
+      );
   };
 
   return (

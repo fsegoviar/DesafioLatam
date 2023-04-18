@@ -53,7 +53,25 @@ export const FormAval = (props: PropsFormUser) => {
 
   const onSubmit: SubmitHandler<AvalType> = (data) => {
     if (isBilling) {
-      nextStep();
+      axios
+        .post(
+          `${
+            process.env.REACT_APP_API_BACKEND
+          }/registers/${localStorage.getItem('register_id')}/step`,
+          {
+            step: 7
+          },
+          {
+            headers: {
+              'Access-Control-Allow-Origin': '*'
+            }
+          }
+        )
+        .then((response: any) => {
+          console.log('Step =>', response.data);
+          nextStep();
+        })
+        .catch((error: AxiosError) => console.log('Error Aval =>', error));
     } else {
       console.log('DATA AVAL =>', data);
 
@@ -90,10 +108,7 @@ export const FormAval = (props: PropsFormUser) => {
         )
         .then((response: any) => {
           console.log('Response Aval =>', response.data);
-        })
-        .catch((error: AxiosError) => console.log('Error Aval =>', error))
-        .finally(async () => {
-          await axios
+          axios
             .post(
               `${
                 process.env.REACT_APP_API_BACKEND
@@ -112,7 +127,8 @@ export const FormAval = (props: PropsFormUser) => {
               nextStep();
             })
             .catch((error: AxiosError) => console.log('Error Aval =>', error));
-        });
+        })
+        .catch((error: AxiosError) => console.log('Error Aval =>', error));
     }
   };
 

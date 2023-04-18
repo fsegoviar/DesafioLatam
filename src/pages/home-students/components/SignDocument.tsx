@@ -8,7 +8,25 @@ type PropsFormUser = {
 
 export const SignDocument = (props: PropsFormUser) => {
   const nextStep = () => {
-    props.setCurrentStep(props.currentStep + 1);
+    axios
+      .post(
+        `${process.env.REACT_APP_API_BACKEND}/registers/${localStorage.getItem(
+          'register_id'
+        )}/step`,
+        {
+          step: 8
+        },
+        {
+          headers: {
+            'Access-Control-Allow-Origin': '*'
+          }
+        }
+      )
+      .then((response: any) => {
+        console.log('Step =>', response.data);
+        props.setCurrentStep(props.currentStep + 1);
+      })
+      .catch((error: AxiosError) => console.log('Error Aval =>', error));
   };
 
   const handleSigninDocument = () => {

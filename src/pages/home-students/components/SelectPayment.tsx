@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 import { ReactNode, useEffect, useState } from 'react';
 
 type PropsFormUser = {
@@ -48,7 +48,27 @@ export const SelectPayment = (props: PropsFormUser) => {
   };
 
   const handleNextStep = () => {
-    cardSelected2 ? props.setCurrentStep(props.currentStep + 2) : nextStep();
+    axios
+      .post(
+        `${process.env.REACT_APP_API_BACKEND}/registers/${localStorage.getItem(
+          'register_id'
+        )}/step`,
+        {
+          step: 6
+        },
+        {
+          headers: {
+            'Access-Control-Allow-Origin': '*'
+          }
+        }
+      )
+      .then((response: any) => {
+        console.log('Step =>', response.data);
+        cardSelected2
+          ? props.setCurrentStep(props.currentStep + 2)
+          : nextStep();
+      })
+      .catch((error: AxiosError) => console.log('Error Aval =>', error));
   };
 
   const selectCard = (key: string, element: any) => {

@@ -29,7 +29,7 @@ export const RejectPaymentPage = () => {
             className={'my-5'}
             alt={'pago_rechazado'}
           />
-          <button className="btn" onSubmit={() => handleRestart()}>
+          <button className="btn" onClick={() => handleRestart()}>
             Reintentar
           </button>
         </div>

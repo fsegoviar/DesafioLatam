@@ -68,7 +68,25 @@ export const FormLaborData = (props: PropsFormUser) => {
       )
       .then((response: any) => {
         console.log('Response =>', response.data);
-        nextStep();
+        axios
+          .post(
+            `${
+              process.env.REACT_APP_API_BACKEND
+            }/registers/${localStorage.getItem('register_id')}/step`,
+            {
+              step: 7
+            },
+            {
+              headers: {
+                'Access-Control-Allow-Origin': '*'
+              }
+            }
+          )
+          .then((response: any) => {
+            console.log('Step =>', response.data);
+            nextStep();
+          })
+          .catch((error: AxiosError) => console.log('Error Aval =>', error));
       })
       .catch((error: AxiosError) => console.log('Error =>', error));
   };

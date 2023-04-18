@@ -84,7 +84,8 @@ export const SimpleFinishPayment = ({
         },
         {
           headers: {
-            'Access-Control-Allow-Origin': '*'
+            'Access-Control-Allow-Origin': '*',
+            Authorization: `Bearer ${localStorage.getItem('token_user_latam')}`
           }
         }
       )
@@ -156,15 +157,25 @@ export const SimpleFinishPayment = ({
               case 'Paypal':
                 return (
                   <>
-                    <div className="relative bg-white rounded-xl m-4 w-[200px] h-[100px]">
-                      <div
-                        className="w-full h-full bg-center bg-contain bg-no-repeat rounded-xl shadow-xl cursor-pointer"
-                        style={{
-                          backgroundImage: `url(${require('../../../assets/images/new-paypal-logo.jpg')})`
-                        }}
-                        onClick={() => handleTransactionPaypal()}
-                      ></div>
-                    </div>
+                    {(() => {
+                      if (dataUser.price.currency.code === 'CLP') {
+                        return <></>;
+                      } else {
+                        return (
+                          <>
+                            <div className="relative bg-white rounded-xl m-4 w-[200px] h-[100px]">
+                              <div
+                                className="w-full h-full bg-center bg-contain bg-no-repeat rounded-xl shadow-xl cursor-pointer"
+                                style={{
+                                  backgroundImage: `url(${require('../../../assets/images/new-paypal-logo.jpg')})`
+                                }}
+                                onClick={() => handleTransactionPaypal()}
+                              ></div>
+                            </div>
+                          </>
+                        );
+                      }
+                    })()}
                   </>
                 );
               case 'Flow':

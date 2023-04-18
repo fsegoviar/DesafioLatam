@@ -56,6 +56,7 @@ export const FormCarrera = () => {
       .then((response: any) => {
         console.log('Response User =>', response.data);
         setDataUser(response.data);
+        setCurrentStep(response.data[0].step);
       })
       .catch((error: AxiosError) => {
         console.log('Error fetchDataUser =>', error);
