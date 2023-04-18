@@ -35,8 +35,8 @@ export const SimpleFinishPayment = ({
       .post(
         `${process.env.REACT_APP_API_BACKEND}/transbank/start_purchase`,
         {
-          register_id: 1,
-          total: 1000
+          register_id: String(localStorage.getItem('register_id')),
+          total: dataUser.price.tuition
         },
         {
           headers: {
@@ -55,8 +55,8 @@ export const SimpleFinishPayment = ({
       .post(
         `${process.env.REACT_APP_API_BACKEND}/paypal/pay`,
         {
-          amount: 1000,
-          currency: 'USD'
+          amount: dataUser.price.tuition,
+          currency: String(dataUser.price.currency.code)
         },
         {
           headers: {
@@ -66,7 +66,8 @@ export const SimpleFinishPayment = ({
       )
       .then((response: any) => {
         // window.location.replace(response);
-        //TODO: Falta la implementación
+        console.log('Paypal =>', response.data);
+        window.location.replace(response.data);
       })
       .catch((error: AxiosError) => console.log('Error Paypal =>', error));
   };
@@ -76,10 +77,10 @@ export const SimpleFinishPayment = ({
       .post(
         `${process.env.REACT_APP_API_BACKEND}/flow/pay`,
         {
-          register_id: 1,
-          amount: 1000,
-          currency: 'CLP',
-          email: 'jherrera@lisit.cl'
+          register_id: String(localStorage.getItem('register_id')),
+          amount: dataUser.price.tuition,
+          currency: String(dataUser.price.currency.code),
+          email: String(dataUser.user.email)
         },
         {
           headers: {
@@ -234,7 +235,10 @@ export const SimpleFinishPayment = ({
         </div>
       </div>
       <div className={'mt-5 flex flex-col items-end'}>
-        <label className={'font-bold py-5 text-3xl'}>Total: $13500</label>
+        <label className={'font-bold py-5 text-3xl'}>
+          Total: $
+          {new Intl.NumberFormat('es-ES', {}).format(dataUser.price.tuition)}
+        </label>
         {/* <button
           className="btn"
           type="submit"

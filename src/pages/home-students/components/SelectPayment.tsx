@@ -77,6 +77,10 @@ export const SelectPayment = (props: PropsFormUser) => {
     }
   };
 
+  const formatPrice = (value: number) => {
+    return new Intl.NumberFormat('es-ES', {}).format(value);
+  };
+
   return (
     <form method="post" className="mt-5 ">
       <div className="flex justify-center py-5">
@@ -101,24 +105,25 @@ export const SelectPayment = (props: PropsFormUser) => {
                     diferentes medios de pago en la fecha que más te convenga
                   </p>
                   <p className="text-[14px] font-bold">
-                    Matrícula ${props.tuition}
+                    Matrícula ${formatPrice(props.tuition)}
                   </p>
                   <p className="text-sky-500 font-bold text-lg">+</p>
                   <p className="text-sky-500 font-bo1ld text-2xl text-center">
                     {element.pivot.quotes} cuotas de $
-                    {element.pivot.quotes_value} CLP
+                    {formatPrice(element.pivot.quotes_value)} CLP
                   </p>
                   <p className="text-sm pt-2">
                     Valor Referencia:{' '}
                     <span className="line-through">
-                      ${element.pivot.reference_value} CLP
+                      ${formatPrice(element.pivot.reference_value)} CLP
                     </span>
                   </p>
                   <p className="font-bold">
                     Descuento: {element.pivot.free_discount}%
                   </p>
                   <p className="font-bold text-center text-sky-500 text-sm pt-2">
-                    Total a pagar: ${element.pivot.reference_value} CLP
+                    Total a pagar: ${formatPrice(element.pivot.reference_value)}{' '}
+                    CLP
                   </p>
                 </div>
               );
@@ -137,7 +142,7 @@ export const SelectPayment = (props: PropsFormUser) => {
                     los medios de pago disponibles.
                   </p>
                   <p className="text-[14px] font-bold">
-                    Matrícula ${props.dataUser.price.tuition}{' '}
+                    Matrícula ${formatPrice(props.dataUser.price.tuition)}{' '}
                     {props.dataUser.price.currency.code}
                   </p>
                   <p className="text-sky-500 font-bold text-lg">+</p>
@@ -148,7 +153,7 @@ export const SelectPayment = (props: PropsFormUser) => {
                   <p className="text-sm pt-2">
                     Valor Referencia:{' '}
                     <span className="line-through">
-                      ${element.pivot.reference_value}{' '}
+                      ${formatPrice(element.pivot.reference_value)}{' '}
                       {props.dataUser.price.currency.code}
                     </span>
                   </p>
@@ -157,9 +162,11 @@ export const SelectPayment = (props: PropsFormUser) => {
                   </p>
                   <p className="font-bold text-center text-sky-500 text-sm pt-2">
                     Total a Pagar $
-                    {element.pivot.reference_value -
-                      (element.pivot.advance_discount / 100) *
-                        element.pivot.reference_value}
+                    {formatPrice(
+                      element.pivot.reference_value -
+                        (element.pivot.advance_discount / 100) *
+                          element.pivot.reference_value
+                    )}
                   </p>
                 </div>
               );
@@ -177,7 +184,7 @@ export const SelectPayment = (props: PropsFormUser) => {
                     vez consigues trabajo, sin costo inicial
                   </p>
                   <p className="text-[14px] font-bold">
-                    Matrícula ${props.tuition}
+                    Matrícula ${formatPrice(props.tuition)}
                   </p>
                   <p className="text-sky-500 font-bold text-lg">+</p>
                   <p className="text-sky-500 font-bold text-2xl text-center">
@@ -221,10 +228,10 @@ export const SelectPayment = (props: PropsFormUser) => {
             <div className="flex flex-col justify-end items-end mt-5">
               <div className="border-2 rounded-lg flex flex-col justify-end items-end ">
                 <p className="py-2 px-7 rounded-lg m-1">
-                  Matrícula ${props.tuition}
+                  Matrícula ${formatPrice(props.tuition)}
                 </p>
-                <p className="py-2 px-7 rounded-lg m-1">{`${count} cuotas de $ ${Math.round(
-                  Number(totalValue / count)
+                <p className="py-2 px-7 rounded-lg m-1">{`${count} cuotas de $ ${formatPrice(
+                  Math.round(Number(totalValue / count))
                 )}`}</p>
                 <p className="py-2 px-7 rounded-lg m-1 font-bold text-2xl">
                   {discount}%
@@ -234,7 +241,7 @@ export const SelectPayment = (props: PropsFormUser) => {
                 </label>
               </div>
               <p className="font-bold mt-5 text-3xl">
-                Total: ${props.tuition + totalValue}
+                Total: ${formatPrice(props.tuition + totalValue)}
               </p>
             </div>
           )}
