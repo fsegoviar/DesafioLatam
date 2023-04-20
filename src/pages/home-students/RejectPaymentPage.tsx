@@ -45,7 +45,7 @@ export const RejectPaymentPage = () => {
             >
               <div
                 className={
-                  'px-2 bg-no-repeat bg-center bg-cover w-[20px] h-[20px]'
+                  'px-2 bg-no-repeat bg-center bg-cover w-[20px] h-[20px] d-inline'
                 }
                 style={{
                   backgroundImage: `url(${require('../../assets/images/ico_wsp.png')})`
