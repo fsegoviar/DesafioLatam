@@ -32,29 +32,31 @@ export const RejectPaymentPage = () => {
             Algo salió mal, por favor inténtalo nuevamente o comunicate con
             nosotros{' '}
           </h1>
-          <button
-            className={
-              'bg-green-500 hover:bg-green-400 text-white font-medium px-7 py-1 rounded-xl'
-            }
-            onClick={() =>
-              navigate(
-                'https://api.whatsapp.com/send/?phone=56951177975&text=Hola%21+Tengo+problemas+con+el+pago&type=phone_number&app_absent=0'
-              )
-            }
-          >
-            <div
+          <div className={'d-flex'}>
+            <button
               className={
-                'px-2 bg-no-repeat bg-center bg-cover w-[20px] h-[20px]'
+                'bg-green-500 hover:bg-green-400 text-white font-medium px-7 py-1 rounded-xl d-flex mx-10'
               }
-              style={{
-                backgroundImage: `url(${require('../../assets/images/ico_wsp.png')})`
-              }}
-            ></div>
-            Contactar con Whatsapp
-          </button>
-          <button className="btn" onClick={() => handleRestart()}>
-            Reintentar
-          </button>
+              onClick={() =>
+                window.location.replace(
+                  'https://api.whatsapp.com/send/?phone=56951177975&text=Hola%21+Tengo+problemas+con+el+pago&type=phone_number&app_absent=0'
+                )
+              }
+            >
+              <div
+                className={
+                  'px-2 bg-no-repeat bg-center bg-cover w-[20px] h-[20px]'
+                }
+                style={{
+                  backgroundImage: `url(${require('../../assets/images/ico_wsp.png')})`
+                }}
+              ></div>
+              Contactar con Whatsapp
+            </button>
+            <button className="btn" onClick={() => handleRestart()}>
+              Reintentar
+            </button>
+          </div>
         </div>
       </div>
     </>
