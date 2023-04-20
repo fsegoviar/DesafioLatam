@@ -35,7 +35,7 @@ export const RejectPaymentPage = () => {
           <div className={'d-flex'}>
             <button
               className={
-                'bg-green-500 hover:bg-green-400 text-white font-medium px-7 py-1 rounded-xl d-flex mx-10'
+                'bg-green-500 hover:bg-green-400 text-white font-medium px-7 py-1 rounded-xl flex mx-10'
               }
               onClick={() =>
                 window.location.replace(
@@ -45,7 +45,7 @@ export const RejectPaymentPage = () => {
             >
               <div
                 className={
-                  'px-2 bg-no-repeat bg-center bg-cover w-[20px] h-[20px] d-inline'
+                  'bg-no-repeat bg-center bg-cover w-[20px] h-[20px] mx-2'
                 }
                 style={{
                   backgroundImage: `url(${require('../../assets/images/ico_wsp.png')})`
