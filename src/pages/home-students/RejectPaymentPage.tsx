@@ -32,7 +32,7 @@ export const RejectPaymentPage = () => {
             Algo salió mal, por favor inténtalo nuevamente o comunicate con
             nosotros{' '}
           </h1>
-          <div className={'d-flex'}>
+          <div className={'flex'}>
             <button
               className={
                 'bg-green-500 hover:bg-green-400 text-white font-medium px-7 py-1 rounded-xl flex mx-10'
