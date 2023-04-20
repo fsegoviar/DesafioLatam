@@ -26,12 +26,6 @@ export const EducationForm = (props: PropsFormUser) => {
     formState: { errors }
   } = useForm({
     defaultValues: {
-      // register_id: props.registerId,
-      // educational_level_id:
-      //   props.dataUser.user.education.educational_level_id ?? '',
-      // english_level_id: props.dataUser.user.education.english_level_id ?? '',
-      // description: props.dataUser.user.education.description ?? '',
-      // previous_knowledge: true
       register_id: props.registerId,
       educational_level_id:
         props.dataUser.user.education?.educational_level_id ?? null,
