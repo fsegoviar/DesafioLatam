@@ -44,6 +44,7 @@ export const FormDataEditPrice = (props: PropsEditPrice) => {
   const [checkPaymentQuotes, setCheckPaymentQuotes] = useState(false);
   const [checkPrepaid, setCheckPrepaid] = useState(false);
   const [checkISA, setCheckISA] = useState(false);
+  const [errorCheck, setErrorCheck] = useState(false);
 
   const {
     handleSubmit,
@@ -92,6 +93,7 @@ export const FormDataEditPrice = (props: PropsEditPrice) => {
   };
 
   const initSuppliers = () => {
+    console.log('Suppliers =>', props.data);
     for (const supplier of props.data.price.suppliers) {
       switch (supplier.description) {
         case 'Transbank':
@@ -174,28 +176,32 @@ export const FormDataEditPrice = (props: PropsEditPrice) => {
 
     console.log('Data a enviar =>', requestData);
     props.isLoad(true);
-    await axios
-      .post(
-        `${process.env.REACT_APP_API_BACKEND}/prices/${props.data.price.id}`,
-        requestData,
-        {
-          headers: {
-            'Access-Control-Allow-Origin': '*'
+    if (checkFlow || checkISA || checkOtherMethods || checkTransbank) {
+      await axios
+        .post(
+          `${process.env.REACT_APP_API_BACKEND}/prices/${props.data.price.id}`,
+          requestData,
+          {
+            headers: {
+              'Access-Control-Allow-Origin': '*'
+            }
           }
-        }
-      )
-      .then((response) => {
-        console.log('Response Price =>', response.data);
-        props.actionToast('edit');
-        props.addData(response.data);
-      })
-      .catch((error: AxiosError) => {
-        console.log('Error Price =>', error);
-      })
-      .finally(() => {
-        props.isLoad(false);
-        closeDialogEdit();
-      });
+        )
+        .then((response) => {
+          console.log('Response Price =>', response.data);
+          props.actionToast('edit');
+          props.addData(response.data);
+        })
+        .catch((error: AxiosError) => {
+          console.log('Error Price =>', error);
+        })
+        .finally(() => {
+          props.isLoad(false);
+          closeDialogEdit();
+        });
+    } else {
+      setErrorCheck(true);
+    }
   };
 
   const getTotalValueQuotes = () => {
@@ -653,6 +659,11 @@ export const FormDataEditPrice = (props: PropsEditPrice) => {
             Otro medio de pago
           </label>
           {errors.price?.suppliers && (
+            <div>
+              <RequiredField />
+            </div>
+          )}
+          {errorCheck && (
             <div>
               <RequiredField />
             </div>
