@@ -2,7 +2,7 @@ import { DataTable } from 'primereact/datatable';
 import { FilterMatchMode } from 'primereact/api';
 import { Column } from 'primereact/column';
 import { Button } from 'primereact/button';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { DialogCreateLink } from './DialogCreateLink';
 import { GetRegisters } from '../../../../services';
 import { DialogSendEmail } from './DialogSendEmail';
@@ -10,6 +10,8 @@ import axios, { AxiosError } from 'axios';
 import { CgFileDocument } from 'react-icons/cg';
 import { DialogEditLink } from './DialogEditLink';
 import { DialogForm } from './DialogForm';
+import { NotificationComponent } from '../../../../components/NotificationComponent';
+import { Toast } from 'primereact/toast';
 
 export const TableLinks = () => {
   const [openCreateLink, setOpenCreateLink] = useState(false);
@@ -17,8 +19,34 @@ export const TableLinks = () => {
   const [openDialogForm, setOpenDialogForm] = useState(false);
   const { registers, loading } = GetRegisters();
   const [idRegister, setIdRegister] = useState();
+  const { toast, showSuccess, showSuccessEdit } = NotificationComponent();
   const [openEditLink, setOpenEditLink] = useState(false);
   const [userSelected, setUserSelected] = useState(null!);
+  const [listRegisters, setListRegisters] = useState<any[]>([]);
+  const [newValue, setNewValue] = useState();
+  const [editValue, setEditValue] = useState();
+
+  // * Initial state
+  useEffect(() => {
+    if (registers) {
+      setListRegisters(registers);
+      console.log('Register :>> ', registers);
+    }
+  }, [registers]);
+
+  // * Add values
+  useEffect(() => {
+    console.log('newValue => ', newValue);
+    if (newValue) setListRegisters([...listRegisters, newValue[0]]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // * update values
+  useEffect(() => {
+    console.log('editValue =>', editValue);
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const filters = {
     'user.name': {
@@ -55,6 +83,20 @@ export const TableLinks = () => {
   const handleOpenFormUser = (dataUser: any) => {
     setOpenDialogForm(true);
     setUserSelected(dataUser);
+  };
+
+  const actionToast = (action: string) => {
+    switch (action) {
+      case 'success':
+        showSuccess();
+        break;
+      case 'edit':
+        showSuccessEdit();
+        break;
+
+      default:
+        break;
+    }
   };
 
   const renderState = (rowData: any) => {
@@ -158,8 +200,9 @@ export const TableLinks = () => {
 
   return (
     <>
+      <Toast ref={toast} />
       <DataTable
-        value={registers}
+        value={listRegisters}
         loading={loading}
         responsiveLayout="stack"
         breakpoint="960px"
@@ -216,6 +259,8 @@ export const TableLinks = () => {
         <DialogCreateLink
           open={openCreateLink}
           close={() => setOpenCreateLink(false)}
+          actionToast={actionToast}
+          addData={setNewValue}
         />
       )}
       {openEditLink && (
@@ -223,6 +268,8 @@ export const TableLinks = () => {
           idRegister={idRegister}
           open={openEditLink}
           close={() => setOpenEditLink(false)}
+          actionToast={actionToast}
+          editData={setEditValue}
         />
       )}
       {openSendEmail && (

@@ -206,7 +206,12 @@ export const FormPersonalData = (props: PropsFormUser) => {
         </div>
         <div className="col-span-2 flex flex-col">
           <label>Número de identificación</label>
-          <input type="number" {...register('dni', { required: true })} />
+          <input
+            type="number"
+            {...register('dni', {
+              required: true
+            })}
+          />
           {errors.dni && <RenderRequiredField />}
         </div>
       </div>

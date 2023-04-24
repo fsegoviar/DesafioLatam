@@ -9,6 +9,8 @@ import { SubmitHandler, useForm } from 'react-hook-form';
 type DialogCreateLinkTypes = {
   open: boolean;
   close: () => void;
+  actionToast: (action: string) => void;
+  addData: (data: any) => void;
 };
 
 export const DialogCreateLink = (props: DialogCreateLinkTypes) => {
@@ -136,7 +138,11 @@ export const DialogCreateLink = (props: DialogCreateLinkTypes) => {
           Accept: 'application/json'
         }
       })
-      .then((response: any) => console.log('response onSubmit =>', response))
+      .then((response: any) => {
+        console.log('response onSubmit =>', response);
+        props.actionToast('success');
+        props.addData(response.data);
+      })
       .catch((error: AxiosError) => console.log('Error onSubmit =>', error))
       .finally(() => closeModal());
   };

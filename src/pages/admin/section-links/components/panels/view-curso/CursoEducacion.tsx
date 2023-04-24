@@ -9,8 +9,8 @@ export const CursoEducacion = () => {
           <input type="text" disabled />
         </div>
         <div className="col-span-2 flex flex-col">
-          <label>Apellidos</label>
           <input type="text" />
+          <label>Apellidos</label>
         </div>
         <div className="col-span-2  flex flex-col">
           <label>Tipo de Identificación</label>

@@ -167,7 +167,7 @@ export const SelectPayment = (props: PropsFormUser) => {
                   </p>
                   <p className="text-sky-500 font-bold text-lg">+</p>
                   <p className="text-sky-500 font-bold text-2xl text-center">
-                    ${element.pivot.reference_value}{' '}
+                    ${formatPrice(element.pivot.reference_value)}{' '}
                     {props.dataUser.price.currency.code}
                   </p>
                   <p className="text-sm pt-2">

@@ -7,6 +7,7 @@
     "@react-buddy/ide-toolbox": "^2.3.1",
     "@reduxjs/toolkit": "^1.9.2",
     "axios": "^1.2.6",
+    "chilean-rutify": "^2.1.0",
     "date-fns": "^2.29.3",
     "env-cmd": "^10.1.0",
     "gapi-script": "^1.2.0",

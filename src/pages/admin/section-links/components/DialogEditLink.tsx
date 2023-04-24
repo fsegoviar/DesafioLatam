@@ -9,6 +9,8 @@ type DialogEditLinkTypes = {
   idRegister: any;
   open: boolean;
   close: () => void;
+  actionToast: (action: string) => void;
+  editData: (data: any) => void;
 };
 
 export const DialogEditLink = (props: DialogEditLinkTypes) => {
@@ -61,7 +63,7 @@ export const DialogEditLink = (props: DialogEditLinkTypes) => {
             }
           }
         )
-        .then((response: any) => {
+        .then(async (response: any) => {
           console.log('RegisterSelected => ', response.data);
 
           const findForm = forms.find(
@@ -75,6 +77,14 @@ export const DialogEditLink = (props: DialogEditLinkTypes) => {
           setNameUser(
             `${response.data[0].user.name} ${response.data[0].user.lastname}`
           );
+          // TODO: Falta obtener las carreras según el id que se entrega o bien añadirla al objeto response
+          // await axios
+          //   .get(
+          //     `${process.env.REACT_APP_API_BACKEND}/careers/${response.data[0].career_id}/generations`
+          //   )
+          //   .then((response: any) =>
+          //     console.log('response careers:>> ', response.data)
+          //   );
         })
         .catch((error: AxiosError) => console.log('Error =>', error))
         .finally(() => setLoading(false));
@@ -165,7 +175,11 @@ export const DialogEditLink = (props: DialogEditLinkTypes) => {
           Accept: 'application/json'
         }
       })
-      .then((response: any) => console.log('response onSubmit =>', response))
+      .then((response: any) => {
+        console.log('response onSubmit =>', response);
+        props.actionToast('edit');
+        props.editData(response.data);
+      })
       .catch((error: AxiosError) => console.log('Error onSubmit =>', error))
       .finally(() => closeModal());
   };

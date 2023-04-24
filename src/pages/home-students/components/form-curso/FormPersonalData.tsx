@@ -1,6 +1,8 @@
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { GetIdentityTypes } from '../../../../services';
 import axios, { AxiosError } from 'axios';
+import ChileanRutify from 'chilean-rutify';
+import { useEffect, useState } from 'react';
 
 type PropsFormUser = {
   stepsLength: number;
@@ -14,23 +16,30 @@ type PropsFormUser = {
 
 export const FormPersonalData = (props: PropsFormUser) => {
   const { indentityTypes } = GetIdentityTypes();
+  const [inputRut, setInputRut] = useState('');
   const {
     register,
     handleSubmit,
+    setValue,
     getValues,
     formState: { errors }
   } = useForm({
     defaultValues: {
       register_id: props.registerId,
-      career: props.dataUser?.user.career,
+      career: props.dataUser?.career,
       name: props.dataUser?.user.name,
-      identity_type_id: 1,
+      identity_type_id: props.dataUser?.user.identity_type?.id,
       lastname: props.dataUser?.user.lastname,
       dni: props.dataUser?.user.dni,
       phone: props.dataUser?.user.phone,
       email: props.dataUser?.user.email
     }
   });
+
+  useEffect(() => {
+    if (props.dataUser?.user.dni) setInputRut(props.dataUser?.user.dni);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const onSubmit: SubmitHandler<any> = async (data) => {
     console.log('data submit =>', data);
@@ -47,11 +56,29 @@ export const FormPersonalData = (props: PropsFormUser) => {
       )
       .then((response: any) => {
         console.log('Response User =>', response.data);
+        axios
+          .post(
+            `${
+              process.env.REACT_APP_API_BACKEND
+            }/registers/${localStorage.getItem('register_id')}/step`,
+            {
+              step: 2
+            },
+            {
+              headers: {
+                'Access-Control-Allow-Origin': '*'
+              }
+            }
+          )
+          .then((response: any) => {
+            console.log('Step =>', response.data);
+            props.setCurrentStep(props.currentStep + 1);
+          })
+          .catch((error: AxiosError) => console.log('Error Aval =>', error));
       })
       .catch((error: AxiosError) =>
         console.log('Error fetchDataUser =>', error)
-      )
-      .finally(() => props.setCurrentStep(props.currentStep + 1));
+      );
   };
 
   const RenderRequiredField = ({ text = 'Campo Requerido' }) => {
@@ -89,9 +116,10 @@ export const FormPersonalData = (props: PropsFormUser) => {
         <div className="col-span-2  flex flex-col">
           <label>Tipo de Identificación</label>
           <select
-            name=""
-            id=""
             className="w-full p-1.5 border-2 rounded-lg border-black"
+            onChange={(e) => {
+              setValue('identity_type_id', Number(e.target.value));
+            }}
           >
             <option value="" disabled>
               Seleccionar
@@ -106,23 +134,55 @@ export const FormPersonalData = (props: PropsFormUser) => {
         </div>
         <div className="col-span-2 flex flex-col">
           <label>Número de identificación</label>
-          <input type="number" {...register('dni', { required: true })} />
-          {errors.dni && <RenderRequiredField />}
+          <input
+            value={inputRut}
+            {...register('dni', {
+              required: true,
+              onChange: (e) => {
+                if (e.target.value !== '-') {
+                  setInputRut(String(ChileanRutify.formatRut(e.target.value)));
+                  setValue(
+                    'dni',
+                    String(ChileanRutify.formatRut(e.target.value))
+                  );
+                } else {
+                  setInputRut('');
+                }
+              },
+              validate: (v) => {
+                return ChileanRutify.validRut(v);
+              }
+            })}
+          />
+          {errors.dni?.type === 'required' && (
+            <span className="text-red-500 text-sm font-light">
+              Rut requerido
+            </span>
+          )}
+          {errors.dni?.type === 'validate' && (
+            <span className="text-red-500 text-sm font-light">
+              Rut invalido
+            </span>
+          )}
         </div>
       </div>
 
       <div className="grid gap-4 grid-cols-4 mt-5">
-        <div className="w-full flex flex-col col-span-2">
-          <label>Código teléfonico</label>
-          <select
-            name=""
-            id=""
-            className="w-full py-1.5 border-2 rounded-lg border-black "
-          >
-            <option value="">Seleccionar</option>
-            <option value="">(+569)</option>
-            <option value="">(+521)</option>
-          </select>
+        <div className="col-span-2 flex flex-col">
+          <label>Correo electrónico</label>
+          <input
+            type="email"
+            {...register('email', {
+              required: true,
+              pattern: /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$/
+            })}
+          />
+          {errors.email?.type === 'required' && <RenderRequiredField />}
+          {errors.email?.type === 'pattern' && (
+            <span className="text-red-500 text-sm font-light">
+              Formato de correo no valido
+            </span>
+          )}
         </div>
         <div className="col-span-2 flex flex-col">
           <label>Número teléfonico</label>
@@ -143,24 +203,6 @@ export const FormPersonalData = (props: PropsFormUser) => {
           {errors.phone?.type === 'minLength' && (
             <span className="text-red-500 text-sm font-light">
               Debe tener más de 5 digitos
-            </span>
-          )}
-        </div>
-      </div>
-      <div className="grid grid-cols-4 mt-5">
-        <div className="col-span-4 flex flex-col">
-          <label>Correo electrónico</label>
-          <input
-            type="email"
-            {...register('email', {
-              required: true,
-              pattern: /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$/
-            })}
-          />
-          {errors.email?.type === 'required' && <RenderRequiredField />}
-          {errors.email?.type === 'pattern' && (
-            <span className="text-red-500 text-sm font-light">
-              Formato de correo no valido
             </span>
           )}
         </div>

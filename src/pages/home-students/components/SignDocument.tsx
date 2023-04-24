@@ -61,7 +61,7 @@ export const SignDocument = (props: PropsFormUser) => {
     <div className="flex justify-center">
       <div className={'container-firma'}>
         <h1 className={'text-4xl font-bold w-3/5 text-center'}>
-          Firma acuerdo vía Docusign
+          Firma acuerdo vía DocuSign
         </h1>
         {/* Falta la imagen de firma */}
         <img

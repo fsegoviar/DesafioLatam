@@ -141,13 +141,18 @@ export const EducationForm = (props: PropsFormUser) => {
       <div className="mt-3">
         <div>
           <textarea
-            className="w-full rounded-lg border-2 border-black p-2"
+            className="w-full rounded-lg border-2 border-black p-2 resize-none"
             placeholder="¿Posee conocimientos previos?. ¿Cuales?"
             id=""
             rows={4}
-            {...register('description', { required: true })}
+            {...register('description', { required: true, maxLength: 250 })}
           ></textarea>
-          {errors.description && <RequiredField />}
+          {errors.description?.type === 'required' && <RequiredField />}
+          {errors.description?.type === 'maxLength' && (
+            <span className="text-red-500 text-sm font-light">
+              Supera el máximo de 250 caracteres.
+            </span>
+          )}
         </div>
       </div>
       <div className="flex justify-center">

@@ -1,8 +1,9 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { BillingType } from '../../../../interfaces/Billing';
 import { RequiredField } from '../../../../components';
 import axios, { AxiosError } from 'axios';
+import ChileanRutify from 'chilean-rutify';
 
 type PropsFormUser = {
   currentStep: number;
@@ -13,6 +14,8 @@ type PropsFormUser = {
 
 export const FormBilling = (props: PropsFormUser) => {
   const [isBilling, setIsBilling] = useState(true);
+  const [inputRut, setInputRut] = useState('');
+  const [inputRutRepresentative, setInputRutRepresentative] = useState('');
   const {
     register,
     setValue,
@@ -32,6 +35,15 @@ export const FormBilling = (props: PropsFormUser) => {
         props.dataUser.billing?.representative_fullname ?? ''
     }
   });
+
+  useEffect(() => {
+    if (props.dataUser.billing?.address) {
+      setIsBilling(false);
+      setInputRut(props.dataUser.billing?.dni);
+      setInputRutRepresentative(props.dataUser.billing?.representative_dni);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const prevStep = () => {
     props.setCurrentStep(props.currentStep - 1);
@@ -136,9 +148,37 @@ export const FormBilling = (props: PropsFormUser) => {
             <input
               type="text"
               disabled={isBilling}
-              {...register('dni', { required: !isBilling ?? true })}
+              value={inputRut}
+              {...register('dni', {
+                required: !isBilling ?? true,
+                onChange: (e) => {
+                  if (e.target.value !== '-') {
+                    setInputRut(
+                      String(ChileanRutify.formatRut(e.target.value))
+                    );
+                    setValue(
+                      'dni',
+                      String(ChileanRutify.formatRut(e.target.value))
+                    );
+                  } else {
+                    setInputRut('');
+                  }
+                },
+                validate: (v) => {
+                  return ChileanRutify.validRut(v);
+                }
+              })}
             />
-            {errors.dni && <RequiredField />}
+            {errors.dni?.type === 'required' && (
+              <span className="text-red-500 text-sm font-light">
+                Rut requerido
+              </span>
+            )}
+            {errors.dni?.type === 'validate' && (
+              <span className="text-red-500 text-sm font-light">
+                Rut invalido
+              </span>
+            )}
           </div>
         </div>
 
@@ -148,7 +188,9 @@ export const FormBilling = (props: PropsFormUser) => {
             <input
               type="text"
               disabled={isBilling}
-              {...register('business_line', { required: !isBilling ?? true })}
+              {...register('business_line', {
+                required: !isBilling ?? true
+              })}
             />
             {errors.business_line && <RequiredField />}
           </div>
@@ -214,14 +256,38 @@ export const FormBilling = (props: PropsFormUser) => {
           <div className="col-span-2 flex flex-col">
             <label>Rut del representante</label>
             <input
-              type="number"
+              type="text"
               disabled={isBilling}
+              value={inputRutRepresentative}
               {...register('representative_dni', {
-                required: !isBilling ?? true
+                required: !isBilling ?? true,
+                onChange: (e) => {
+                  if (e.target.value !== '-') {
+                    setInputRutRepresentative(
+                      String(ChileanRutify.formatRut(e.target.value))
+                    );
+                    setValue(
+                      'representative_dni',
+                      String(ChileanRutify.formatRut(e.target.value))
+                    );
+                  } else {
+                    setInputRutRepresentative('');
+                  }
+                },
+                validate: (v) => {
+                  return ChileanRutify.validRut(v);
+                }
               })}
             />
             {errors.representative_dni?.type === 'required' && (
-              <RequiredField />
+              <span className="text-red-500 text-sm font-light">
+                Rut requerido
+              </span>
+            )}
+            {errors.representative_dni?.type === 'validate' && (
+              <span className="text-red-500 text-sm font-light">
+                Rut invalido
+              </span>
             )}
           </div>
         </div>
