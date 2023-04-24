@@ -8,6 +8,7 @@ import './form-carrera-styles.css';
 import axios, { AxiosError } from 'axios';
 import { format } from 'date-fns';
 import { Dropdown, DropdownChangeParams } from 'primereact/dropdown';
+import ChileanRutify from 'chilean-rutify';
 
 type PropsFormUser = {
   stepsLength: number;
@@ -71,6 +72,7 @@ export const FormPersonalData = (props: PropsFormUser) => {
   const [countrySelected, setCountrySelected] = useState<any>(null!);
   const [nationalitySelected, setNationalitySelected] = useState<any>(null!);
   const [codePhone, setCodePhone] = useState('');
+  const [inputRut, setInputRut] = useState('');
   const {
     register,
     setValue,
@@ -97,6 +99,7 @@ export const FormPersonalData = (props: PropsFormUser) => {
     if (props.dataUser) {
       let fecha = new Date(String(props.dataUser.user.birthday));
       fecha.setDate(fecha.getDate() + 1);
+      setInputRut(props.dataUser?.user.dni);
       setBirthday(fecha);
     }
 
@@ -207,12 +210,36 @@ export const FormPersonalData = (props: PropsFormUser) => {
         <div className="col-span-2 flex flex-col">
           <label>Número de identificación</label>
           <input
-            type="number"
+            type="text"
+            value={inputRut}
             {...register('dni', {
-              required: true
+              required: true,
+              onChange: (e) => {
+                if (e.target.value !== '-') {
+                  setInputRut(String(ChileanRutify.formatRut(e.target.value)));
+                  setValue(
+                    'dni',
+                    String(ChileanRutify.formatRut(e.target.value))
+                  );
+                } else {
+                  setInputRut('');
+                }
+              },
+              validate: (v) => {
+                return ChileanRutify.validRut(v);
+              }
             })}
           />
-          {errors.dni && <RenderRequiredField />}
+          {errors.dni?.type === 'required' && (
+            <span className="text-red-500 text-sm font-light">
+              Rut requerido
+            </span>
+          )}
+          {errors.dni?.type === 'validate' && (
+            <span className="text-red-500 text-sm font-light">
+              Rut invalido
+            </span>
+          )}
         </div>
       </div>
       <div className="grid grid-cols-4 gap-4 mt-5">
