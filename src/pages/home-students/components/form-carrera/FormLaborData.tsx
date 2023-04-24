@@ -74,7 +74,7 @@ export const FormLaborData = (props: PropsFormUser) => {
               process.env.REACT_APP_API_BACKEND
             }/registers/${localStorage.getItem('register_id')}/step`,
             {
-              step: 7
+              step: 4
             },
             {
               headers: {

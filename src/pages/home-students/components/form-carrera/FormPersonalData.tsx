@@ -71,7 +71,6 @@ export const FormPersonalData = (props: PropsFormUser) => {
   const [listCountries, setListCountries] = useState([]);
   const [countrySelected, setCountrySelected] = useState<any>(null!);
   const [nationalitySelected, setNationalitySelected] = useState<any>(null!);
-  const [codePhone, setCodePhone] = useState('');
   const [inputRut, setInputRut] = useState('');
   const {
     register,
@@ -255,7 +254,6 @@ export const FormPersonalData = (props: PropsFormUser) => {
               if (evt.value.id) {
                 setCountrySelected(evt.value);
                 setValue('country_id', Number(evt.value.id));
-                setCodePhone(String(evt.value.number_code));
               }
             }}
             required
@@ -282,10 +280,6 @@ export const FormPersonalData = (props: PropsFormUser) => {
         </div>
       </div>
       <div className="grid gap-4 grid-cols-4 mt-5">
-        <div className="w-full flex flex-col col-span-2">
-          <label>Código teléfonico</label>
-          <input type="text" value={codePhone} disabled />
-        </div>
         <div className="col-span-2 flex flex-col">
           <label>Número teléfonico</label>
           <input
@@ -308,9 +302,7 @@ export const FormPersonalData = (props: PropsFormUser) => {
             </span>
           )}
         </div>
-      </div>
-      <div className="grid grid-cols-4 mt-5">
-        <div className="col-span-4 flex flex-col">
+        <div className="col-span-2 flex flex-col">
           <label>Correo electrónico</label>
           <input
             type="email"
