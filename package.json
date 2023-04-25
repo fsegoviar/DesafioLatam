@@ -5,7 +5,7 @@
   "dependencies": {
     "@leecheuk/react-google-login": "^5.4.1",
     "@react-buddy/ide-toolbox": "^2.3.1",
-    "@reduxjs/toolkit": "^1.9.2",
+    "@reduxjs/toolkit": "^1.9.5",
     "axios": "^1.2.6",
     "chilean-rutify": "^2.1.0",
     "date-fns": "^2.29.3",

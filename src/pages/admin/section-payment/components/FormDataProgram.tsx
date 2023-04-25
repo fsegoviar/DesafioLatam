@@ -165,9 +165,10 @@ export const FormDataProgram = ({
   };
 
   const calculateValueQuotes = () => {
-    const value =
+    const value = Math.round(
       Number(getValues(`payment_methods.0.reference_value`)) /
-      Number(getValues(`payment_methods.0.quotes`));
+        Number(getValues(`payment_methods.0.quotes`))
+    );
     setValueQuotes(value);
     setValue('payment_methods.0.quotes_value', value);
   };

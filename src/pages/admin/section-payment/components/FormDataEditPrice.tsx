@@ -45,15 +45,23 @@ export const FormDataEditPrice = (props: PropsEditPrice) => {
   const [checkPrepaid, setCheckPrepaid] = useState(false);
   const [checkISA, setCheckISA] = useState(false);
   const [errorCheck, setErrorCheck] = useState(false);
+  const [valueQuotes, setValueQuotes] = useState(0);
 
   const {
     handleSubmit,
     register,
+    getValues,
+    setValue,
     watch,
     formState: { errors }
   } = useForm<FormEditPayment>({
     defaultValues: { ...props.data }
   });
+
+  useEffect(() => {
+    setValueQuotes(props.data.payment_methods[0].quotes_value);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     const findCareer = careers?.find(
@@ -115,8 +123,6 @@ export const FormDataEditPrice = (props: PropsEditPrice) => {
   };
 
   const onSubmit: SubmitHandler<FormEditPayment> = async (data) => {
-    console.log('Edit =>', data);
-
     let requestData: FormPaymentType = {
       career_id: data.price.career_id,
       comments: data.price.comments,
@@ -133,7 +139,7 @@ export const FormDataEditPrice = (props: PropsEditPrice) => {
     if (data.payment_methods[0].quotes && checkPaymentQuotes === true)
       clearArr.push({
         payment_method_id: 1,
-        quotes: data.payment_methods[0].quotes_value,
+        quotes: data.payment_methods[0].quotes,
         reference_value: data.payment_methods[0].reference_value,
         quotes_value: data.payment_methods[0].quotes_value,
         advance_discount: null,
@@ -166,15 +172,12 @@ export const FormDataEditPrice = (props: PropsEditPrice) => {
 
     requestData.payment_methods = clearArr;
 
-    console.log(data.price.suppliers);
-
     suppliers = data.price.suppliers.map((v: any) => {
       return { supplier_id: Number(v) };
     });
 
     requestData.suppliers = suppliers;
 
-    console.log('Data a enviar =>', requestData);
     props.isLoad(true);
     if (checkFlow || checkISA || checkOtherMethods || checkTransbank) {
       await axios
@@ -244,6 +247,15 @@ export const FormDataEditPrice = (props: PropsEditPrice) => {
       );
     }
     return 0;
+  };
+
+  const calculateValueQuotes = () => {
+    const value = Math.round(
+      Number(getValues(`payment_methods.0.reference_value`)) /
+        Number(getValues(`payment_methods.0.quotes`))
+    );
+    setValueQuotes(value);
+    setValue('payment_methods.0.quotes_value', value);
   };
 
   const RequiredField = () => {
@@ -366,7 +378,8 @@ export const FormDataEditPrice = (props: PropsEditPrice) => {
               disabled={!checkPaymentQuotes}
               {...register(`payment_methods.0.quotes`, {
                 required: checkPaymentQuotes ?? true,
-                valueAsNumber: true
+                valueAsNumber: true,
+                onChange: calculateValueQuotes
               })}
               className={
                 errors.payment_methods && errors.payment_methods[0]?.quotes
@@ -388,26 +401,10 @@ export const FormDataEditPrice = (props: PropsEditPrice) => {
             <label>Valor por cuota</label>
             <input
               type="number"
-              disabled={!checkPaymentQuotes}
-              {...register(`payment_methods.0.quotes_value`, {
-                required: checkPaymentQuotes ?? true,
-                valueAsNumber: true
-              })}
-              className={
-                errors.payment_methods &&
-                errors.payment_methods[0]?.quotes_value
-                  ? 'border-red-500 py-1 rounded-lg'
-                  : 'py-1 rounded-lg '
-              }
+              disabled
+              value={valueQuotes}
+              className={'py-1 rounded-lg '}
             />
-            {(() => {
-              if (
-                errors.payment_methods &&
-                errors.payment_methods[0]?.quotes_value &&
-                checkPaymentQuotes
-              )
-                return <RequiredField />;
-            })()}
           </div>
           <div className={'flex flex-col'}>
             <label>Descuento cuotas (%)</label>

@@ -23,7 +23,7 @@ export const TableLinks = () => {
   const [openEditLink, setOpenEditLink] = useState(false);
   const [userSelected, setUserSelected] = useState(null!);
   const [listRegisters, setListRegisters] = useState<any[]>([]);
-  const [newValue, setNewValue] = useState();
+  const [newValue, setNewValue] = useState<any>(null!);
   const [editValue, setEditValue] = useState();
 
   // * Initial state
@@ -37,16 +37,22 @@ export const TableLinks = () => {
   // * Add values
   useEffect(() => {
     console.log('newValue => ', newValue);
-    if (newValue) setListRegisters([...listRegisters, newValue[0]]);
+    if (newValue) {
+      let newListRegisters = listRegisters;
+      newListRegisters.push(newValue[0]);
+      setListRegisters(newListRegisters);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [newValue]);
 
   // * update values
   useEffect(() => {
     console.log('editValue =>', editValue);
-
+    if(editValue) {
+      
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [editValue]);
 
   const filters = {
     'user.name': {
@@ -198,6 +204,10 @@ export const TableLinks = () => {
     );
   };
 
+  const renderDate = (row: any) => {
+    return <div> {new Date(row.created_at).toLocaleDateString('en-GB')}</div>;
+  };
+
   return (
     <>
       <Toast ref={toast} />
@@ -222,6 +232,7 @@ export const TableLinks = () => {
           showFilterMenu={false}
           filterPlaceholder={'Buscar por fecha'}
           header={'Fecha'}
+          body={renderDate}
           sortable
         ></Column>
         <Column

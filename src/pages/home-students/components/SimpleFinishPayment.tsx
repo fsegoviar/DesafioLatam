@@ -36,7 +36,8 @@ export const SimpleFinishPayment = ({
         `${process.env.REACT_APP_API_BACKEND}/transbank/start_purchase`,
         {
           register_id: String(localStorage.getItem('register_id')),
-          total: dataUser.price.tuition
+          total: dataUser.price.tuition,
+          payment_method_id: String(localStorage.getItem('payment_method_id'))
         },
         {
           headers: {
@@ -56,7 +57,9 @@ export const SimpleFinishPayment = ({
         `${process.env.REACT_APP_API_BACKEND}/paypal/pay`,
         {
           amount: dataUser.price.tuition,
-          currency: String(dataUser.price.currency.code)
+          currency: String(dataUser.price.currency.code),
+          register_id: String(localStorage.getItem('register_id')),
+          payment_method_id: String(localStorage.getItem('payment_method_id'))
         },
         {
           headers: {
@@ -80,7 +83,8 @@ export const SimpleFinishPayment = ({
           register_id: String(localStorage.getItem('register_id')),
           amount: dataUser.price.tuition,
           currency: String(dataUser.price.currency.code),
-          email: String(dataUser.user.email)
+          email: String(dataUser.user.email),
+          payment_method_id: String(localStorage.getItem('payment_method_id'))
         },
         {
           headers: {

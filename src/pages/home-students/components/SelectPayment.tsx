@@ -54,7 +54,7 @@ export const SelectPayment = (props: PropsFormUser) => {
           'register_id'
         )}/step`,
         {
-          step: 6
+          step: cardSelected2 ? props.currentStep + 2 : props.currentStep + 1
         },
         {
           headers: {
@@ -78,6 +78,7 @@ export const SelectPayment = (props: PropsFormUser) => {
       case '1':
         setTotalValue(element.pivot.reference_value);
         localStorage.setItem('paymentMethod', 'Pago en cuotas');
+        localStorage.setItem('payment_method_id', key);
         setActiveCount(true);
         setCardSelected1(true);
         setDiscount(element.pivot.free_discount);
@@ -85,6 +86,7 @@ export const SelectPayment = (props: PropsFormUser) => {
       case '2':
         setTotalValue(element.pivot.reference_value);
         localStorage.setItem('paymentMethod', 'Pago anticipado');
+        localStorage.setItem('payment_method_id', key);
         setDiscount(element.pivot.advance_discount);
         setCardSelected2(true);
         setActiveCount(true);
@@ -92,6 +94,7 @@ export const SelectPayment = (props: PropsFormUser) => {
       case '3':
         setDiscount(element.pivot.isa_percent);
         localStorage.setItem('paymentMethod', 'Pago en ISA');
+        localStorage.setItem('payment_method_id', key);
         setCardSelected3(true);
         break;
     }

@@ -34,7 +34,6 @@ export const TablePrices = () => {
   useEffect(() => {
     if (newValue) {
       console.log('NewValue =>', newValue);
-
       let newArr = arrPrices;
       newArr.push(newValue);
       setArrPrices(newArr);
@@ -43,6 +42,8 @@ export const TablePrices = () => {
 
   useEffect(() => {
     if (editValue) {
+      console.log('Edit Value =>', editValue);
+      console.log('ArrPrices =>', arrPrices);
       const findIndex = arrPrices.findIndex(
         (price) => price.id === editValue.id
       );

@@ -176,9 +176,8 @@ export const DialogEditLink = (props: DialogEditLinkTypes) => {
         }
       })
       .then((response: any) => {
-        console.log('response onSubmit =>', response);
-        props.actionToast('edit');
         props.editData(response.data);
+        props.actionToast('edit');
       })
       .catch((error: AxiosError) => console.log('Error onSubmit =>', error))
       .finally(() => closeModal());
