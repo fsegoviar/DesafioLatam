@@ -120,6 +120,10 @@ export const DialogCreateLink = (props: DialogCreateLinkTypes) => {
     console.log('Response Generations => ', response.data);
   };
 
+  const formatPrice = (value: number) => {
+    return new Intl.NumberFormat('es-ES', {}).format(value);
+  };
+
   const handleChangeFormType = (value: { id: number; name: string }) => {
     setSelectForm(value);
     setValue('form_type_id', value.id);
@@ -239,12 +243,6 @@ export const DialogCreateLink = (props: DialogCreateLinkTypes) => {
                         Matricula
                       </th>
                       <th scope="col" className="px-6 py-3">
-                        Descuento
-                      </th>
-                      <th scope="col" className="px-6 py-3">
-                        Valor total
-                      </th>
-                      <th scope="col" className="px-6 py-3">
                         Comentarios
                       </th>
                     </tr>
@@ -261,9 +259,7 @@ export const DialogCreateLink = (props: DialogCreateLinkTypes) => {
                             />
                           </td>
                           <td>{price.name}</td>
-                          <td>{price.tuition}</td>
-                          <td>{price.free_discount}</td>
-                          <td>{price.value}</td>
+                          <td>$ {formatPrice(price.tuition)}</td>
                           <td>{price.comments}</td>
                         </tr>
                       );

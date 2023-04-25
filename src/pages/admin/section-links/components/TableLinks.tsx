@@ -48,8 +48,7 @@ export const TableLinks = () => {
   // * update values
   useEffect(() => {
     console.log('editValue =>', editValue);
-    if(editValue) {
-      
+    if (editValue) {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [editValue]);
@@ -208,6 +207,14 @@ export const TableLinks = () => {
     return <div> {new Date(row.created_at).toLocaleDateString('en-GB')}</div>;
   };
 
+  const renderTuition = (row: any) => {
+    return <div> {formatPrice(row.price.tuition)}</div>;
+  };
+
+  const formatPrice = (value: number) => {
+    return new Intl.NumberFormat('es-ES', {}).format(value);
+  };
+
   return (
     <>
       <Toast ref={toast} />
@@ -251,13 +258,8 @@ export const TableLinks = () => {
           header={'Programa'}
           sortable
         ></Column>
-        <Column field="price.value" header={'Valor'} sortable></Column>
-        <Column
-          field="price.free_discount"
-          header={'Descuento'}
-          sortable
-        ></Column>
-        <Column field={`price.value`} header={'Total'} sortable></Column>
+        <Column body={renderTuition} header={'Matricula'} sortable></Column>
+        <Column field="user.email" header={'Correo'} sortable></Column>
         <Column body={renderForm} header={'Formulario'}></Column>
         <Column body={renderState} header={'Estado'}></Column>
         <Column

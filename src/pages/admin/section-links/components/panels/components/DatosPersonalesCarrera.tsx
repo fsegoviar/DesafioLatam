@@ -24,7 +24,7 @@ export const DatosPersonalesCarrera = (props: PropsDatosPersonalesCarrera) => {
           <label>Número de identificación</label>
           <input
             type="text"
-            value={props.dataUser.user.identity_type.description ?? ''}
+            value={props.dataUser.user.identity_type?.description ?? ''}
             disabled
           />
         </div>
@@ -36,7 +36,7 @@ export const DatosPersonalesCarrera = (props: PropsDatosPersonalesCarrera) => {
           <label>País</label>
           <input
             type="text"
-            value={props.dataUser.user.country.description ?? ''}
+            value={props.dataUser.user.country?.description ?? ''}
             disabled
           />
         </div>
@@ -44,7 +44,7 @@ export const DatosPersonalesCarrera = (props: PropsDatosPersonalesCarrera) => {
           <label>Nacionalidad</label>
           <input
             type="text"
-            value={props.dataUser.user.country.nationality ?? ''}
+            value={props.dataUser.user.country?.nationality ?? ''}
             disabled
           />
         </div>

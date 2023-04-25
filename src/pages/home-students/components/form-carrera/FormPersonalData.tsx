@@ -67,7 +67,9 @@ export const FormPersonalData = (props: PropsFormUser) => {
   });
 
   const { indentityTypes } = GetIdentityTypes();
-  const [birthday, setBirthday] = useState<Date | null>(null);
+  const [birthday, setBirthday] = useState<string | Date>(
+    new Date().toLocaleDateString()
+  );
   const [listCountries, setListCountries] = useState([]);
   const [countrySelected, setCountrySelected] = useState<any>(null!);
   const [nationalitySelected, setNationalitySelected] = useState<any>(null!);
@@ -96,10 +98,13 @@ export const FormPersonalData = (props: PropsFormUser) => {
 
   useEffect(() => {
     if (props.dataUser) {
-      let fecha = new Date(String(props.dataUser.user.birthday));
-      fecha.setDate(fecha.getDate() + 1);
-      setInputRut(props.dataUser?.user.dni);
-      setBirthday(fecha);
+      if (props.dataUser.user.birthday) {
+        setInputRut(props.dataUser?.user.dni);
+        const birthday = props.dataUser?.user.birthday.split('-');
+        setBirthday(new Date(birthday[0], birthday[1] - 1, birthday[2]));
+      } else {
+        setBirthday(format(new Date(), 'yyyy-MM-dd'));
+      }
     }
 
     getCountries();
@@ -330,11 +335,12 @@ export const FormPersonalData = (props: PropsFormUser) => {
             value={birthday}
             {...register('birthday', {
               required: true,
-              onChange: (evt) =>
+              onChange: (evt) => {
                 setValue(
                   'birthday',
                   format(new Date(evt.target.value), 'yyyy-MM-dd')
-                )
+                );
+              }
             })}
           />
           {errors.birthday && <RenderRequiredField />}

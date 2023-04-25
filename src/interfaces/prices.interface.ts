@@ -13,16 +13,6 @@ export type SupplierId = {
 };
 
 export type FormEditPayment = {
-  // id: number;
-  // career: CareerType;
-  // career_id: number;
-  // comments: string;
-  // currency: Currency;
-  // currency_id: number;
-  // name: string;
-  // payment_methods: PaymentMethodEdit[];
-  // suppliers: SupplierEditType[];
-  // tuition: number;
   payment_methods: PaymentMethodEdit[];
   price: PriceEdit;
 };

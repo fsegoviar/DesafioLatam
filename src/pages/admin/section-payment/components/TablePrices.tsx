@@ -47,9 +47,13 @@ export const TablePrices = () => {
       const findIndex = arrPrices.findIndex(
         (price) => price.id === editValue.id
       );
-      if (findIndex) {
+
+      console.log('Index =>', findIndex);
+      if (findIndex >= 0) {
+        console.log('Entre');
         let newArr = arrPrices;
         newArr[findIndex] = editValue;
+        console.log('Updated => ', newArr);
         setArrPrices(newArr);
       }
     }

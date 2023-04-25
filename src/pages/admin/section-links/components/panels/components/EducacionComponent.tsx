@@ -12,7 +12,8 @@ export const EducacionComponent = (props: PropsPanel) => {
           <input
             type="text"
             value={
-              props.dataUser.user.education.educational_level.description ?? ''
+              props.dataUser.user.education?.educational_level?.description ??
+              ''
             }
             disabled
           />
@@ -22,7 +23,7 @@ export const EducacionComponent = (props: PropsPanel) => {
           <input
             type="text"
             value={
-              props.dataUser.user.education.english_level.description ?? ''
+              props.dataUser.user.education?.english_level?.description ?? ''
             }
             disabled
           />
@@ -34,7 +35,7 @@ export const EducacionComponent = (props: PropsPanel) => {
           <textarea
             className={'w-full rounded-lg border-2 resize-none p-2'}
             rows={4}
-            value={props.dataUser.user.education.description ?? ''}
+            value={props.dataUser.user.education?.description ?? ''}
             disabled
           ></textarea>
         </div>
