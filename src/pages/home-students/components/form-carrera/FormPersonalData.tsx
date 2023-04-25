@@ -214,14 +214,14 @@ export const FormPersonalData = (props: PropsFormUser) => {
             {...register('dni', {
               required: true,
               onChange: (e) => {
-                if (e.target.value !== '-') {
+                if (e.target.value !== '-' && e.target.value !== '') {
                   setInputRut(String(ChileanRutify.formatRut(e.target.value)));
                   setValue(
                     'dni',
                     String(ChileanRutify.formatRut(e.target.value))
                   );
                 } else {
-                  setInputRut('');
+                  setInputRut('-');
                 }
               },
               validate: (v) => {
