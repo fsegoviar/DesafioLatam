@@ -38,6 +38,7 @@ export const FormDataEditPrice = (props: PropsEditPrice) => {
   const [valueQuotes, setValueQuotes] = useState(0);
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState<FormEditPayment>(null!);
+  const [valueQuotesTotal, setValueQuotesTotal] = useState(0);
 
   const {
     handleSubmit,
@@ -87,6 +88,8 @@ export const FormDataEditPrice = (props: PropsEditPrice) => {
       initPaymentMethods();
       initPrice();
       initSuppliers();
+      setValueQuotes(calculateValueQuotes());
+      setValueQuotesTotal(getTotalValueQuotes());
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [careers]);
@@ -297,6 +300,8 @@ export const FormDataEditPrice = (props: PropsEditPrice) => {
     );
     setValueQuotes(value);
     setValue('payment_methods.0.quotes_value', value);
+
+    return value;
   };
 
   const RequiredField = () => {
@@ -487,7 +492,7 @@ export const FormDataEditPrice = (props: PropsEditPrice) => {
                   type="number"
                   disabled
                   className={'py-1 rounded-lg '}
-                  value={getTotalValueQuotes()}
+                  value={valueQuotesTotal}
                   readOnly
                 />
               </div>

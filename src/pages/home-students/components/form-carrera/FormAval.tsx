@@ -140,7 +140,7 @@ export const FormAval = (props: PropsFormUser) => {
     <>
       <div className="bg-gray-200 py-5 px-3 rounded-lg mt-10">
         <p>
-          Si no cuentas con una renta mínima mensual de $450.000 demosteable o
+          Si no cuentas con una renta mínima mensual de $450.000 demostrable o
           tienes tu historial crediticio con deuda, necesitas un aval.
         </p>
       </div>

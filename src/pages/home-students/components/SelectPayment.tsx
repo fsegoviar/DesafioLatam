@@ -21,6 +21,7 @@ export const SelectPayment = (props: PropsFormUser) => {
   const [count, setCount] = useState(0);
   const [activeCount, setActiveCount] = useState(false);
   const [listPaymentMethods, setListPaymentMethods] = useState([]);
+  const [disabledBtn, setDisabledBtn] = useState(true);
 
   const fetchData = async () => {
     await axios
@@ -76,26 +77,52 @@ export const SelectPayment = (props: PropsFormUser) => {
 
     switch (key) {
       case '1':
-        setTotalValue(element.pivot.reference_value);
+        console.log(
+          'Element =>',
+          formatPrice(
+            element.pivot.reference_value -
+              (element.pivot.free_discount / 100) *
+                element.pivot.reference_value
+          )
+        );
+        setTotalValue(
+          element.pivot.reference_value -
+            (element.pivot.free_discount / 100) * element.pivot.reference_value
+        );
         localStorage.setItem('paymentMethod', 'Pago en cuotas');
         localStorage.setItem('payment_method_id', key);
         setActiveCount(true);
         setCardSelected1(true);
+        setCardSelected2(false);
+        setCardSelected3(false);
         setDiscount(element.pivot.free_discount);
         break;
       case '2':
-        setTotalValue(element.pivot.reference_value);
+        setTotalValue(
+          element.pivot.reference_value -
+            (element.pivot.advance_discount / 100) *
+              element.pivot.reference_value
+        );
         localStorage.setItem('paymentMethod', 'Pago anticipado');
         localStorage.setItem('payment_method_id', key);
         setDiscount(element.pivot.advance_discount);
+        setCardSelected1(false);
         setCardSelected2(true);
-        setActiveCount(true);
+        setCardSelected3(false);
+        setDisabledBtn(false);
+        setActiveCount(false);
+        localStorage.setItem('paymentQuotes', '0');
         break;
       case '3':
         setDiscount(element.pivot.isa_percent);
         localStorage.setItem('paymentMethod', 'Pago en ISA');
         localStorage.setItem('payment_method_id', key);
+        setCardSelected1(false);
+        setCardSelected2(false);
         setCardSelected3(true);
+        setDisabledBtn(false);
+        setActiveCount(false);
+        localStorage.setItem('paymentQuotes', '0');
         break;
     }
   };
@@ -145,7 +172,12 @@ export const SelectPayment = (props: PropsFormUser) => {
                     Descuento: {element.pivot.free_discount}%
                   </p>
                   <p className="font-bold text-center text-sky-500 text-sm pt-2">
-                    Total a pagar: ${formatPrice(element.pivot.reference_value)}{' '}
+                    Total a pagar: $
+                    {formatPrice(
+                      element.pivot.reference_value -
+                        (element.pivot.free_discount / 100) *
+                          element.pivot.reference_value
+                    )}{' '}
                     CLP
                   </p>
                 </div>
@@ -230,13 +262,19 @@ export const SelectPayment = (props: PropsFormUser) => {
               className="w-48 border-2 rounded-lg p-2"
               onChange={(evt: any) => {
                 setCount(evt.target.value);
-                localStorage.setItem('paymentQuotes', String(evt.target.value));
+                if (cardSelected1) {
+                  localStorage.setItem(
+                    'paymentQuotes',
+                    String(evt.target.value)
+                  );
+                }
+                setDisabledBtn(false);
               }}
             >
               <option value={''}>Nº de cuotas</option>;
               {(() => {
                 let items: ReactNode[] = [];
-                for (let i = 1; i < 13; i++) {
+                for (let i = 1; i <= 24; i++) {
                   items.push(
                     <option key={i} value={i}>
                       {i}
@@ -274,7 +312,16 @@ export const SelectPayment = (props: PropsFormUser) => {
         <button className="btn-prev m-1" onClick={() => prevStep()}>
           Atras
         </button>
-        <button className="btn m-1" type="button" onClick={handleNextStep}>
+        <button
+          className={` m-1 ${
+            !disabledBtn
+              ? 'btn'
+              : 'bg-gray-400 text-white rounded-[0.75rem] px-7 py-1 '
+          }`}
+          disabled={disabledBtn}
+          type="button"
+          onClick={handleNextStep}
+        >
           Siguiente
         </button>
       </div>

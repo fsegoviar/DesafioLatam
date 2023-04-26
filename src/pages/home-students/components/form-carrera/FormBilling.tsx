@@ -149,10 +149,20 @@ export const FormBilling = (props: PropsFormUser) => {
               type="text"
               disabled={isBilling}
               value={inputRut}
+              onKeyDown={(input: any) => {
+                const esNumero =
+                  (input.keyCode >= 48 && input.keyCode <= 57) || // números de teclado normal
+                  (input.keyCode >= 96 && input.keyCode <= 105) ||
+                  input.keyCode === 8; // números del teclado numérico
+
+                if (!esNumero) {
+                  input.preventDefault(); // detiene la propagación del evento
+                }
+              }}
               {...register('dni', {
                 required: !isBilling ?? true,
                 onChange: (e) => {
-                  if (e.target.value !== '-') {
+                  if (e.target.value !== '-' && e.target.value !== '') {
                     setInputRut(
                       String(ChileanRutify.formatRut(e.target.value))
                     );
@@ -161,7 +171,7 @@ export const FormBilling = (props: PropsFormUser) => {
                       String(ChileanRutify.formatRut(e.target.value))
                     );
                   } else {
-                    setInputRut('');
+                    setInputRut('-');
                   }
                 },
                 validate: (v) => {
@@ -258,11 +268,21 @@ export const FormBilling = (props: PropsFormUser) => {
             <input
               type="text"
               disabled={isBilling}
+              onKeyDown={(input: any) => {
+                const esNumero =
+                  (input.keyCode >= 48 && input.keyCode <= 57) || // números de teclado normal
+                  (input.keyCode >= 96 && input.keyCode <= 105) ||
+                  input.keyCode === 8; // números del teclado numérico
+
+                if (!esNumero) {
+                  input.preventDefault(); // detiene la propagación del evento
+                }
+              }}
               value={inputRutRepresentative}
               {...register('representative_dni', {
                 required: !isBilling ?? true,
                 onChange: (e) => {
-                  if (e.target.value !== '-') {
+                  if (e.target.value !== '-' && e.target.value !== '') {
                     setInputRutRepresentative(
                       String(ChileanRutify.formatRut(e.target.value))
                     );
@@ -271,7 +291,7 @@ export const FormBilling = (props: PropsFormUser) => {
                       String(ChileanRutify.formatRut(e.target.value))
                     );
                   } else {
-                    setInputRutRepresentative('');
+                    setInputRutRepresentative('-');
                   }
                 },
                 validate: (v) => {

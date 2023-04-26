@@ -128,7 +128,8 @@ export const FormLaborData = (props: PropsFormUser) => {
             placeholder={'https://www.google.com'}
             {...register('linkedin', {
               required: true,
-              pattern: /^https?:\/\/[\w]+(\.[\w]+)+[/#?]?.*$/
+              pattern:
+                /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})(\/([^\s]*))?$/
             })}
           />
           {errors.linkedin?.type === 'required' && <RequiredField />}

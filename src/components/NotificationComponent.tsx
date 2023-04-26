@@ -22,5 +22,14 @@ export const NotificationComponent = () => {
     });
   };
 
-  return { toast, showSuccess, showSuccessEdit };
+  const showSuccessDelete = () => {
+    toast.current?.show({
+      severity: 'success',
+      summary: 'Modificado',
+      detail: 'Elemento borrado exitosamente',
+      life: 3000
+    });
+  };
+
+  return { toast, showSuccess, showSuccessEdit, showSuccessDelete };
 };

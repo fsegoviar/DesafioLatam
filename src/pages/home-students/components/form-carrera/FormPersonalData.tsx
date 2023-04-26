@@ -216,6 +216,16 @@ export const FormPersonalData = (props: PropsFormUser) => {
           <input
             type="text"
             value={inputRut}
+            onKeyDown={(input: any) => {
+              const esNumero =
+                (input.keyCode >= 48 && input.keyCode <= 57) || // números de teclado normal
+                (input.keyCode >= 96 && input.keyCode <= 105) ||
+                input.keyCode === 8; // números del teclado numérico
+
+              if (!esNumero) {
+                input.preventDefault(); // detiene la propagación del evento
+              }
+            }}
             {...register('dni', {
               required: true,
               onChange: (e) => {
@@ -340,10 +350,27 @@ export const FormPersonalData = (props: PropsFormUser) => {
                   'birthday',
                   format(new Date(evt.target.value), 'yyyy-MM-dd')
                 );
+              },
+              validate: (evt: any) => {
+                const inputDate = evt.split('-');
+                if (
+                  new Date(
+                    inputDate[0],
+                    inputDate[1] - 1,
+                    inputDate[2]
+                  ).toLocaleDateString() < new Date().toLocaleDateString()
+                )
+                  return true;
+                return false;
               }
             })}
           />
-          {errors.birthday && <RenderRequiredField />}
+          {errors.birthday?.type === 'required' && <RenderRequiredField />}
+          {errors.birthday?.type === 'validate' && (
+            <span className="font-light text-red-500">
+              Fecha de nacimiento debe ser menor a la de hoy
+            </span>
+          )}
         </div>
         <div className="col-span-2 flex flex-col">
           <label>Ciudad</label>

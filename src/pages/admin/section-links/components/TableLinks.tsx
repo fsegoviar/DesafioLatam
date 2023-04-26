@@ -12,6 +12,7 @@ import { DialogEditLink } from './DialogEditLink';
 import { DialogForm } from './DialogForm';
 import { NotificationComponent } from '../../../../components/NotificationComponent';
 import { Toast } from 'primereact/toast';
+import { DialogDeleteLink } from './DialogDeleteLink';
 
 export const TableLinks = () => {
   const [openCreateLink, setOpenCreateLink] = useState(false);
@@ -19,8 +20,10 @@ export const TableLinks = () => {
   const [openDialogForm, setOpenDialogForm] = useState(false);
   const { registers, loading } = GetRegisters();
   const [idRegister, setIdRegister] = useState();
-  const { toast, showSuccess, showSuccessEdit } = NotificationComponent();
+  const { toast, showSuccess, showSuccessEdit, showSuccessDelete } =
+    NotificationComponent();
   const [openEditLink, setOpenEditLink] = useState(false);
+  const [openDeleteLink, setOpenDeleteLink] = useState(false);
   const [userSelected, setUserSelected] = useState(null!);
   const [listRegisters, setListRegisters] = useState<any[]>([]);
   const [newValue, setNewValue] = useState<any>(null!);
@@ -98,6 +101,9 @@ export const TableLinks = () => {
       case 'edit':
         showSuccessEdit();
         break;
+      case 'delete':
+        showSuccessDelete();
+        break;
 
       default:
         break;
@@ -169,6 +175,18 @@ export const TableLinks = () => {
             data-te-toggle="tooltip"
             title="Enviar correo"
             onClick={() => sendEmail(rowData.id)}
+          />
+        </div>
+        <div style={{ margin: '0 2px' }}>
+          <Button
+            icon="pi pi-trash"
+            data-te-toggle="tooltip"
+            title="Deshabilitar"
+            className="p-button-rounded p-button-text p-button-danger"
+            onClick={() => {
+              setIdRegister(rowData.id);
+              setOpenDeleteLink(true);
+            }}
           />
         </div>
       </div>
@@ -283,6 +301,14 @@ export const TableLinks = () => {
           close={() => setOpenEditLink(false)}
           actionToast={actionToast}
           editData={setEditValue}
+        />
+      )}
+      {openDeleteLink && (
+        <DialogDeleteLink
+          idRegister={idRegister}
+          open={openDeleteLink}
+          close={() => setOpenEditLink(false)}
+          actionToast={actionToast}
         />
       )}
       {openSendEmail && (

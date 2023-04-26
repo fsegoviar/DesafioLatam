@@ -250,10 +250,10 @@ export const SimpleFinishPayment = ({
         </div>
       </div>
       <div className={'mt-5 flex flex-col items-end'}>
-        <label className={'font-bold py-5 text-3xl'}>
+        {/* <label className={'font-bold py-5 text-3xl'}>
           Total: $
           {new Intl.NumberFormat('es-ES', {}).format(dataUser.price.tuition)}
-        </label>
+        </label> */}
         {/* <button
           className="btn"
           type="submit"
