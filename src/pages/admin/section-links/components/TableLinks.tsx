@@ -128,7 +128,7 @@ export const TableLinks = () => {
 
   const renderState = (rowData: any) => {
     switch (rowData.status) {
-      case 'Validado':
+      case 'Completado':
         return (
           <span
             style={{ backgroundColor: 'green', color: '#FFFFFF' }}
@@ -137,7 +137,7 @@ export const TableLinks = () => {
             {rowData.status}
           </span>
         );
-      case 'Completado':
+      case 'Contrato Firmado':
         return (
           <span
             style={{ backgroundColor: '#CB8C22', color: '#FFFFFF' }}
@@ -146,7 +146,7 @@ export const TableLinks = () => {
             {rowData.status}
           </span>
         );
-      case 'Pendiente':
+      case 'Enviado':
         return (
           <span
             style={{ backgroundColor: 'red', color: '#FFFFFF' }}
@@ -164,15 +164,15 @@ export const TableLinks = () => {
             {rowData.status}
           </span>
         );
-      case 'Inhabilitado':
-        return (
-          <span
-            style={{ backgroundColor: 'black', color: '#FFFFFF' }}
-            className="px-2 py-1 rounded-full"
-          >
-            {rowData.status}
-          </span>
-        );
+      // case 'Inhabilitado':
+      //   return (
+      //     <span
+      //       style={{ backgroundColor: 'black', color: '#FFFFFF' }}
+      //       className="px-2 py-1 rounded-full"
+      //     >
+      //       {rowData.status}
+      //     </span>
+      //   );
       default:
         break;
     }
