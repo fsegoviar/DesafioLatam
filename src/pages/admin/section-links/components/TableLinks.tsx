@@ -28,6 +28,7 @@ export const TableLinks = () => {
   const [listRegisters, setListRegisters] = useState<any[]>([]);
   const [newValue, setNewValue] = useState<any>(null!);
   const [editValue, setEditValue] = useState();
+  const [idItemDisabled, setIdItemDisabled] = useState<any>(null!);
 
   // * Initial state
   useEffect(() => {
@@ -47,6 +48,21 @@ export const TableLinks = () => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [newValue]);
+
+  //* Delete value
+  useEffect(() => {
+    if (idItemDisabled) {
+      let newListRegister = listRegisters;
+      let findIndex = listRegisters.findIndex(
+        (item) => item.id === idItemDisabled
+      );
+      if (findIndex) {
+        newListRegister[findIndex].status = 'Inhabilitado';
+        setListRegisters(newListRegister);
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [idItemDisabled]);
 
   // * update values
   useEffect(() => {
@@ -145,7 +161,16 @@ export const TableLinks = () => {
             style={{ backgroundColor: 'black', color: '#FFFFFF' }}
             className="px-2 py-1 rounded-full"
           >
-            {rowData.estado}
+            {rowData.status}
+          </span>
+        );
+      case 'Inhabilitado':
+        return (
+          <span
+            style={{ backgroundColor: 'black', color: '#FFFFFF' }}
+            className="px-2 py-1 rounded-full"
+          >
+            {rowData.status}
           </span>
         );
       default:
@@ -156,39 +181,43 @@ export const TableLinks = () => {
   const actionEdit = (rowData: any) => {
     return (
       <div className="flex">
-        <div style={{ margin: '0 2px' }}>
-          <Button
-            icon="pi pi-pencil"
-            data-te-toggle="tooltip"
-            title="Editar"
-            className="p-button-rounded p-button-text p-button-warning"
-            onClick={() => {
-              setIdRegister(rowData.id);
-              setOpenEditLink(true);
-            }}
-          />
-        </div>
-        <div style={{ margin: '0 2px' }}>
-          <Button
-            icon="pi pi-send"
-            className="p-button-rounded p-button-text"
-            data-te-toggle="tooltip"
-            title="Enviar correo"
-            onClick={() => sendEmail(rowData.id)}
-          />
-        </div>
-        <div style={{ margin: '0 2px' }}>
-          <Button
-            icon="pi pi-trash"
-            data-te-toggle="tooltip"
-            title="Deshabilitar"
-            className="p-button-rounded p-button-text p-button-danger"
-            onClick={() => {
-              setIdRegister(rowData.id);
-              setOpenDeleteLink(true);
-            }}
-          />
-        </div>
+        {rowData.status !== 'Inhabilitado' && (
+          <>
+            <div style={{ margin: '0 2px' }}>
+              <Button
+                icon="pi pi-pencil"
+                data-te-toggle="tooltip"
+                title="Editar"
+                className="p-button-rounded p-button-text p-button-warning"
+                onClick={() => {
+                  setIdRegister(rowData.id);
+                  setOpenEditLink(true);
+                }}
+              />
+            </div>
+            <div style={{ margin: '0 2px' }}>
+              <Button
+                icon="pi pi-send"
+                className="p-button-rounded p-button-text"
+                data-te-toggle="tooltip"
+                title="Enviar correo"
+                onClick={() => sendEmail(rowData.id)}
+              />
+            </div>
+            <div style={{ margin: '0 2px' }}>
+              <Button
+                icon="pi pi-trash"
+                data-te-toggle="tooltip"
+                title="Deshabilitar"
+                className="p-button-rounded p-button-text p-button-danger"
+                onClick={() => {
+                  setIdRegister(rowData.id);
+                  setOpenDeleteLink(true);
+                }}
+              />
+            </div>
+          </>
+        )}
       </div>
     );
   };
@@ -309,6 +338,7 @@ export const TableLinks = () => {
           open={openDeleteLink}
           close={() => setOpenEditLink(false)}
           actionToast={actionToast}
+          idItemDisabled={setIdItemDisabled}
         />
       )}
       {openSendEmail && (

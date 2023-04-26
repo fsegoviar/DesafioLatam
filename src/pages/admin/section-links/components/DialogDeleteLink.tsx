@@ -1,3 +1,4 @@
+import axios, { AxiosError } from 'axios';
 import React, { useLayoutEffect, useRef } from 'react';
 
 type DialogCreateLinkTypes = {
@@ -5,9 +6,16 @@ type DialogCreateLinkTypes = {
   close: () => void;
   idRegister: any;
   actionToast: (action: string) => void;
+  idItemDisabled: (value: any) => void;
 };
 
-export const DialogDeleteLink = ({ open, close }: DialogCreateLinkTypes) => {
+export const DialogDeleteLink = ({
+  open,
+  close,
+  idRegister,
+  actionToast,
+  idItemDisabled
+}: DialogCreateLinkTypes) => {
   const modalRef = useRef<HTMLDivElement>(null!);
   const containerRef = useRef<HTMLDivElement>(null!);
 
@@ -24,7 +32,28 @@ export const DialogDeleteLink = ({ open, close }: DialogCreateLinkTypes) => {
     }, 1000);
   };
 
-  const disabledLink = async (): Promise<void> => {};
+  const disabledLink = async (): Promise<void> => {
+    await axios
+      .post(
+        `${process.env.REACT_APP_API_BACKEND}/register_form/disabled`,
+        {
+          register_id: idRegister
+        },
+        {
+          headers: {
+            Accept: 'application/json',
+            'Access-Control-Allow-Origin': '*'
+            // Authorization: `Bearer ${localStorage.getItem('token_user_latam')}`
+          }
+        }
+      )
+      .then((response: any) => {
+        idItemDisabled(response.data.id);
+        actionToast('delete');
+        closeModal();
+      })
+      .catch((error: AxiosError) => console.log('Error:', error));
+  };
 
   window.addEventListener(
     'click',
