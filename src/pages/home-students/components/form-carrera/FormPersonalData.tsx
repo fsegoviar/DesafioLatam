@@ -1,7 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { GetIdentityTypes } from '../../../../services';
 import { SubmitHandler, useForm } from 'react-hook-form';
-import { PersonalDataUser } from '../../../../interfaces';
 import { Calendar } from 'primereact/calendar';
 import { addLocale } from 'primereact/api';
 import './form-carrera-styles.css';
@@ -9,6 +8,11 @@ import axios, { AxiosError } from 'axios';
 import { format } from 'date-fns';
 import { Dropdown, DropdownChangeParams } from 'primereact/dropdown';
 import ChileanRutify from 'chilean-rutify';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '../../../../store/store';
+import { updateData } from '../../../../store/slices/userDataFormSlice';
+import { UserDataState } from '../../../../store/slices/userData.interface';
+import { isBefore } from 'date-fns';
 
 type PropsFormUser = {
   stepsLength: number;
@@ -17,7 +21,6 @@ type PropsFormUser = {
   setComplete: (value: boolean) => void;
   registerId: string;
   token: string;
-  dataUser: any;
 };
 
 export const FormPersonalData = (props: PropsFormUser) => {
@@ -74,36 +77,35 @@ export const FormPersonalData = (props: PropsFormUser) => {
   const [countrySelected, setCountrySelected] = useState<any>(null!);
   const [nationalitySelected, setNationalitySelected] = useState<any>(null!);
   const [inputRut, setInputRut] = useState('');
+  const user = useSelector((state: RootState) => state.user);
+  const dispatch = useDispatch();
   const {
     register,
     setValue,
     formState: { errors },
     handleSubmit
-  } = useForm<PersonalDataUser>({
+  } = useForm<any>({
     defaultValues: {
-      register_id: props.registerId,
-      name: props.dataUser?.user.name,
-      identity_type_id: 1,
-      lastname: props.dataUser?.user.lastname,
-      dni: props.dataUser?.user.dni,
-      phone: props.dataUser?.user.phone,
-      email: props.dataUser?.user.email,
-      birthday: props.dataUser?.user.birthday,
-      city: props.dataUser?.user.city,
-      country_id: 5,
-      nationality: props.dataUser?.user.nationality,
-      address: props.dataUser?.user.address
+      ...user
     }
   });
 
   useEffect(() => {
-    if (props.dataUser) {
-      if (props.dataUser.user.birthday) {
-        setInputRut(props.dataUser?.user.dni);
-        const birthday = props.dataUser?.user.birthday.split('-');
-        setBirthday(new Date(birthday[0], birthday[1] - 1, birthday[2]));
-      } else {
-        setBirthday(format(new Date(), 'yyyy-MM-dd'));
+    if (user) {
+      if (user.user) {
+        setInputRut(user.user?.dni ?? '');
+        if (user.user.birthday) {
+          const birthday = user.user.birthday.split('-');
+          setBirthday(
+            new Date(
+              Number(birthday[0]),
+              Number(birthday[1]) - 1,
+              Number(birthday[2])
+            )
+          );
+        } else {
+          setBirthday(format(new Date(), 'yyyy-MM-dd'));
+        }
       }
     }
 
@@ -118,9 +120,12 @@ export const FormPersonalData = (props: PropsFormUser) => {
       .then((response: any) => {
         setListCountries(response.data);
 
-        const findCountrie = response.data.find(
-          (data: any) => data.id === props.dataUser?.user.country.id
-        );
+        const findCountrie = response.data.find((data: any) => {
+          if (user.user && user.user.country) {
+            if (data.id === user.user.country.id) return data;
+          }
+          return null;
+        });
 
         if (findCountrie) {
           setCountrySelected(findCountrie);
@@ -130,45 +135,60 @@ export const FormPersonalData = (props: PropsFormUser) => {
       .catch((error: AxiosError) => console.log('Error Countries =>', error));
   };
 
-  const onSubmit: SubmitHandler<PersonalDataUser> = async (data) => {
+  const onSubmit: SubmitHandler<UserDataState> = async (data) => {
     console.log('data submit =>', data);
-    data.nationality = nationalitySelected.description;
-    await axios
-      .post(
-        `${process.env.REACT_APP_API_BACKEND}/register_form/personal_info`,
-        data,
-        {
-          headers: {
-            'Access-Control-Allow-Origin': '*',
-            Authorization: `Bearer ${props.token}`
-          }
-        }
-      )
-      .then((response: any) => {
-        console.log('Response User =>', response.data);
-        axios
-          .post(
-            `${
-              process.env.REACT_APP_API_BACKEND
-            }/registers/${localStorage.getItem('register_id')}/step`,
-            {
-              step: 2
-            },
-            {
-              headers: {
-                'Access-Control-Allow-Origin': '*'
-              }
+    if (data.user) {
+      data.user.nationality = nationalitySelected.description;
+      await axios
+        .post(
+          `${process.env.REACT_APP_API_BACKEND}/register_form/personal_info`,
+          {
+            address: data.user.address,
+            birthday: data.user.birthday,
+            city: data.user.city,
+            country_id: data.user.country_id,
+            register_id: props.registerId,
+            dni: data.user.dni,
+            email: data.user.email,
+            identity_type_id: 1,
+            lastname: data.user.lastname,
+            phone: data.user.phone,
+            nationality: data.user.nationality
+          },
+          {
+            headers: {
+              'Access-Control-Allow-Origin': '*',
+              Authorization: `Bearer ${props.token}`
             }
-          )
-          .then((response: any) => {
-            console.log('Step =>', response.data);
-            props.setCurrentStep(props.currentStep + 1);
-          })
-          .catch((error: AxiosError) => console.log('Error Aval =>', error));
-      })
-      .catch((error: AxiosError) =>
-        console.log('Error fetchDataUser =>', error)
-      );
+          }
+        )
+        .then((response: any) => {
+          console.log('Response User =>', response.data);
+          dispatch(updateData(data));
+          axios
+            .post(
+              `${
+                process.env.REACT_APP_API_BACKEND
+              }/registers/${localStorage.getItem('register_id')}/step`,
+              {
+                step: 2
+              },
+              {
+                headers: {
+                  'Access-Control-Allow-Origin': '*'
+                }
+              }
+            )
+            .then((response: any) => {
+              console.log('Step =>', response.data);
+              props.setCurrentStep(props.currentStep + 1);
+            })
+            .catch((error: AxiosError) => console.log('Error Aval =>', error));
+        })
+        .catch((error: AxiosError) =>
+          console.log('Error fetchDataUser =>', error)
+        );
+    }
   };
 
   const RenderRequiredField = () => {
@@ -182,12 +202,15 @@ export const FormPersonalData = (props: PropsFormUser) => {
       <div className="grid gap-4 grid-cols-4 ">
         <div className="col-span-2 flex flex-col">
           <label>Nombre</label>
-          <input type="text" {...register('name', { required: true })} />
+          <input type="text" {...register('user.name', { required: true })} />
           {errors.name && <RenderRequiredField />}
         </div>
         <div className="col-span-2 flex flex-col">
           <label>Apellidos</label>
-          <input type="text" {...register('lastname', { required: true })} />
+          <input
+            type="text"
+            {...register('user.lastname', { required: true })}
+          />
           {errors.lastname && <RenderRequiredField />}
         </div>
       </div>
@@ -226,13 +249,13 @@ export const FormPersonalData = (props: PropsFormUser) => {
                 input.preventDefault(); // detiene la propagación del evento
               }
             }}
-            {...register('dni', {
+            {...register('user.dni', {
               required: true,
               onChange: (e) => {
                 if (e.target.value !== '-' && e.target.value !== '') {
                   setInputRut(String(ChileanRutify.formatRut(e.target.value)));
                   setValue(
-                    'dni',
+                    'user.dni',
                     String(ChileanRutify.formatRut(e.target.value))
                   );
                 } else {
@@ -268,7 +291,7 @@ export const FormPersonalData = (props: PropsFormUser) => {
             onChange={(evt: DropdownChangeParams) => {
               if (evt.value.id) {
                 setCountrySelected(evt.value);
-                setValue('country_id', Number(evt.value.id));
+                setValue('user.country_id', Number(evt.value.id));
               }
             }}
             required
@@ -286,7 +309,7 @@ export const FormPersonalData = (props: PropsFormUser) => {
             onChange={(evt: DropdownChangeParams) => {
               if (evt.value.id) {
                 setNationalitySelected(evt.value);
-                setValue('nationality', evt.value.id);
+                setValue('user.nationality', evt.value.id);
               }
             }}
             required
@@ -299,7 +322,7 @@ export const FormPersonalData = (props: PropsFormUser) => {
           <label>Número teléfonico</label>
           <input
             type="number"
-            {...register('phone', {
+            {...register('user.phone', {
               required: true,
               minLength: 5,
               maxLength: 15
@@ -321,7 +344,8 @@ export const FormPersonalData = (props: PropsFormUser) => {
           <label>Correo electrónico</label>
           <input
             type="email"
-            {...register('email', {
+            readOnly
+            {...register('user.email', {
               required: true,
               pattern: /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$/
             })}
@@ -343,29 +367,35 @@ export const FormPersonalData = (props: PropsFormUser) => {
             dateFormat="yy-mm-dd"
             locale="es"
             value={birthday}
-            {...register('birthday', {
+            {...register('user.birthday', {
               required: true,
               onChange: (evt) => {
+                console.log(
+                  'Evento birthday: ' +
+                    String(format(new Date(evt.target.value), 'yyyy-MM-dd'))
+                );
                 setValue(
-                  'birthday',
-                  format(new Date(evt.target.value), 'yyyy-MM-dd')
+                  'user.birthday',
+                  String(format(new Date(evt.target.value), 'yyyy-MM-dd'))
                 );
               },
               validate: (evt: any) => {
                 const inputDate = evt.split('-');
-                if (
-                  new Date(
-                    inputDate[0],
-                    inputDate[1] - 1,
-                    inputDate[2]
-                  ).toLocaleDateString() < new Date().toLocaleDateString()
-                )
+                const myBirthday = new Date(
+                  inputDate[0],
+                  inputDate[1],
+                  inputDate[2]
+                );
+                const today = new Date();
+                if (isBefore(myBirthday, today)) {
+                  console.log('PASAMOS');
                   return true;
+                }
                 return false;
               }
             })}
           />
-          {errors.birthday?.type === 'required' && <RenderRequiredField />}
+          {errors.birthday && <RenderRequiredField />}
           {errors.birthday?.type === 'validate' && (
             <span className="font-light text-red-500">
               Fecha de nacimiento debe ser menor a la de hoy
@@ -374,7 +404,7 @@ export const FormPersonalData = (props: PropsFormUser) => {
         </div>
         <div className="col-span-2 flex flex-col">
           <label>Ciudad</label>
-          <input type="text" {...register('city', { required: true })} />
+          <input type="text" {...register('user.city', { required: true })} />
           {errors.city && <RenderRequiredField />}
         </div>
       </div>
@@ -382,7 +412,10 @@ export const FormPersonalData = (props: PropsFormUser) => {
       <div className="grid grid-cols-3 mt-5">
         <div className="flex flex-col col-span-3">
           <label>Dirección</label>
-          <input type="text" {...register('address', { required: true })} />
+          <input
+            type="text"
+            {...register('user.address', { required: true })}
+          />
           {errors.address && <RenderRequiredField />}
         </div>
       </div>
@@ -394,7 +427,7 @@ export const FormPersonalData = (props: PropsFormUser) => {
               <label>Carrera a la cual te estas matriculando</label>
               <input
                 type="text"
-                placeholder={props.dataUser?.career?.description ?? ''}
+                placeholder={user.career?.description ?? ''}
                 disabled={true}
               />
             </div>

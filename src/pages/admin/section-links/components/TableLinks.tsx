@@ -137,6 +137,15 @@ export const TableLinks = () => {
             {rowData.status}
           </span>
         );
+      case 'Registrado':
+        return (
+          <span
+            style={{ backgroundColor: '#CB8C22', color: '#FFFFFF' }}
+            className="px-2 py-1 rounded-full"
+          >
+            {rowData.status}
+          </span>
+        );
       case 'Contrato Firmado':
         return (
           <span

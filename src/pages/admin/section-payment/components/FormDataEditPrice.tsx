@@ -37,7 +37,7 @@ export const FormDataEditPrice = (props: PropsEditPrice) => {
   const [errorCheck, setErrorCheck] = useState(false);
   const [valueQuotes, setValueQuotes] = useState(0);
   const [loading, setLoading] = useState(false);
-  const [data, setData] = useState<FormEditPayment>(null!);
+  const [data, setData] = useState<FormEditPayment | null>(null);
   const [valueQuotesTotal, setValueQuotesTotal] = useState(0);
 
   const {
@@ -46,12 +46,14 @@ export const FormDataEditPrice = (props: PropsEditPrice) => {
     getValues,
     setValue,
     watch,
+    reset,
     formState: { errors }
   } = useForm<FormEditPayment>({
     defaultValues: { ...data }
   });
 
   const fetchData = async () => {
+    setData(null);
     setLoading(true);
     let result;
     await axios
@@ -62,9 +64,12 @@ export const FormDataEditPrice = (props: PropsEditPrice) => {
       })
       .then((response) => {
         setData(response.data);
+        reset(response.data);
       })
       .catch((error: AxiosError) => console.log('Error =>', error))
-      .finally(() => setLoading(false));
+      .finally(() => {
+        setInterval(() => setLoading(false), 1000);
+      });
 
     return result;
   };
@@ -73,7 +78,7 @@ export const FormDataEditPrice = (props: PropsEditPrice) => {
     fetchData();
     if (data) setValueQuotes(data.payment_methods[0].quotes_value);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [reset]);
 
   useEffect(() => {
     if (data) {
@@ -95,72 +100,81 @@ export const FormDataEditPrice = (props: PropsEditPrice) => {
   }, [careers]);
 
   const initPrice = () => {
-    setValue('price.name', data.price.name);
-    setValue('price.tuition', data.price.tuition);
-    setValue('price.comments', data.price.comments);
-    setValue('price.currency_id', data.price.currency_id);
-    setValue('price.career_id', data.price.career_id);
+    if (data) {
+      setValue('price.name', data.price.name);
+      setValue('price.tuition', data.price.tuition);
+      setValue('price.comments', data.price.comments);
+      setValue('price.currency_id', data.price.currency_id);
+      setValue('price.career_id', data.price.career_id);
+    }
   };
 
   const initPaymentMethods = () => {
-    for (const payment_method of data.payment_methods) {
-      if (
-        payment_method.description === 'Pago Cuota' &&
-        payment_method.quotes_value
-      ) {
-        setCheckPaymentQuotes(true);
-        setValue(
-          `payment_methods.0.free_discount`,
-          payment_method.free_discount
-        );
-        setValue(`payment_methods.0.quotes`, payment_method.quotes);
-        setValue(`payment_methods.0.quotes_value`, payment_method.quotes_value);
-        setValue(
-          `payment_methods.0.reference_value`,
-          payment_method.reference_value
-        );
-      }
+    if (data) {
+      for (const payment_method of data.payment_methods) {
+        if (
+          payment_method.description === 'Pago Cuota' &&
+          payment_method.quotes_value
+        ) {
+          setCheckPaymentQuotes(true);
+          setValue(
+            `payment_methods.0.free_discount`,
+            payment_method.free_discount
+          );
+          setValue(`payment_methods.0.quotes`, payment_method.quotes);
+          setValue(
+            `payment_methods.0.quotes_value`,
+            payment_method.quotes_value
+          );
+          setValue(
+            `payment_methods.0.reference_value`,
+            payment_method.reference_value
+          );
+        }
 
-      if (
-        payment_method.description === 'Anticipado' &&
-        payment_method.advance_discount
-      ) {
-        setCheckPrepaid(true);
-        setValue(
-          `payment_methods.1.advance_discount`,
+        if (
+          payment_method.description === 'Anticipado' &&
           payment_method.advance_discount
-        );
-        setValue(
-          `payment_methods.1.reference_value`,
-          payment_method.reference_value
-        );
-      }
-      if (payment_method.description === 'ISA' && payment_method.isa_value) {
-        setCheckISA(true);
-        setValue(`payment_methods.2.isa_percent`, payment_method.isa_percent);
-        setValue(`payment_methods.2.isa_value`, payment_method.isa_value);
+        ) {
+          setCheckPrepaid(true);
+          setValue(
+            `payment_methods.1.advance_discount`,
+            payment_method.advance_discount
+          );
+          setValue(
+            `payment_methods.1.reference_value`,
+            payment_method.reference_value
+          );
+        }
+        if (payment_method.description === 'ISA' && payment_method.isa_value) {
+          setCheckISA(true);
+          setValue(`payment_methods.2.isa_percent`, payment_method.isa_percent);
+          setValue(`payment_methods.2.isa_value`, payment_method.isa_value);
+        }
       }
     }
   };
 
   const initSuppliers = () => {
     // console.log('Suppliers =>', props.data);
-    for (const supplier of data.price.suppliers) {
-      switch (supplier.description) {
-        case 'Transbank':
-          setCheckTransbank(true);
-          break;
-        case 'Paypal':
-          setCheckPaypal(true);
-          break;
-        case 'Flow':
-          setCheckFlow(true);
-          break;
-        case 'Otro metodo':
-          setCheckOtherMethods(true);
-          break;
-        default:
-          break;
+    if (data) {
+      for (const supplier of data.price.suppliers) {
+        switch (supplier.description) {
+          case 'Transbank':
+            setCheckTransbank(true);
+            break;
+          case 'Paypal':
+            setCheckPaypal(true);
+            break;
+          case 'Flow':
+            setCheckFlow(true);
+            break;
+          case 'Otro metodo':
+            setCheckOtherMethods(true);
+            break;
+          default:
+            break;
+        }
       }
     }
   };
@@ -222,7 +236,10 @@ export const FormDataEditPrice = (props: PropsEditPrice) => {
     requestData.suppliers = suppliers;
 
     setLoading(true);
-    if (checkFlow || checkISA || checkOtherMethods || checkTransbank) {
+    if (
+      (checkFlow || checkISA || checkOtherMethods || checkTransbank) &&
+      data
+    ) {
       console.log('Data Price Id =>', data.price.id);
       await axios
         .post(

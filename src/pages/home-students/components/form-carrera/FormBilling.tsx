@@ -1,9 +1,12 @@
 import { useEffect, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
-import { BillingType } from '../../../../interfaces/Billing';
 import { RequiredField } from '../../../../components';
 import axios, { AxiosError } from 'axios';
 import ChileanRutify from 'chilean-rutify';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '../../../../store/store';
+import { updateDataBilling } from '../../../../store/slices/userDataFormSlice';
+import { UserBilling } from '../../../../store/slices/userData.interface';
 
 type PropsFormUser = {
   currentStep: number;
@@ -16,31 +19,34 @@ export const FormBilling = (props: PropsFormUser) => {
   const [isBilling, setIsBilling] = useState(true);
   const [inputRut, setInputRut] = useState('');
   const [inputRutRepresentative, setInputRutRepresentative] = useState('');
+  const user = useSelector((state: RootState) => state.user);
+  const dispatch = useDispatch();
   const {
     register,
     setValue,
     formState: { errors },
     handleSubmit
-  } = useForm<BillingType>({
+  } = useForm({
     defaultValues: {
-      address: props.dataUser.billing?.address ?? '',
-      business_line: props.dataUser.billing?.business_line ?? '',
-      business_name: props.dataUser.billing?.business_name ?? '',
-      dni: props.dataUser.billing?.dni ?? '',
-      document_type_id: props.dataUser.billing?.document_type_id ?? null,
-      email: props.dataUser.billing?.email ?? '',
-      phone: props.dataUser.billing?.phone ?? null,
-      representative_dni: props.dataUser.billing?.representative_dni ?? '',
-      representative_fullname:
-        props.dataUser.billing?.representative_fullname ?? ''
+      ...user
+      // address: props.dataUser.billing?.address ?? '',
+      // business_line: props.dataUser.billing?.business_line ?? '',
+      // business_name: props.dataUser.billing?.business_name ?? '',
+      // dni: props.dataUser.billing?.dni ?? '',
+      // document_type_id: props.dataUser.billing?.document_type_id ?? null,
+      // email: props.dataUser.billing?.email ?? '',
+      // phone: props.dataUser.billing?.phone ?? null,
+      // representative_dni: props.dataUser.billing?.representative_dni ?? '',
+      // representative_fullname:
+      //   props.dataUser.billing?.representative_fullname ?? ''
     }
   });
 
   useEffect(() => {
-    if (props.dataUser.billing?.address) {
+    if (user.billing && user.billing.address) {
       setIsBilling(false);
-      setInputRut(props.dataUser.billing?.dni);
-      setInputRutRepresentative(props.dataUser.billing?.representative_dni);
+      setInputRut(user.billing.dni ?? '');
+      setInputRutRepresentative(user.billing.representative_dni ?? '');
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -53,40 +59,46 @@ export const FormBilling = (props: PropsFormUser) => {
     props.setCurrentStep(props.currentStep + 1);
   };
 
-  const onSubmit: SubmitHandler<BillingType> = async (data) => {
-    console.log('Submit Billing =>', data);
+  const onSubmit: SubmitHandler<any> = async (dataBillingForm: any) => {
+    console.log('Submit Billing =>', dataBillingForm);
 
-    if (isBilling) {
+    if (isBilling && dataBillingForm.billing) {
+      const dataBilling = {
+        id: null,
+        document_type_id: 1,
+        address: '',
+        business_line: '',
+        business_name: '',
+        dni: '',
+        email: '',
+        phone: null,
+        representative_dni: '',
+        representative_fullname: ''
+      };
       await axios
         .post(`${process.env.REACT_APP_API_BACKEND}/register_form/billing`, {
-          document_type_id: '1',
-          register_id: props.registerId,
-          address: '',
-          business_line: '',
-          business_name: '',
-          dni: '',
-          email: '',
-          phone: '',
-          representative_dni: '',
-          representative_fullname: ''
-        })
-        .then((response: any) => {
-          console.log('Response Billing =>', response.data);
-          nextStep();
-        })
-        .catch((error: AxiosError) => console.log('Error Billing =>', error));
-    } else {
-      console.log('DATA BILLING =>', {
-        ...data,
-        register_id: props.registerId
-      });
-      await axios
-        .post(`${process.env.REACT_APP_API_BACKEND}/register_form/billing`, {
-          ...data,
+          ...dataBilling,
           register_id: props.registerId
         })
         .then((response: any) => {
           console.log('Response Billing =>', response.data);
+          dispatch(updateDataBilling(dataBilling));
+          nextStep();
+        })
+        .catch((error: AxiosError) => console.log('Error Billing =>', error));
+    } else {
+      await axios
+        .post(`${process.env.REACT_APP_API_BACKEND}/register_form/billing`, {
+          ...dataBillingForm.billing,
+          register_id: props.registerId
+        })
+        .then((response: any) => {
+          console.log('Response Billing =>', response.data);
+          const resultBilling: UserBilling = {
+            ...dataBillingForm.billing,
+            id: null
+          };
+          dispatch(updateDataBilling(resultBilling));
           nextStep();
         })
         .catch((error: AxiosError) => console.log('Error Billing =>', error));
@@ -107,7 +119,7 @@ export const FormBilling = (props: PropsFormUser) => {
               checked={!isBilling}
               onChange={() => {
                 setIsBilling(false);
-                setValue('document_type_id', 2);
+                setValue('billing.document_type_id', 2);
               }}
             />
             <label htmlFor="si" className="ml-1">
@@ -122,7 +134,7 @@ export const FormBilling = (props: PropsFormUser) => {
               checked={isBilling}
               onChange={() => {
                 setIsBilling(true);
-                setValue('document_type_id', 1);
+                setValue('billing.document_type_id', 1);
               }}
             />
             <label htmlFor="no" className="ml-1">
@@ -139,9 +151,11 @@ export const FormBilling = (props: PropsFormUser) => {
             <input
               type="text"
               disabled={isBilling}
-              {...register('business_name', { required: !isBilling ?? true })}
+              {...register('billing.business_name', {
+                required: !isBilling ?? true
+              })}
             />
-            {errors.business_name && <RequiredField />}
+            {errors.billing?.business_name && <RequiredField />}
           </div>
           <div className="col-span-2 flex flex-col">
             <label>Rut Empresa</label>
@@ -159,7 +173,7 @@ export const FormBilling = (props: PropsFormUser) => {
                   input.preventDefault(); // detiene la propagación del evento
                 }
               }}
-              {...register('dni', {
+              {...register('billing.dni', {
                 required: !isBilling ?? true,
                 onChange: (e) => {
                   if (e.target.value !== '-' && e.target.value !== '') {
@@ -167,24 +181,24 @@ export const FormBilling = (props: PropsFormUser) => {
                       String(ChileanRutify.formatRut(e.target.value))
                     );
                     setValue(
-                      'dni',
+                      'billing.dni',
                       String(ChileanRutify.formatRut(e.target.value))
                     );
                   } else {
                     setInputRut('-');
                   }
                 },
-                validate: (v) => {
+                validate: (v: any) => {
                   return ChileanRutify.validRut(v);
                 }
               })}
             />
-            {errors.dni?.type === 'required' && (
+            {errors.billing?.dni?.type === 'required' && (
               <span className="text-red-500 text-sm font-light">
                 Rut requerido
               </span>
             )}
-            {errors.dni?.type === 'validate' && (
+            {errors.billing?.dni?.type === 'validate' && (
               <span className="text-red-500 text-sm font-light">
                 Rut invalido
               </span>
@@ -198,20 +212,20 @@ export const FormBilling = (props: PropsFormUser) => {
             <input
               type="text"
               disabled={isBilling}
-              {...register('business_line', {
+              {...register('billing.business_line', {
                 required: !isBilling ?? true
               })}
             />
-            {errors.business_line && <RequiredField />}
+            {errors.billing?.business_line && <RequiredField />}
           </div>
           <div className="col-span-2 flex flex-col">
             <label>Dirección</label>
             <input
               type="text"
               disabled={isBilling}
-              {...register('address', { required: !isBilling ?? true })}
+              {...register('billing.address', { required: !isBilling ?? true })}
             />
-            {errors.address && <RequiredField />}
+            {errors.billing?.address && <RequiredField />}
           </div>
         </div>
 
@@ -221,28 +235,28 @@ export const FormBilling = (props: PropsFormUser) => {
             <input
               type="email"
               disabled={isBilling}
-              {...register('email', { required: !isBilling ?? true })}
+              {...register('billing.email', { required: !isBilling ?? true })}
             />
-            {errors.email && <RequiredField />}
+            {errors.billing?.email && <RequiredField />}
           </div>
           <div className="col-span-2 flex flex-col">
             <label>Teléfono Empresa</label>
             <input
               type="number"
               disabled={isBilling}
-              {...register('phone', {
+              {...register('billing.phone', {
                 required: !isBilling ?? true,
                 minLength: !isBilling ? 5 : 0,
                 maxLength: !isBilling ? 15 : 999
               })}
             />
-            {errors.phone?.type === 'required' && <RequiredField />}
-            {errors.phone?.type === 'maxLength' && (
+            {errors.billing?.phone?.type === 'required' && <RequiredField />}
+            {errors.billing?.phone?.type === 'maxLength' && (
               <span className="text-red-500 text-sm font-light">
                 Debe tener menos de 15 digitos
               </span>
             )}
-            {errors.phone?.type === 'minLength' && (
+            {errors.billing?.phone?.type === 'minLength' && (
               <span className="text-red-500 text-sm font-light">
                 Debe tener más de 5 digitos
               </span>
@@ -255,11 +269,11 @@ export const FormBilling = (props: PropsFormUser) => {
             <input
               type="text"
               disabled={isBilling}
-              {...register('representative_fullname', {
+              {...register('billing.representative_fullname', {
                 required: !isBilling ?? true
               })}
             />
-            {errors.representative_fullname?.type === 'required' && (
+            {errors.billing?.representative_fullname?.type === 'required' && (
               <RequiredField />
             )}
           </div>
@@ -279,7 +293,7 @@ export const FormBilling = (props: PropsFormUser) => {
                 }
               }}
               value={inputRutRepresentative}
-              {...register('representative_dni', {
+              {...register('billing.representative_dni', {
                 required: !isBilling ?? true,
                 onChange: (e) => {
                   if (e.target.value !== '-' && e.target.value !== '') {
@@ -287,24 +301,24 @@ export const FormBilling = (props: PropsFormUser) => {
                       String(ChileanRutify.formatRut(e.target.value))
                     );
                     setValue(
-                      'representative_dni',
+                      'billing.representative_dni',
                       String(ChileanRutify.formatRut(e.target.value))
                     );
                   } else {
                     setInputRutRepresentative('-');
                   }
                 },
-                validate: (v) => {
+                validate: (v: any) => {
                   return ChileanRutify.validRut(v);
                 }
               })}
             />
-            {errors.representative_dni?.type === 'required' && (
+            {errors.billing?.representative_dni?.type === 'required' && (
               <span className="text-red-500 text-sm font-light">
                 Rut requerido
               </span>
             )}
-            {errors.representative_dni?.type === 'validate' && (
+            {errors.billing?.representative_dni?.type === 'validate' && (
               <span className="text-red-500 text-sm font-light">
                 Rut invalido
               </span>

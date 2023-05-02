@@ -7,9 +7,12 @@ import { SelectPayment } from '../SelectPayment';
 import { SignDocument } from '../SignDocument';
 import { SimpleFinishPayment } from '../SimpleFinishPayment';
 import { useSearchParams } from 'react-router-dom';
-import axios, { AxiosError } from 'axios';
+import axios, { AxiosError, AxiosResponse } from 'axios';
 import { FormAval } from './FormAval';
 import { FormBilling } from './FormBilling';
+import { UserDataState } from '../../../../store/slices/userData.interface';
+import { updateData } from '../../../../store/slices/userDataFormSlice';
+import { useDispatch } from 'react-redux';
 
 export const FormCarrera = () => {
   const steps = [
@@ -30,6 +33,7 @@ export const FormCarrera = () => {
   const [loading, setLoading] = useState(false);
   const [paymentMethodSelected, setPaymentMethodSelected] = useState('');
   const [error, setError] = useState(false);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     fetchDataUser();
@@ -53,10 +57,11 @@ export const FormCarrera = () => {
           }
         }
       )
-      .then((response: any) => {
+      .then((response: AxiosResponse<UserDataState[]>) => {
         console.log('Response User =>', response.data);
         setDataUser(response.data);
         setCurrentStep(response.data[0].step);
+        dispatch(updateData(response.data[0]));
       })
       .catch((error: AxiosError) => {
         console.log('Error fetchDataUser =>', error);
@@ -99,7 +104,6 @@ export const FormCarrera = () => {
                   <FormPersonalData
                     registerId={String(params.get('register'))}
                     token={String(params.get('token'))}
-                    dataUser={dataUser[0]}
                     currentStep={currentStep}
                     setComplete={setComplete}
                     setCurrentStep={setCurrentStep}
