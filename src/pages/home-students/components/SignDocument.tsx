@@ -14,7 +14,7 @@ export const SignDocument = (props: PropsFormUser) => {
           'register_id'
         )}/step`,
         {
-          step: 8
+          step: props.currentStep + 1
         },
         {
           headers: {
