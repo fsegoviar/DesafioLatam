@@ -128,10 +128,9 @@ export const FormPersonalData = (props: PropsFormUser) => {
       .get(`${process.env.REACT_APP_API_BACKEND}/countries`)
       .then((response: any) => {
         setListCountries(response.data);
-
         const findCountrie = response.data.find((data: any) => {
-          if (user.user && user.user.country) {
-            if (data.id === user.user.country.id) return data;
+          if (user.user && user.user.country_id) {
+            if (data.id === user.user.country_id) return data;
           }
           return null;
         });
