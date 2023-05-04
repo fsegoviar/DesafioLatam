@@ -7,6 +7,8 @@ import { SelectPayment } from '../SelectPayment';
 import { SignDocument } from '../SignDocument';
 import { SimpleFinishPayment } from '../SimpleFinishPayment';
 import axios, { AxiosError } from 'axios';
+import { useDispatch } from 'react-redux';
+import { updateData } from '../../../../store/slices/userDataFormSlice';
 
 export const FormReintegro = () => {
   const steps = [
@@ -24,6 +26,7 @@ export const FormReintegro = () => {
   const [loading, setLoading] = useState(false);
   const [paymentMethodSelected, setPaymentMethodSelected] = useState('');
   const [error, setError] = useState(false);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     fetchDataUser();
@@ -48,9 +51,10 @@ export const FormReintegro = () => {
         }
       )
       .then((response: any) => {
-        console.log('Response User =>', response.data);
+        // console.log('Response User =>', response.data);
         setDataUser(response.data);
         setCurrentStep(response.data[0].step);
+        dispatch(updateData(response.data[0]));
       })
       .catch((error: AxiosError) => {
         console.log('Error fetchDataUser =>', error);
@@ -104,7 +108,6 @@ export const FormReintegro = () => {
                 return (
                   <FormBilling
                     registerId={String(params.get('register'))}
-                    dataUser={dataUser[0]}
                     currentStep={currentStep}
                     setCurrentStep={setCurrentStep}
                   />

@@ -16,7 +16,6 @@ type PropsFormUser = {
   setComplete: (value: boolean) => void;
   registerId: string;
   token: string;
-  dataUser: any;
 };
 
 export const FormLaborData = (props: PropsFormUser) => {
@@ -28,16 +27,13 @@ export const FormLaborData = (props: PropsFormUser) => {
     register,
     handleSubmit,
     formState: { errors }
-  } = useForm({
+  } = useForm<UpdateOnlyLabor>({
     defaultValues: {
-      ...user
-      // register_id: props.registerId,
-      // work_situation_id:
-      //   props.dataUser.user.empleability?.work_situation_id ?? null,
-      // linkedin: props.dataUser.user.empleability?.linkedin ?? '',
-      // organization: props.dataUser.user.empleability?.organization ?? '',
-      // position: props.dataUser.user.empleability?.position ?? '',
-      // rent: props.dataUser.user.empleability?.rent ?? null
+      work_situation_id: user.user?.empleability?.work_situation_id ?? 0,
+      linkedin: user.user?.empleability?.linkedin ?? '',
+      organization: user.user?.empleability?.organization ?? '',
+      position: user.user?.empleability?.position ?? '',
+      rent: user.user?.empleability?.rent ?? 0
     }
   });
 
@@ -60,56 +56,46 @@ export const FormLaborData = (props: PropsFormUser) => {
   };
 
   const onSubmit: SubmitHandler<any> = async (data) => {
-    if (data.user && data.user.empleability) {
-      data.work_situation_id = laborSituation.id;
+    data.work_situation_id = laborSituation.id;
 
-      const dataResult: UpdateOnlyLabor = {
-        work_situation_id: data.work_situation_id,
-        linkedin: data.user.empleability.linkedin,
-        organization: data.user.empleability.organization,
-        position: data.user.empleability.position,
-        rent: data.user.empleability.rent
-      };
-
-      await axios
-        .post(
-          `${process.env.REACT_APP_API_BACKEND}/register_form/empleability`,
-          {
-            register_id: props.registerId,
-            ...dataResult
-          },
-          {
-            headers: {
-              'Access-Control-Allow-Origin': '*',
-              Authorization: `Bearer ${props.token}`
-            }
+    await axios
+      .post(
+        `${process.env.REACT_APP_API_BACKEND}/register_form/empleability`,
+        {
+          register_id: props.registerId,
+          ...data
+        },
+        {
+          headers: {
+            'Access-Control-Allow-Origin': '*',
+            Authorization: `Bearer ${props.token}`
           }
-        )
-        .then((response: any) => {
-          console.log('Response =>', response.data);
-          dispatch(updateDataLabor(dataResult));
-          axios
-            .post(
-              `${
-                process.env.REACT_APP_API_BACKEND
-              }/registers/${localStorage.getItem('register_id')}/step`,
-              {
-                step: 4
-              },
-              {
-                headers: {
-                  'Access-Control-Allow-Origin': '*'
-                }
+        }
+      )
+      .then(() => {
+        // console.log('Response =>', response.data);
+        dispatch(updateDataLabor(data));
+        axios
+          .post(
+            `${
+              process.env.REACT_APP_API_BACKEND
+            }/registers/${localStorage.getItem('register_id')}/step`,
+            {
+              step: 4
+            },
+            {
+              headers: {
+                'Access-Control-Allow-Origin': '*'
               }
-            )
-            .then((response: any) => {
-              console.log('Step =>', response.data);
-              nextStep();
-            })
-            .catch((error: AxiosError) => console.log('Error Aval =>', error));
-        })
-        .catch((error: AxiosError) => console.log('Error =>', error));
-    }
+            }
+          )
+          .then(() => {
+            // console.log('Step =>', response.data);
+            nextStep();
+          })
+          .catch((error: AxiosError) => console.log('Error Aval =>', error));
+      })
+      .catch((error: AxiosError) => console.log('Error =>', error));
   };
 
   return (
@@ -124,25 +110,25 @@ export const FormLaborData = (props: PropsFormUser) => {
               options={workSituations}
               optionLabel="description"
               className="w-full dropdown-form md:w-14rem"
-              {...register('user.empleability.work_situation_id', {
+              {...register('work_situation_id', {
                 required: true,
                 onChange: (evt) => {
                   if (evt.value.id) setLaborSituation(evt.value);
                 }
               })}
             />
-            {errors.user?.empleability?.work_situation_id && <RequiredField />}
+            {errors.work_situation_id && <RequiredField />}
           </div>
           <div className="col-span-2 flex flex-col">
             <label>Renta Actual</label>
             <input
               type="number"
-              {...register('user.empleability.rent', {
+              {...register('rent', {
                 required: true,
                 min: 0
               })}
             />
-            {errors.user?.empleability?.rent && <RequiredField />}
+            {errors.rent && <RequiredField />}
           </div>
         </div>
         <div className="col-span-2 flex flex-col mt-3">
@@ -150,16 +136,14 @@ export const FormLaborData = (props: PropsFormUser) => {
           <input
             type="text"
             placeholder={'https://www.google.com'}
-            {...register('user.empleability.linkedin', {
+            {...register('linkedin', {
               required: true,
               pattern:
                 /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})(\/([^\s]*))?$/
             })}
           />
-          {errors.user?.empleability?.linkedin?.type === 'required' && (
-            <RequiredField />
-          )}
-          {errors.user?.empleability?.linkedin?.type === 'pattern' && (
+          {errors.linkedin?.type === 'required' && <RequiredField />}
+          {errors.linkedin?.type === 'pattern' && (
             <span className="text-red-500 text-sm font-light">
               Formato URL no valido
             </span>
@@ -170,19 +154,16 @@ export const FormLaborData = (props: PropsFormUser) => {
             <label>Empresa donde trabaja</label>
             <input
               type="text"
-              {...register('user.empleability.organization', {
+              {...register('organization', {
                 required: true
               })}
             />
-            {errors.user?.empleability?.organization && <RequiredField />}
+            {errors.organization && <RequiredField />}
           </div>
           <div className="col-span-2 flex flex-col">
             <label>Cargo</label>
-            <input
-              type="text"
-              {...register('user.empleability.position', { required: true })}
-            />
-            {errors.user?.empleability?.position && <RequiredField />}
+            <input type="text" {...register('position', { required: true })} />
+            {errors.position && <RequiredField />}
           </div>
         </div>
         <div className="flex justify-end">

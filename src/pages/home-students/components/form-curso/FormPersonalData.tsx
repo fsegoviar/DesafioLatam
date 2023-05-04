@@ -3,6 +3,9 @@ import { GetIdentityTypes } from '../../../../services';
 import axios, { AxiosError } from 'axios';
 import ChileanRutify from 'chilean-rutify';
 import { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '../../../../store/store';
+import { updatePersonalDataCarrera } from '../../../../store/slices/userDataFormSlice';
 
 type PropsFormUser = {
   stepsLength: number;
@@ -17,27 +20,26 @@ type PropsFormUser = {
 export const FormPersonalData = (props: PropsFormUser) => {
   const { indentityTypes } = GetIdentityTypes();
   const [inputRut, setInputRut] = useState('');
+  const user = useSelector((state: RootState) => state.user);
+  const dispatch = useDispatch();
   const {
     register,
     handleSubmit,
     setValue,
-    getValues,
     formState: { errors }
   } = useForm({
     defaultValues: {
-      register_id: props.registerId,
-      career: props.dataUser?.career,
-      name: props.dataUser?.user.name,
-      identity_type_id: props.dataUser?.user.identity_type?.id,
-      lastname: props.dataUser?.user.lastname,
-      dni: props.dataUser?.user.dni,
-      phone: props.dataUser?.user.phone,
-      email: props.dataUser?.user.email
+      name: user.user?.name ?? '',
+      identity_type_id: 1,
+      lastname: user.user?.lastname ?? '',
+      dni: user.user?.dni ?? '',
+      phone: user.user?.phone ?? '',
+      email: user.user?.email ?? ''
     }
   });
 
   useEffect(() => {
-    if (props.dataUser?.user.dni) setInputRut(props.dataUser?.user.dni);
+    if (user.user?.dni) setInputRut(user.user?.dni);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -46,7 +48,7 @@ export const FormPersonalData = (props: PropsFormUser) => {
     await axios
       .post(
         `${process.env.REACT_APP_API_BACKEND}/register_form/personal_info`,
-        data,
+        { register_id: props.registerId, ...data },
         {
           headers: {
             'Access-Control-Allow-Origin': '*',
@@ -54,15 +56,16 @@ export const FormPersonalData = (props: PropsFormUser) => {
           }
         }
       )
-      .then((response: any) => {
-        console.log('Response User =>', response.data);
+      .then(() => {
+        // console.log('Response User =>', response.data);
+        dispatch(updatePersonalDataCarrera(data));
         axios
           .post(
             `${
               process.env.REACT_APP_API_BACKEND
             }/registers/${localStorage.getItem('register_id')}/step`,
             {
-              step: 2
+              step: props.currentStep + 1
             },
             {
               headers: {
@@ -70,8 +73,8 @@ export const FormPersonalData = (props: PropsFormUser) => {
               }
             }
           )
-          .then((response: any) => {
-            console.log('Step =>', response.data);
+          .then(() => {
+            // console.log('Step =>', response.data);
             props.setCurrentStep(props.currentStep + 1);
           })
           .catch((error: AxiosError) => console.log('Error Aval =>', error));
@@ -215,8 +218,8 @@ export const FormPersonalData = (props: PropsFormUser) => {
               <label>Carrera a la cual te estas matriculando</label>
               <input
                 type="text"
-                value={getValues('career.description')}
-                disabled
+                placeholder={user.career?.description ?? ''}
+                disabled={true}
               />
             </div>
           </div>

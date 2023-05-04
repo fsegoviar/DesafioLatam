@@ -60,7 +60,7 @@ interface SuppliersData {
   } | null;
 }
 
-interface UserData {
+export interface UserData {
   id: number | null;
   address: string | null;
   avatar: string | null;
@@ -76,7 +76,7 @@ interface UserData {
   } | null;
   country_id: number | null;
   debts: [] | null;
-  dni: string;
+  dni: string | null;
   education: {
     id: number | null;
     description: string;

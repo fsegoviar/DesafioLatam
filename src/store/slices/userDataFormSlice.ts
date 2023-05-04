@@ -4,6 +4,7 @@ import {
   UpdateOnlyEducation,
   UpdateOnlyLabor,
   UserBilling,
+  UserData,
   UserDataState
 } from './userData.interface';
 
@@ -31,6 +32,16 @@ export const userDataFormSlice = createSlice({
       // return state;
       console.log('Update data', Object.assign({}, state, action.payload));
       return Object.assign({}, state, action.payload);
+    },
+    updatePersonalDataCarrera: (state, action: PayloadAction<UserData>) => {
+      // state = { ...action.payload };
+      // return state;
+      const result = {
+        ...state,
+        user: Object.assign({}, state.user, action.payload)
+      };
+      console.log('Update data', Object.assign({}, state, result));
+      return Object.assign({}, state, result);
     },
     updateDataEducation: (
       state,
@@ -81,7 +92,8 @@ export const {
   updateDataEducation,
   updateData,
   updateDataLabor,
-  updateDataBilling
+  updateDataBilling,
+  updatePersonalDataCarrera
 } = userDataFormSlice.actions;
 
 export default userDataFormSlice.reducer;

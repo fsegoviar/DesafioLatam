@@ -7,7 +7,6 @@ import { Dropdown } from 'primereact/dropdown';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../../../store/store';
 import { updateDataEducation } from '../../../../store/slices/userDataFormSlice';
-import { UserDataState } from '../../../../store/slices/userData.interface';
 
 type PropsFormUser = {
   stepsLength: number;
@@ -16,7 +15,6 @@ type PropsFormUser = {
   setComplete: (value: boolean) => void;
   registerId: string;
   token: string;
-  dataUser: any;
 };
 
 export const EducationForm = (props: PropsFormUser) => {
@@ -32,7 +30,9 @@ export const EducationForm = (props: PropsFormUser) => {
     formState: { errors }
   } = useForm<any>({
     defaultValues: {
-      ...user
+      description: user.user?.education?.description ?? '',
+      educational_level_id: user.user?.education?.educational_level_id ?? null,
+      english_level_id: user.user?.education?.english_level_id ?? null
     }
   });
 
@@ -55,7 +55,7 @@ export const EducationForm = (props: PropsFormUser) => {
     props.setCurrentStep(props.currentStep - 1);
   };
 
-  const onSubmit: SubmitHandler<UserDataState> = async (data) => {
+  const onSubmit: SubmitHandler<any> = async (data) => {
     console.log('DATA =>', data);
 
     const findEnglishLevel = englishLevel?.find(
@@ -65,59 +65,49 @@ export const EducationForm = (props: PropsFormUser) => {
     const findEducationLevel = educationLevel?.find(
       (item) => item.id === educationLevelSelected.id
     );
-    if (data.user && data.user.education) {
-      if (findEnglishLevel)
-        data.user.education.english_level_id = findEnglishLevel?.id;
-      if (findEducationLevel)
-        data.user.education.educational_level_id = findEducationLevel?.id;
+    if (findEnglishLevel) data.english_level_id = findEnglishLevel.id;
+    if (findEducationLevel) data.educational_level_id = findEducationLevel.id;
 
-      const objectToSend = {
-        description: data.user.education.description,
-        educational_level_id: data.user.education.educational_level_id,
-        english_level_id: data.user.education.english_level_id
-      };
-
-      await axios
-        .post(
-          `${process.env.REACT_APP_API_BACKEND}/register_form/education`,
-          {
-            register_id: props.registerId,
-            ...objectToSend
-          },
-          {
-            headers: {
-              'Access-Control-Allow-Origin': '*',
-              Authorization: `Bearer ${props.token}`
-            }
+    await axios
+      .post(
+        `${process.env.REACT_APP_API_BACKEND}/register_form/education`,
+        {
+          register_id: props.registerId,
+          ...data
+        },
+        {
+          headers: {
+            'Access-Control-Allow-Origin': '*',
+            Authorization: `Bearer ${props.token}`
           }
-        )
-        .then((response: any) => {
-          console.log('Response User =>', response.data);
-          dispatch(updateDataEducation(objectToSend));
-          axios
-            .post(
-              `${
-                process.env.REACT_APP_API_BACKEND
-              }/registers/${localStorage.getItem('register_id')}/step`,
-              {
-                step: 3
-              },
-              {
-                headers: {
-                  'Access-Control-Allow-Origin': '*'
-                }
+        }
+      )
+      .then(() => {
+        // console.log('Response User =>', response.data);
+        dispatch(updateDataEducation(data));
+        axios
+          .post(
+            `${
+              process.env.REACT_APP_API_BACKEND
+            }/registers/${localStorage.getItem('register_id')}/step`,
+            {
+              step: 3
+            },
+            {
+              headers: {
+                'Access-Control-Allow-Origin': '*'
               }
-            )
-            .then((response: any) => {
-              console.log('Step =>', response.data);
-              props.setCurrentStep(props.currentStep + 1);
-            })
-            .catch((error: AxiosError) => console.log('Error Aval =>', error));
-        })
-        .catch((error: AxiosError) =>
-          console.log('Error fetchDataUser =>', error)
-        );
-    }
+            }
+          )
+          .then(() => {
+            // console.log('Step =>', response.data);
+            props.setCurrentStep(props.currentStep + 1);
+          })
+          .catch((error: AxiosError) => console.log('Error Aval =>', error));
+      })
+      .catch((error: AxiosError) =>
+        console.log('Error fetchDataUser =>', error)
+      );
   };
 
   return (
@@ -131,7 +121,7 @@ export const EducationForm = (props: PropsFormUser) => {
             options={educationLevel}
             optionLabel="description"
             className="w-full dropdown-form md:w-14rem"
-            {...register('user.education.educational_level_id', {
+            {...register('educational_level_id', {
               required: true,
               onChange: (evt) => {
                 if (evt.value.id) setEducationLevelSelected(evt.value);
@@ -148,7 +138,7 @@ export const EducationForm = (props: PropsFormUser) => {
             options={englishLevel}
             optionLabel="description"
             className="w-full dropdown-form md:w-14rem"
-            {...register('user.education.english_level_id', {
+            {...register('english_level_id', {
               required: true,
               onChange: (evt) => {
                 if (evt.value.id) setEnglishLevelSelected(evt.value);
@@ -165,7 +155,7 @@ export const EducationForm = (props: PropsFormUser) => {
             placeholder="¿Posee conocimientos previos?. ¿Cuales?"
             id=""
             rows={4}
-            {...register('user.education.description', {
+            {...register('description', {
               required: true,
               maxLength: 250
             })}

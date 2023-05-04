@@ -10,8 +10,7 @@ import { Dropdown, DropdownChangeParams } from 'primereact/dropdown';
 import ChileanRutify from 'chilean-rutify';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../../../store/store';
-import { updateData } from '../../../../store/slices/userDataFormSlice';
-import { UserDataState } from '../../../../store/slices/userData.interface';
+import { updatePersonalDataCarrera } from '../../../../store/slices/userDataFormSlice';
 import { isBefore } from 'date-fns';
 
 type PropsFormUser = {
@@ -74,8 +73,8 @@ export const FormPersonalData = (props: PropsFormUser) => {
     new Date().toLocaleDateString()
   );
   const [listCountries, setListCountries] = useState([]);
-  const [countrySelected, setCountrySelected] = useState<any>(null!);
-  const [nationalitySelected, setNationalitySelected] = useState<any>(null!);
+  const [countrySelected, setCountrySelected] = useState<any>(null);
+  const [nationalitySelected, setNationalitySelected] = useState<any>(null);
   const [inputRut, setInputRut] = useState('');
   const user = useSelector((state: RootState) => state.user);
   const dispatch = useDispatch();
@@ -86,7 +85,17 @@ export const FormPersonalData = (props: PropsFormUser) => {
     handleSubmit
   } = useForm<any>({
     defaultValues: {
-      ...user
+      name: user.user?.name ?? '',
+      address: user.user?.address ?? '',
+      birthday: user.user?.birthday ?? '',
+      city: user.user?.city ?? '',
+      country_id: user.user?.country_id ?? null,
+      dni: user.user?.dni ?? '',
+      email: user.user?.email ?? '',
+      identity_type_id: 1,
+      lastname: user.user?.lastname ?? '',
+      phone: user.user?.phone ?? '',
+      nationality: user.user?.nationality ?? null
     }
   });
 
@@ -135,60 +144,49 @@ export const FormPersonalData = (props: PropsFormUser) => {
       .catch((error: AxiosError) => console.log('Error Countries =>', error));
   };
 
-  const onSubmit: SubmitHandler<UserDataState> = async (data) => {
-    console.log('data submit =>', data);
-    if (data.user) {
-      data.user.nationality = nationalitySelected.description;
-      await axios
-        .post(
-          `${process.env.REACT_APP_API_BACKEND}/register_form/personal_info`,
-          {
-            address: data.user.address,
-            birthday: data.user.birthday,
-            city: data.user.city,
-            country_id: data.user.country_id,
-            register_id: props.registerId,
-            dni: data.user.dni,
-            email: data.user.email,
-            identity_type_id: 1,
-            lastname: data.user.lastname,
-            phone: data.user.phone,
-            nationality: data.user.nationality
-          },
-          {
-            headers: {
-              'Access-Control-Allow-Origin': '*',
-              Authorization: `Bearer ${props.token}`
-            }
+  const onSubmit: SubmitHandler<any> = async (data) => {
+    // console.log('data submit =>', data);
+    // data.user.nationality = nationalitySelected.description;
+    await axios
+      .post(
+        `${process.env.REACT_APP_API_BACKEND}/register_form/personal_info`,
+        {
+          register_id: props.registerId,
+          ...data
+        },
+        {
+          headers: {
+            'Access-Control-Allow-Origin': '*',
+            Authorization: `Bearer ${props.token}`
           }
-        )
-        .then((response: any) => {
-          console.log('Response User =>', response.data);
-          dispatch(updateData(data));
-          axios
-            .post(
-              `${
-                process.env.REACT_APP_API_BACKEND
-              }/registers/${localStorage.getItem('register_id')}/step`,
-              {
-                step: 2
-              },
-              {
-                headers: {
-                  'Access-Control-Allow-Origin': '*'
-                }
+        }
+      )
+      .then(() => {
+        // console.log('Response User =>', response.data);
+        dispatch(updatePersonalDataCarrera(data));
+        axios
+          .post(
+            `${
+              process.env.REACT_APP_API_BACKEND
+            }/registers/${localStorage.getItem('register_id')}/step`,
+            {
+              step: 2
+            },
+            {
+              headers: {
+                'Access-Control-Allow-Origin': '*'
               }
-            )
-            .then((response: any) => {
-              console.log('Step =>', response.data);
-              props.setCurrentStep(props.currentStep + 1);
-            })
-            .catch((error: AxiosError) => console.log('Error Aval =>', error));
-        })
-        .catch((error: AxiosError) =>
-          console.log('Error fetchDataUser =>', error)
-        );
-    }
+            }
+          )
+          .then(() => {
+            // console.log('Step =>', response.data);
+            props.setCurrentStep(props.currentStep + 1);
+          })
+          .catch((error: AxiosError) => console.log('Error Aval =>', error));
+      })
+      .catch((error: AxiosError) =>
+        console.log('Error fetchDataUser =>', error)
+      );
   };
 
   const RenderRequiredField = () => {
@@ -202,15 +200,12 @@ export const FormPersonalData = (props: PropsFormUser) => {
       <div className="grid gap-4 grid-cols-4 ">
         <div className="col-span-2 flex flex-col">
           <label>Nombre</label>
-          <input type="text" {...register('user.name', { required: true })} />
+          <input type="text" {...register('name', { required: true })} />
           {errors.name && <RenderRequiredField />}
         </div>
         <div className="col-span-2 flex flex-col">
           <label>Apellidos</label>
-          <input
-            type="text"
-            {...register('user.lastname', { required: true })}
-          />
+          <input type="text" {...register('lastname', { required: true })} />
           {errors.lastname && <RenderRequiredField />}
         </div>
       </div>
@@ -249,13 +244,13 @@ export const FormPersonalData = (props: PropsFormUser) => {
                 input.preventDefault(); // detiene la propagación del evento
               }
             }}
-            {...register('user.dni', {
+            {...register('dni', {
               required: true,
               onChange: (e) => {
                 if (e.target.value !== '-' && e.target.value !== '') {
                   setInputRut(String(ChileanRutify.formatRut(e.target.value)));
                   setValue(
-                    'user.dni',
+                    'dni',
                     String(ChileanRutify.formatRut(e.target.value))
                   );
                 } else {
@@ -288,15 +283,24 @@ export const FormPersonalData = (props: PropsFormUser) => {
             optionLabel="description"
             filter
             className="dropdown-form"
-            onChange={(evt: DropdownChangeParams) => {
-              if (evt.value.id) {
-                setCountrySelected(evt.value);
-                setValue('user.country_id', Number(evt.value.id));
+            // onChange={(evt: DropdownChangeParams) => {
+            //   if (evt.value.id) {
+            //     setCountrySelected(evt.value);
+            //     setValue('country_id', Number(evt.value.id));
+            //   }
+            // }}
+            // required
+            {...register('country_id', {
+              required: true,
+              onChange(evt: DropdownChangeParams) {
+                if (evt.value.id) {
+                  setCountrySelected(evt.value);
+                  setValue('country_id', Number(evt.value.id));
+                }
               }
-            }}
-            required
+            })}
           />
-          {errors.country_id && <RenderRequiredField />}
+          {errors.country_id?.type === 'required' && <RenderRequiredField />}
         </div>
         <div className="flex flex-col col-span-2">
           <label>Nacionalidad</label>
@@ -306,15 +310,24 @@ export const FormPersonalData = (props: PropsFormUser) => {
             optionLabel="nationality"
             filter
             className="dropdown-form"
-            onChange={(evt: DropdownChangeParams) => {
-              if (evt.value.id) {
-                setNationalitySelected(evt.value);
-                setValue('user.nationality', evt.value.id);
+            // onChange={(evt: DropdownChangeParams) => {
+            //   if (evt.value.id) {
+            //     setNationalitySelected(evt.value);
+            //     setValue('nationality', evt.value.id);
+            //   }
+            // }}
+            // required
+            {...register('nationality', {
+              required: true,
+              onChange(evt: DropdownChangeParams) {
+                if (evt.value.id) {
+                  setNationalitySelected(evt.value);
+                  setValue('nationality', evt.value.id);
+                }
               }
-            }}
-            required
+            })}
           />
-          {errors.nationality && <RenderRequiredField />}
+          {errors.nationality?.type === 'required' && <RenderRequiredField />}
         </div>
       </div>
       <div className="grid gap-4 grid-cols-4 mt-5">
@@ -322,7 +335,7 @@ export const FormPersonalData = (props: PropsFormUser) => {
           <label>Número teléfonico</label>
           <input
             type="number"
-            {...register('user.phone', {
+            {...register('phone', {
               required: true,
               minLength: 5,
               maxLength: 15
@@ -345,7 +358,7 @@ export const FormPersonalData = (props: PropsFormUser) => {
           <input
             type="email"
             readOnly
-            {...register('user.email', {
+            {...register('email', {
               required: true,
               pattern: /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$/
             })}
@@ -367,7 +380,7 @@ export const FormPersonalData = (props: PropsFormUser) => {
             dateFormat="yy-mm-dd"
             locale="es"
             value={birthday}
-            {...register('user.birthday', {
+            {...register('birthday', {
               required: true,
               onChange: (evt) => {
                 console.log(
@@ -375,7 +388,7 @@ export const FormPersonalData = (props: PropsFormUser) => {
                     String(format(new Date(evt.target.value), 'yyyy-MM-dd'))
                 );
                 setValue(
-                  'user.birthday',
+                  'birthday',
                   String(format(new Date(evt.target.value), 'yyyy-MM-dd'))
                 );
               },
@@ -404,7 +417,7 @@ export const FormPersonalData = (props: PropsFormUser) => {
         </div>
         <div className="col-span-2 flex flex-col">
           <label>Ciudad</label>
-          <input type="text" {...register('user.city', { required: true })} />
+          <input type="text" {...register('city', { required: true })} />
           {errors.city && <RenderRequiredField />}
         </div>
       </div>
@@ -412,10 +425,7 @@ export const FormPersonalData = (props: PropsFormUser) => {
       <div className="grid grid-cols-3 mt-5">
         <div className="flex flex-col col-span-3">
           <label>Dirección</label>
-          <input
-            type="text"
-            {...register('user.address', { required: true })}
-          />
+          <input type="text" {...register('address', { required: true })} />
           {errors.address && <RenderRequiredField />}
         </div>
       </div>

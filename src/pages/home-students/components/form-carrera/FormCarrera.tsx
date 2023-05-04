@@ -58,7 +58,7 @@ export const FormCarrera = () => {
         }
       )
       .then((response: AxiosResponse<UserDataState[]>) => {
-        console.log('Response User =>', response.data);
+        // console.log('Response User =>', response.data);
         setDataUser(response.data);
         setCurrentStep(response.data[0].step);
         dispatch(updateData(response.data[0]));
@@ -115,7 +115,6 @@ export const FormCarrera = () => {
                   <EducationForm
                     registerId={String(params.get('register'))}
                     token={String(params.get('token'))}
-                    dataUser={dataUser[0]}
                     currentStep={currentStep}
                     setComplete={setComplete}
                     setCurrentStep={setCurrentStep}
@@ -127,7 +126,6 @@ export const FormCarrera = () => {
                   <FormLaborData
                     registerId={String(params.get('register'))}
                     token={String(params.get('token'))}
-                    dataUser={dataUser[0]}
                     currentStep={currentStep}
                     setComplete={setComplete}
                     setCurrentStep={setCurrentStep}
@@ -138,7 +136,6 @@ export const FormCarrera = () => {
                 return (
                   <FormBilling
                     registerId={String(params.get('register'))}
-                    dataUser={dataUser[0]}
                     currentStep={currentStep}
                     setCurrentStep={setCurrentStep}
                   />

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useLayoutEffect } from 'react';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import {
   Career,
@@ -46,7 +46,6 @@ export const FormDataEditPrice = (props: PropsEditPrice) => {
     getValues,
     setValue,
     watch,
-    reset,
     formState: { errors }
   } = useForm<FormEditPayment>({
     defaultValues: { ...data }
@@ -64,7 +63,6 @@ export const FormDataEditPrice = (props: PropsEditPrice) => {
       })
       .then((response) => {
         setData(response.data);
-        reset(response.data);
       })
       .catch((error: AxiosError) => console.log('Error =>', error))
       .finally(() => {
@@ -74,11 +72,20 @@ export const FormDataEditPrice = (props: PropsEditPrice) => {
     return result;
   };
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     fetchData();
-    if (data) setValueQuotes(data.payment_methods[0].quotes_value);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [reset]);
+  }, []);
+
+  useEffect(() => {
+    if (data) {
+      setValueQuotes(data.payment_methods[0].quotes_value);
+      initPaymentMethods();
+      initPrice();
+      initSuppliers();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [data]);
 
   useEffect(() => {
     if (data) {
@@ -90,9 +97,6 @@ export const FormDataEditPrice = (props: PropsEditPrice) => {
 
       setCashType(data.price.currency);
 
-      initPaymentMethods();
-      initPrice();
-      initSuppliers();
       setValueQuotes(calculateValueQuotes());
       setValueQuotesTotal(getTotalValueQuotes());
     }

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Dropdown } from 'primereact/dropdown';
 import '../styles.css';
 import { GetCareers } from '../../../../services';
@@ -35,24 +35,24 @@ export const DialogCreateLink = (props: DialogCreateLinkTypes) => {
   useEffect(() => {
     if (props.open) modalRef.current.style.display = 'flex';
 
-    const fetch = async () => {
-      try {
-        const response = await axios.get(
-          `${process.env.REACT_APP_API_BACKEND}/hubspot/clients`,
-          {
-            headers: {
-              Accept: 'application/json'
-            }
-          }
-        );
+    // const fetch = async () => {
+    //   try {
+    //     const response = await axios.get(
+    //       `${process.env.REACT_APP_API_BACKEND}/hubspot/clients`,
+    //       {
+    //         headers: {
+    //           Accept: 'application/json'
+    //         }
+    //       }
+    //     );
 
-        console.log('Response Get Clients =>', response.data);
-      } catch (error) {
-        console.log('Error Clients =>', error);
-      }
-    };
+    // console.log('Response Get Clients =>', response.data);
+    //   } catch (error) {
+    //     console.log('Error Clients =>', error);
+    //   }
+    // };
 
-    fetch();
+    // fetch();
   }, [props.open]);
 
   const closeModal = (): void => {
@@ -83,7 +83,7 @@ export const DialogCreateLink = (props: DialogCreateLinkTypes) => {
         }
       )
       .then((response: any) => {
-        console.log('Response Search by Email =>!', response.data);
+        // console.log('Response Search by Email =>!', response.data);
 
         setNameUser(
           `${response.data.results[0].properties.firstname} ${response.data.results[0].properties.lastname}`
@@ -93,7 +93,7 @@ export const DialogCreateLink = (props: DialogCreateLinkTypes) => {
         setValue('lastname', response.data.results[0].properties.lastname);
         setValue('lastname2', '');
 
-        console.log('Response Hubspot by Email =>', response);
+        // console.log('Response Hubspot by Email =>', response);
         setdisabledInput(false);
         setErrorEmail(false);
       })
@@ -104,20 +104,20 @@ export const DialogCreateLink = (props: DialogCreateLinkTypes) => {
   };
 
   const handleChangeCareer = async (value: Career) => {
-    console.log('Value change career =>', value);
+    // console.log('Value change career =>', value);
     setSelectedCareers(value);
     setValue('career_id', value.id);
 
-    const response = await axios.get(
-      `${process.env.REACT_APP_API_BACKEND}/careers/${value.id}/generations`,
-      {
-        headers: {
-          Accept: 'applicatino/json'
-        }
-      }
-    );
+    // const response = await axios.get(
+    //   `${process.env.REACT_APP_API_BACKEND}/careers/${value.id}/generations`,
+    //   {
+    //     headers: {
+    //       Accept: 'applicatino/json'
+    //     }
+    //   }
+    // );
 
-    console.log('Response Generations => ', response.data);
+    // console.log('Response Generations => ', response.data);
   };
 
   const formatPrice = (value: number) => {
@@ -130,25 +130,35 @@ export const DialogCreateLink = (props: DialogCreateLinkTypes) => {
   };
 
   const handleChangeRadio = (row: CareerPrice) => {
-    console.log('Radio Selected => ', row);
+    // console.log('Radio Selected => ', row);
     setValue('price_id', row.id);
   };
 
   const onSubmit: SubmitHandler<RegisterLinkType> = async (data) => {
-    console.log('OnSubmit Form Link => ', data);
+    // console.log('OnSubmit Form Link => ', data);
     await axios
       .post(`${process.env.REACT_APP_API_BACKEND}/registers`, data, {
         headers: {
           Accept: 'application/json'
         }
       })
-      .then((response: any) => {
+      .then(async (response: any) => {
         console.log('response onSubmit =>', response);
         props.actionToast('success');
         props.addData(response.data);
+        await axios
+          .get(
+            `${process.env.REACT_APP_API_BACKEND}/registers/${response.data[0].id}/notification`,
+            {
+              headers: {
+                Accept: 'application/json'
+              }
+            }
+          )
+          .catch((error: AxiosError) => console.log('Error => ', error))
+          .finally(() => closeModal());
       })
-      .catch((error: AxiosError) => console.log('Error onSubmit =>', error))
-      .finally(() => closeModal());
+      .catch((error: AxiosError) => console.log('Error onSubmit =>', error));
   };
 
   return (
