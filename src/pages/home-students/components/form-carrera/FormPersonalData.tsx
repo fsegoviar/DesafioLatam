@@ -147,11 +147,8 @@ export const FormPersonalData = (props: PropsFormUser) => {
   const onSubmit: SubmitHandler<any> = async (data) => {
     // console.log('data submit =>', data);
     // data.user.nationality = nationalitySelected.description;
-    const findCountry: any = listCountries.map(
-      (country: any) => country.description === countrySelected
-    );
 
-    if (findCountry) data.country_id = findCountry.id;
+    if (countrySelected) data.country_id = countrySelected.id;
 
     await axios
       .post(
