@@ -240,6 +240,7 @@ export const FormPersonalData = (props: PropsFormUser) => {
               const esNumero =
                 (input.keyCode >= 48 && input.keyCode <= 57) || // números de teclado normal
                 (input.keyCode >= 96 && input.keyCode <= 105) ||
+                input.keyCode === 75 ||
                 input.keyCode === 8; // números del teclado numérico
 
               if (!esNumero) {
