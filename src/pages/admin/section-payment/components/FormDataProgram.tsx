@@ -127,10 +127,25 @@ export const FormDataProgram = ({
       watch('payment_methods.0.reference_value') &&
       watch('payment_methods.0.free_discount')
     ) {
-      return Math.round(
-        Number(watch('payment_methods.0.reference_value')) -
+      const valuesPerQuotes = Math.round(
+        Number(watch('payment_methods.0.reference_value')) /
+          Number(watch('payment_methods.0.quotes'))
+      );
+
+      const valuePerQuotesWhitDiscount = Math.round(
+        valuesPerQuotes -
           (Number(watch('payment_methods.0.free_discount')) / 100) *
-            Number(watch('payment_methods.0.reference_value'))
+            valuesPerQuotes
+      );
+
+      // return Math.round(
+      //   Number(watch('payment_methods.0.reference_value')) -
+      //     (Number(watch('payment_methods.0.free_discount')) / 100) *
+      //       Number(watch('payment_methods.0.reference_value'))
+      // );
+
+      return Math.round(
+        valuePerQuotesWhitDiscount * Number(watch('payment_methods.0.quotes'))
       );
     }
     return 0;
