@@ -419,7 +419,7 @@ export const FormPersonalData = (props: PropsFormUser) => {
           )}
         </div>
         <div className="col-span-2 flex flex-col">
-          <label>Ciudad</label>
+          <label>Residencia</label>
           <input type="text" {...register('city', { required: true })} />
           {errors.city && <RenderRequiredField />}
         </div>

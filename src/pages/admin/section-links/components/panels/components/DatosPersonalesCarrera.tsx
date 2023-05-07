@@ -49,7 +49,7 @@ export const DatosPersonalesCarrera = (props: PropsDatosPersonalesCarrera) => {
           />
         </div>
         <div className="col-span-2 flex flex-col">
-          <label>Ciudad</label>
+          <label>Residencia</label>
           <input type="text" value={props.dataUser.user.city ?? ''} disabled />
         </div>
         <div className="col-span-2 flex flex-col">

@@ -1,4 +1,6 @@
 import axios, { AxiosError } from 'axios';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../../store/store';
 
 type PropsFormUser = {
   currentStep: number;
@@ -7,6 +9,10 @@ type PropsFormUser = {
 };
 
 export const SignDocument = (props: PropsFormUser) => {
+  const user = useSelector((state: RootState) => state.user);
+
+  console.log('User =>', user);
+
   const nextStep = () => {
     axios
       .post(
@@ -44,13 +50,8 @@ export const SignDocument = (props: PropsFormUser) => {
         }
       )
       .then((response: any) => {
-        console.log('Fima Documento =>', response.data);
+        // console.log('Fima Documento =>', response.data);
         window.location.replace(response.data);
-        // const link: any = document.createElement('a');
-        // link.href = response.data;
-        // link.setAttribute('target', '_blank'); //or any other extension
-        // document.body.appendChild(link);
-        // link.click();
       })
       .catch((error: AxiosError) =>
         console.log('Error Docusign Firma =>', error)
@@ -71,9 +72,14 @@ export const SignDocument = (props: PropsFormUser) => {
         />
         <div className="flex justify-center mt-5">
           <button
-            className="btn mx-2"
+            className={`mx-2 ${
+              user.status === 'Contrato Firmado'
+                ? 'bg-gray-400 text-white rounded-[0.75rem] px-7 py-1 cursor-default'
+                : 'btn'
+            }`}
             type="submit"
             onClick={handleSigninDocument}
+            disabled={user.status === 'Contrato Firmado'}
           >
             Firmar Documento
           </button>

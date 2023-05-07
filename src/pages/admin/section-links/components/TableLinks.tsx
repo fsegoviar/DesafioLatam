@@ -77,6 +77,10 @@ export const TableLinks = () => {
       value: '',
       matchMode: FilterMatchMode.CONTAINS
     },
+    'user.email': {
+      value: '',
+      matchMode: FilterMatchMode.CONTAINS
+    },
     created_at: {
       value: '',
       matchMode: FilterMatchMode.CONTAINS
@@ -315,7 +319,14 @@ export const TableLinks = () => {
           sortable
         ></Column>
         <Column body={renderTuition} header={'Matricula'} sortable></Column>
-        <Column field="user.email" header={'Correo'} sortable></Column>
+        <Column
+          filter
+          showFilterMenu={false}
+          filterPlaceholder="Buscar por correo"
+          field="user.email"
+          header={'Correo'}
+          sortable
+        ></Column>
         <Column body={renderForm} header={'Formulario'}></Column>
         <Column body={renderState} header={'Estado'}></Column>
         <Column
