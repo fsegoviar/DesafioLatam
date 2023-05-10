@@ -138,12 +138,6 @@ export const FormDataProgram = ({
             valuesPerQuotes
       );
 
-      // return Math.round(
-      //   Number(watch('payment_methods.0.reference_value')) -
-      //     (Number(watch('payment_methods.0.free_discount')) / 100) *
-      //       Number(watch('payment_methods.0.reference_value'))
-      // );
-
       return Math.round(
         valuePerQuotesWhitDiscount * Number(watch('payment_methods.0.quotes'))
       );
@@ -186,6 +180,27 @@ export const FormDataProgram = ({
     );
     setValueQuotes(value);
     setValue('payment_methods.0.quotes_value', value);
+  };
+
+  const calculateValueQuotesWithDiscount = () => {
+    if (
+      watch('payment_methods.0.reference_value') &&
+      watch('payment_methods.0.free_discount')
+    ) {
+      const valuesPerQuotes = Math.round(
+        Number(watch('payment_methods.0.reference_value')) /
+          Number(watch('payment_methods.0.quotes'))
+      );
+
+      const valuePerQuotesWhitDiscount = Math.round(
+        valuesPerQuotes -
+          (Number(watch('payment_methods.0.free_discount')) / 100) *
+            valuesPerQuotes
+      );
+
+      return valuePerQuotesWhitDiscount;
+    }
+    return 0;
   };
 
   return (
@@ -339,28 +354,6 @@ export const FormDataProgram = ({
               value={valueQuotes}
               className={'py-1 rounded-lg '}
             />
-            {/* <input
-              type="number"
-              disabled
-              {...register(`payment_methods.0.quotes_value`, {
-                required: !checkPaymentQuotes ?? true,
-                valueAsNumber: true
-              })}
-              className={
-                errors.payment_methods &&
-                errors.payment_methods[0]?.quotes_value
-                  ? 'border-red-500 py-1 rounded-lg'
-                  : 'py-1 rounded-lg '
-              }
-            />
-            {(() => {
-              if (
-                errors.payment_methods &&
-                errors.payment_methods[0]?.quotes_value &&
-                !checkPaymentQuotes
-              )
-                return <RequiredField />;
-            })()} */}
           </div>
           <div className={'flex flex-col'}>
             <label>Descuento cuotas (%)</label>
@@ -386,6 +379,15 @@ export const FormDataProgram = ({
               )
                 return <RequiredField />;
             })()}
+          </div>
+          <div className={'flex flex-col'}>
+            <label>Valor cuota con descuento</label>
+            <input
+              type="number"
+              disabled
+              className={'py-1 rounded-lg '}
+              value={calculateValueQuotesWithDiscount()}
+            />
           </div>
           <div className={'flex flex-col'}>
             <label>Total</label>

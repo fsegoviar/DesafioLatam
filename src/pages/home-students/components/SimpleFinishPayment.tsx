@@ -1,6 +1,8 @@
 import axios, { AxiosError } from 'axios';
 import { SupplierTypeUser } from '../../../interfaces';
 import { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../../store/store';
 // import React, { useState } from 'react';
 // import { useNavigate } from 'react-router-dom';
 
@@ -19,10 +21,12 @@ export const SimpleFinishPayment = ({
     description: '',
     quotes: ''
   });
+  const user = useSelector((state: RootState) => state.user);
 
   useEffect(() => {
     console.log('Suppliers FinishPayment', suppliers);
     console.log('dataUser FinishPayment', dataUser);
+    console.log('User FinishPayment =>', user);
     setPaymentMethod({
       description: String(localStorage.getItem('paymentMethod')),
       quotes: String(localStorage.getItem('paymentQuotes'))

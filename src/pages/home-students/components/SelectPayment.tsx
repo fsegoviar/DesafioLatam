@@ -22,6 +22,7 @@ export const SelectPayment = (props: PropsFormUser) => {
   const [activeCount, setActiveCount] = useState(false);
   const [listPaymentMethods, setListPaymentMethods] = useState([]);
   const [disabledBtn, setDisabledBtn] = useState(true);
+  const [nQuotes, setNQuotes] = useState(0);
 
   const fetchData = async () => {
     await axios
@@ -89,6 +90,7 @@ export const SelectPayment = (props: PropsFormUser) => {
           element.pivot.reference_value -
             (element.pivot.free_discount / 100) * element.pivot.reference_value
         );
+        setNQuotes(element.pivot.quotes);
         localStorage.setItem('paymentMethod', 'Pago en cuotas');
         localStorage.setItem('payment_method_id', key);
         setActiveCount(true);
@@ -144,6 +146,7 @@ export const SelectPayment = (props: PropsFormUser) => {
             case 'Pago Cuota':
               return (
                 <div
+                  key={index}
                   className={`card m-4 p-3 ${cardSelected1 && 'card-selected'}`}
                   onClick={() => selectCard('1', element)}
                 >
@@ -160,7 +163,13 @@ export const SelectPayment = (props: PropsFormUser) => {
                   <p className="text-sky-500 font-bold text-lg">+</p>
                   <p className="text-sky-500 font-bo1ld text-2xl text-center">
                     {element.pivot.quotes} cuotas de $
-                    {formatPrice(element.pivot.quotes_value)} CLP
+                    {formatPrice(
+                      element.pivot.quotes_value -
+                        (element.pivot.quotes_value *
+                          element.pivot.free_discount) /
+                          100
+                    )}{' '}
+                    CLP
                   </p>
                   <p className="text-sm pt-2">
                     Valor Referencia:{' '}
@@ -228,6 +237,7 @@ export const SelectPayment = (props: PropsFormUser) => {
             case 'ISA':
               return (
                 <div
+                  key={index}
                   className={`card m-4 p-3 ${cardSelected3 && 'card-selected'}`}
                   onClick={() => selectCard('3', element)}
                 >
@@ -274,7 +284,7 @@ export const SelectPayment = (props: PropsFormUser) => {
               <option value={''}>Nº de cuotas</option>;
               {(() => {
                 let items: ReactNode[] = [];
-                for (let i = 1; i <= 24; i++) {
+                for (let i = 1; i <= nQuotes; i++) {
                   items.push(
                     <option key={i} value={i}>
                       {i}

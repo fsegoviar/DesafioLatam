@@ -38,7 +38,6 @@ export const FormDataEditPrice = (props: PropsEditPrice) => {
   const [valueQuotes, setValueQuotes] = useState(0);
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState<FormEditPayment | null>(null);
-  const [valueQuotesTotal, setValueQuotesTotal] = useState(0);
 
   const {
     handleSubmit,
@@ -98,7 +97,6 @@ export const FormDataEditPrice = (props: PropsEditPrice) => {
       setCashType(data.price.currency);
 
       setValueQuotes(calculateValueQuotes());
-      setValueQuotesTotal(getTotalValueQuotes());
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [careers]);
@@ -325,6 +323,27 @@ export const FormDataEditPrice = (props: PropsEditPrice) => {
     return value;
   };
 
+  const calculateValueQuotesWithDiscount = () => {
+    if (
+      watch('payment_methods.0.reference_value') &&
+      watch('payment_methods.0.free_discount')
+    ) {
+      const valuesPerQuotes = Math.round(
+        Number(watch('payment_methods.0.reference_value')) /
+          Number(watch('payment_methods.0.quotes'))
+      );
+
+      const valuePerQuotesWhitDiscount = Math.round(
+        valuesPerQuotes -
+          (Number(watch('payment_methods.0.free_discount')) / 100) *
+            valuesPerQuotes
+      );
+
+      return valuePerQuotesWhitDiscount;
+    }
+    return 0;
+  };
+
   const RequiredField = () => {
     return <span className="text-red-500 text-[12px]">Campo Requerido</span>;
   };
@@ -508,12 +527,21 @@ export const FormDataEditPrice = (props: PropsEditPrice) => {
                 })()}
               </div>
               <div className={'flex flex-col'}>
+                <label>Valor cuota con descuento</label>
+                <input
+                  type="number"
+                  disabled
+                  className={'py-1 rounded-lg '}
+                  value={calculateValueQuotesWithDiscount()}
+                />
+              </div>
+              <div className={'flex flex-col'}>
                 <label>Total</label>
                 <input
                   type="number"
                   disabled
                   className={'py-1 rounded-lg '}
-                  value={valueQuotesTotal}
+                  value={getTotalValueQuotes()}
                   readOnly
                 />
               </div>
