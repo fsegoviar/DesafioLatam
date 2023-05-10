@@ -13,6 +13,7 @@ import { DialogForm } from './DialogForm';
 import { NotificationComponent } from '../../../../components/NotificationComponent';
 import { Toast } from 'primereact/toast';
 import { DialogDeleteLink } from './DialogDeleteLink';
+import { isBefore } from 'date-fns';
 
 export const TableLinks = () => {
   const [openCreateLink, setOpenCreateLink] = useState(false);
@@ -29,6 +30,7 @@ export const TableLinks = () => {
   const [newValue, setNewValue] = useState<any>(null!);
   const [editValue, setEditValue] = useState();
   const [idItemDisabled, setIdItemDisabled] = useState<any>(null!);
+  const [labelTooltip, setLabelTooltip] = useState('Copiar');
 
   // * Initial state
   useEffect(() => {
@@ -229,6 +231,23 @@ export const TableLinks = () => {
                 }}
               />
             </div>
+            <div style={{ margin: '0 2px' }}>
+              <Button
+                icon="pi pi-copy"
+                data-te-toggle="tooltip"
+                title="Clipboard"
+                className="p-button-rounded p-button-text"
+                tooltip={labelTooltip}
+                tooltipOptions={{
+                  position: 'bottom',
+                  mouseTrack: false,
+                  mouseTrackTop: 15
+                }}
+                onClick={() => {
+                  handleClipboard(rowData.id);
+                }}
+              />
+            </div>
           </>
         )}
       </div>
@@ -273,6 +292,57 @@ export const TableLinks = () => {
 
   const formatPrice = (value: number) => {
     return new Intl.NumberFormat('es-ES', {}).format(value);
+  };
+
+  const renderToken = (row: any) => {
+    let dateLimit = new Date();
+    dateLimit.setDate(dateLimit.getDate() + 3);
+    if (isBefore(new Date(row.created_at), dateLimit)) {
+      return (
+        <span
+          style={{ backgroundColor: 'green', color: '#FFFFFF' }}
+          className="px-2 py-1 rounded-full"
+        >
+          Activo
+        </span>
+      );
+    } else {
+      return (
+        <span
+          style={{ backgroundColor: 'red', color: '#FFFFFF' }}
+          className="px-2 py-1 rounded-full"
+        >
+          Vencido
+        </span>
+      );
+    }
+  };
+
+  const handleClipboard = async (registerId: number) => {
+    let aux = document.createElement('input');
+
+    await axios
+      .get(
+        `${process.env.REACT_APP_API_BACKEND}/registers/${registerId}/copy_link`,
+        {
+          headers: {
+            Accept: 'application/json'
+          }
+        }
+      )
+      .then((response: any) => {
+        console.log('CopyLink =>', response.data);
+        aux.setAttribute('value', response.data);
+        document.body.appendChild(aux);
+        aux.select();
+        document.execCommand('copy');
+        document.body.removeChild(aux);
+        setLabelTooltip('Copiado!');
+        setTimeout(() => {
+          setLabelTooltip('Copiar');
+        }, 1000);
+      })
+      .catch((error: AxiosError) => console.log('Error => ', error));
   };
 
   return (
@@ -328,6 +398,7 @@ export const TableLinks = () => {
           sortable
         ></Column>
         <Column body={renderForm} header={'Formulario'}></Column>
+        <Column body={renderToken} header={'Token'}></Column>
         <Column body={renderState} header={'Estado'}></Column>
         <Column
           body={actionEdit}
