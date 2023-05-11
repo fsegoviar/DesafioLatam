@@ -138,10 +138,8 @@ export const FormDataProgram = ({
             valuesPerQuotes
       );
 
-      return new Intl.NumberFormat('es-ES', {}).format(
-        Math.round(
-          valuePerQuotesWhitDiscount * Number(watch('payment_methods.0.quotes'))
-        )
+      return Math.round(
+        valuePerQuotesWhitDiscount * Number(watch('payment_methods.0.quotes'))
       );
     }
     return 0;
