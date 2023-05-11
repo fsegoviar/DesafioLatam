@@ -98,7 +98,8 @@ export const SelectPayment = (props: PropsFormUser) => {
           String(
             element.pivot.reference_value -
               (element.pivot.free_discount / 100) *
-                element.pivot.reference_value
+                element.pivot.reference_value +
+              props.tuition
           )
         );
         setActiveCount(true);
@@ -120,7 +121,8 @@ export const SelectPayment = (props: PropsFormUser) => {
           String(
             element.pivot.reference_value -
               (element.pivot.advance_discount / 100) *
-                element.pivot.reference_value
+                element.pivot.reference_value +
+              +props.tuition
           )
         );
         setDiscount(element.pivot.advance_discount);
