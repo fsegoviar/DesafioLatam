@@ -93,6 +93,14 @@ export const SelectPayment = (props: PropsFormUser) => {
         setNQuotes(element.pivot.quotes);
         localStorage.setItem('paymentMethod', 'Pago en cuotas');
         localStorage.setItem('payment_method_id', key);
+        localStorage.setItem(
+          'total_amount',
+          String(
+            element.pivot.reference_value -
+              (element.pivot.free_discount / 100) *
+                element.pivot.reference_value
+          )
+        );
         setActiveCount(true);
         setCardSelected1(true);
         setCardSelected2(false);
@@ -107,6 +115,14 @@ export const SelectPayment = (props: PropsFormUser) => {
         );
         localStorage.setItem('paymentMethod', 'Pago anticipado');
         localStorage.setItem('payment_method_id', key);
+        localStorage.setItem(
+          'total_amount',
+          String(
+            element.pivot.reference_value -
+              (element.pivot.advance_discount / 100) *
+                element.pivot.reference_value
+          )
+        );
         setDiscount(element.pivot.advance_discount);
         setCardSelected1(false);
         setCardSelected2(true);
@@ -119,6 +135,7 @@ export const SelectPayment = (props: PropsFormUser) => {
         setDiscount(element.pivot.isa_percent);
         localStorage.setItem('paymentMethod', 'Pago en ISA');
         localStorage.setItem('payment_method_id', key);
+        localStorage.setItem('total_amount', String(props.tuition));
         setCardSelected1(false);
         setCardSelected2(false);
         setCardSelected3(true);
@@ -130,7 +147,7 @@ export const SelectPayment = (props: PropsFormUser) => {
   };
 
   const formatPrice = (value: number) => {
-    return new Intl.NumberFormat('es-ES', {}).format(value);
+    return new Intl.NumberFormat('es-ES', {}).format(Math.round(value));
   };
 
   return (
