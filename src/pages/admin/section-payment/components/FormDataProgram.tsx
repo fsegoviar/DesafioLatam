@@ -138,6 +138,7 @@ export const FormDataProgram = ({
             valuesPerQuotes
       );
 
+      console.log('valuePerQuotesWhitDiscount', valuePerQuotesWhitDiscount);
       return Math.round(
         valuePerQuotesWhitDiscount * Number(watch('payment_methods.0.quotes'))
       );
