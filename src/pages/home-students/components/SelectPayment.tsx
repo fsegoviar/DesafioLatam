@@ -108,6 +108,13 @@ export const SelectPayment = (props: PropsFormUser) => {
         );
         setNQuotes(element.pivot.quotes);
         setPaymentMethodIdSelected(Number(key));
+        console.log(
+          'Total =>',
+          props.tuition +
+            (element.pivot.reference_value -
+              (element.pivot.free_discount / 100) *
+                element.pivot.reference_value)
+        );
         setTotalPayment(
           props.tuition +
             (element.pivot.reference_value -
