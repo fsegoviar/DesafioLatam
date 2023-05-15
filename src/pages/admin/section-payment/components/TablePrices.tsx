@@ -4,7 +4,6 @@ import { Column } from 'primereact/column';
 import { DataTable } from 'primereact/datatable';
 import { DialogTablePricing } from './DialogTablePricing';
 import { HeaderTable } from './HeaderTable';
-import { useDialogEditPriceHook } from '../context/TableContext';
 import { DialogEditPricing } from './DialogEditPricing';
 import {
   PaymentFormProvider,
@@ -19,10 +18,10 @@ import { PaymentType } from '../../../../interfaces';
 
 export const TablePrices = () => {
   let { listPrices, loading } = GetPricesTable();
-  const { openDialogEdit } = useDialogEditPriceHook();
   const { updateForm } = UseFormPayment();
   const [rowSelected, setRowSelected] = useState<any>(null!);
   const { toast, showSuccess, showSuccessEdit } = NotificationComponent();
+  const [openDialogEdit, setOpenDialogEdit] = useState(false);
   const [newValue, setNewValue] = useState();
   const [editValue, setEditValue] = useState<any>();
   const [arrPrices, setArrPrices] = useState<PaymentType[]>([]);
@@ -94,7 +93,7 @@ export const TablePrices = () => {
         onClick={() => {
           setRowSelected(rowData);
           updateForm(rowData);
-          openDialogEdit();
+          setOpenDialogEdit(true);
         }}
       />
     );
@@ -149,11 +148,13 @@ export const TablePrices = () => {
           ></Column>
         </DataTable>
         <DialogTablePricing actionToast={actionToast} addData={setNewValue} />
-        {rowSelected && (
+        {openDialogEdit && (
           <DialogEditPricing
             actionToast={actionToast}
             addData={setEditValue}
             id={rowSelected.id}
+            open={openDialogEdit}
+            close={() => setOpenDialogEdit(false)}
           />
         )}
       </>

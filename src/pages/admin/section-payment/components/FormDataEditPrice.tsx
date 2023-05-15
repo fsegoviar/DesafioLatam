@@ -8,7 +8,6 @@ import {
   PaymentMethod,
   SupplierId
 } from '../../../../interfaces';
-import { useDialogEditPriceHook } from '../context/TableContext';
 import { Dropdown, DropdownChangeParams } from 'primereact/dropdown';
 import { GetCareers, GetCurrencies } from '../../../../services';
 import axios, { AxiosError } from 'axios';
@@ -19,10 +18,10 @@ type PropsEditPrice = {
   actionToast: (action: string) => void;
   addData: (data: any) => void;
   id: number;
+  close: () => void;
 };
 
 export const FormDataEditPrice = (props: PropsEditPrice) => {
-  const { closeDialogEdit } = useDialogEditPriceHook();
   const { currencies } = GetCurrencies();
   const { careers } = GetCareers();
   const [cashType, setCashType] = useState<Currency>(null!);
@@ -257,13 +256,13 @@ export const FormDataEditPrice = (props: PropsEditPrice) => {
           console.log('Response Price =>', response.data);
           props.actionToast('edit');
           props.addData(response.data);
+          props.close();
         })
         .catch((error: AxiosError) => {
           console.log('Error Price =>', error);
         })
         .finally(() => {
           setLoading(false);
-          closeDialogEdit();
         });
     } else {
       setErrorCheck(true);
@@ -780,7 +779,7 @@ export const FormDataEditPrice = (props: PropsEditPrice) => {
               <button
                 className="m-1 px-5 rounded-lg text-white bg-gray-500"
                 style={{ border: '3px solid gray' }}
-                onClick={closeDialogEdit}
+                onClick={props.close}
               >
                 Cancelar
               </button>

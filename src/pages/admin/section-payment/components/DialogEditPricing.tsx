@@ -4,35 +4,38 @@ import {
   initialValue
 } from '../context/PaymentFormContext';
 import { FormDataEditPrice } from './FormDataEditPrice';
-import { useDialogEditPriceHook } from '../context/TableContext';
 
 type PropsDialog = {
   id: number;
   actionToast: (actino: string) => void;
   addData: (data: any) => void;
+  open: boolean;
+  close: () => void;
 };
 
 export const DialogEditPricing = ({
   id,
   actionToast,
-  addData
+  addData,
+  open,
+  close
 }: PropsDialog) => {
-  const { isOpenDialogEdit, closeDialogEdit } = useDialogEditPriceHook();
   return (
     <Dialog
-      visible={isOpenDialogEdit}
+      visible={open}
       header={'Editar Item'}
       draggable={false}
       resizable={false}
       modal
       className="p-fluid"
-      onHide={closeDialogEdit}
+      onHide={close}
     >
       <PaymentFormProvider {...initialValue}>
         <FormDataEditPrice
           actionToast={actionToast}
           id={id}
           addData={addData}
+          close={close}
         />
       </PaymentFormProvider>
     </Dialog>
