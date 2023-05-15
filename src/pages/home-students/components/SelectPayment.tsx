@@ -108,19 +108,8 @@ export const SelectPayment = (props: PropsFormUser) => {
         );
         setNQuotes(element.pivot.quotes);
         setPaymentMethodIdSelected(Number(key));
-        console.log(
-          'Total =>',
-          props.tuition +
-            (element.pivot.reference_value -
-              (element.pivot.free_discount / 100) *
-                element.pivot.reference_value)
-        );
-        setTotalPayment(
-          props.tuition +
-            (element.pivot.reference_value -
-              (element.pivot.free_discount / 100) *
-                element.pivot.reference_value)
-        );
+
+        setTotalPayment(props.tuition);
         // localStorage.setItem('paymentMethod', 'Pago en cuotas');
         setActiveCount(true);
         setCardSelected1(true);
@@ -153,8 +142,10 @@ export const SelectPayment = (props: PropsFormUser) => {
       case '3':
         setDiscount(element.pivot.isa_percent);
         localStorage.setItem('paymentMethod', 'Pago en ISA');
-        localStorage.setItem('payment_method_id', key);
-        localStorage.setItem('total_amount', String(props.tuition));
+        // localStorage.setItem('payment_method_id', key);
+        // localStorage.setItem('total_amount', String(props.tuition));
+        setPaymentMethodIdSelected(Number(key));
+        setTotalPayment(props.tuition);
         setCardSelected1(false);
         setCardSelected2(false);
         setCardSelected3(true);
