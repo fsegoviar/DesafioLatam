@@ -1,5 +1,6 @@
 import axios, { AxiosError } from 'axios';
-import React, { useLayoutEffect, useRef } from 'react';
+import { useLayoutEffect, useRef, useState } from 'react';
+import { ProgressSpinner } from 'primereact/progressspinner';
 
 type DialogCreateLinkTypes = {
   open: boolean;
@@ -18,12 +19,14 @@ export const DialogDeleteLink = ({
 }: DialogCreateLinkTypes) => {
   const modalRef = useRef<HTMLDivElement>(null!);
   const containerRef = useRef<HTMLDivElement>(null!);
+  const [loading, setLoading] = useState(false);
 
   useLayoutEffect(() => {
     if (open) modalRef.current.style.display = 'flex';
   }, [open]);
 
   const closeModal = (): void => {
+    setLoading(false);
     containerRef.current.classList.add('close');
     setTimeout(() => {
       containerRef.current.classList.remove('close');
@@ -33,6 +36,7 @@ export const DialogDeleteLink = ({
   };
 
   const disabledLink = async (): Promise<void> => {
+    setLoading(true);
     await axios
       .post(
         `${process.env.REACT_APP_API_BACKEND}/register_form/change_status`,
@@ -67,27 +71,39 @@ export const DialogDeleteLink = ({
         id="window-container"
         ref={containerRef}
       >
-        <div className="w-full flex justify-center items-center">
-          <p className="my-5 text-xl text-center">
-            ¿Está seguro que desea <strong>deshabilitar</strong> este enlace?
-          </p>
-        </div>
-        <div className="flex justify-end">
-          <button
-            type="button"
-            className="bg-gray-500 py-[9px] px-5 rounded-lg text-white"
-            onClick={closeModal}
-          >
-            Cancelar
-          </button>
-          <button
-            type="button"
-            className="bg-red-500 py-[9px] px-5 rounded-lg text-white mx-2"
-            onClick={disabledLink}
-          >
-            Eliminar
-          </button>
-        </div>
+        {loading ? (
+          <div className="absolute top-0 left-0 w-full h-full bg-white z-10 grid place-items-center rounded-xl">
+            <div className="flex flex-col items-center">
+              <ProgressSpinner />
+              <h1>Cargando..</h1>
+            </div>
+          </div>
+        ) : (
+          <>
+            <div className="w-full flex justify-center items-center">
+              <p className="my-5 text-xl text-center">
+                ¿Está seguro que desea <strong>deshabilitar</strong> este
+                enlace?
+              </p>
+            </div>
+            <div className="flex justify-end">
+              <button
+                type="button"
+                className="bg-gray-500 py-[9px] px-5 rounded-lg text-white"
+                onClick={closeModal}
+              >
+                Cancelar
+              </button>
+              <button
+                type="button"
+                className="bg-red-500 py-[9px] px-5 rounded-lg text-white mx-2"
+                onClick={disabledLink}
+              >
+                Eliminar
+              </button>
+            </div>
+          </>
+        )}
       </div>
     </div>
   );

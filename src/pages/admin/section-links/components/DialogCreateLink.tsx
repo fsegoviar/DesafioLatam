@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { Dropdown } from 'primereact/dropdown';
+import { ProgressSpinner } from 'primereact/progressspinner';
 import '../styles.css';
 import { GetCareers } from '../../../../services';
 import { Career, CareerPrice, RegisterLinkType } from '../../../../interfaces';
@@ -24,6 +25,7 @@ export const DialogCreateLink = (props: DialogCreateLinkTypes) => {
   const [disabledInput, setdisabledInput] = useState(true);
   const [errorEmail, setErrorEmail] = useState(false);
   const { handleSubmit, setValue } = useForm<RegisterLinkType>();
+  const [loading, setLoading] = useState(false);
 
   const forms = [
     { name: 'Formulario de carrera', id: 1 },
@@ -34,28 +36,10 @@ export const DialogCreateLink = (props: DialogCreateLinkTypes) => {
 
   useEffect(() => {
     if (props.open) modalRef.current.style.display = 'flex';
-
-    // const fetch = async () => {
-    //   try {
-    //     const response = await axios.get(
-    //       `${process.env.REACT_APP_API_BACKEND}/hubspot/clients`,
-    //       {
-    //         headers: {
-    //           Accept: 'application/json'
-    //         }
-    //       }
-    //     );
-
-    // console.log('Response Get Clients =>', response.data);
-    //   } catch (error) {
-    //     console.log('Error Clients =>', error);
-    //   }
-    // };
-
-    // fetch();
   }, [props.open]);
 
   const closeModal = (): void => {
+    setLoading(false);
     containerRef.current.classList.add('close');
     setTimeout(() => {
       containerRef.current.classList.remove('close');
@@ -104,20 +88,8 @@ export const DialogCreateLink = (props: DialogCreateLinkTypes) => {
   };
 
   const handleChangeCareer = async (value: Career) => {
-    // console.log('Value change career =>', value);
     setSelectedCareers(value);
     setValue('career_id', value.id);
-
-    // const response = await axios.get(
-    //   `${process.env.REACT_APP_API_BACKEND}/careers/${value.id}/generations`,
-    //   {
-    //     headers: {
-    //       Accept: 'applicatino/json'
-    //     }
-    //   }
-    // );
-
-    // console.log('Response Generations => ', response.data);
   };
 
   const formatPrice = (value: number) => {
@@ -136,6 +108,7 @@ export const DialogCreateLink = (props: DialogCreateLinkTypes) => {
 
   const onSubmit: SubmitHandler<RegisterLinkType> = async (data) => {
     // console.log('OnSubmit Form Link => ', data);
+    setLoading(true);
     await axios
       .post(`${process.env.REACT_APP_API_BACKEND}/registers`, data, {
         headers: {
@@ -144,7 +117,6 @@ export const DialogCreateLink = (props: DialogCreateLinkTypes) => {
       })
       .then(async (response: any) => {
         console.log('response onSubmit =>', response);
-        props.actionToast('success');
         props.addData(response.data);
         await axios
           .get(
@@ -155,6 +127,9 @@ export const DialogCreateLink = (props: DialogCreateLinkTypes) => {
               }
             }
           )
+          .then(() => {
+            props.actionToast('success');
+          })
           .catch((error: AxiosError) => console.log('Error => ', error))
           .finally(() => closeModal());
       })
@@ -168,134 +143,145 @@ export const DialogCreateLink = (props: DialogCreateLinkTypes) => {
         id="window-container"
         ref={containerRef}
       >
-        <p className="text-2xl">Crear Enlace</p>
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <div className="grid grid-cols-2 gap-4 mt-5">
-            <div>
-              <p className="font-thin">Usuario</p>
-              <div>
-                <input
-                  type="email"
-                  value={inputEmail}
-                  placeholder="Correo electrónico"
-                  onChange={(e) => setInputEmail(e.target.value)}
-                  className="border-r-0 py-2 rounded-none rounded-l-lg w-8/12"
-                  style={{ border: '1px solid gray' }}
-                />
+        {loading ? (
+          <div className="absolute top-0 left-0 w-full h-full bg-white z-10 grid place-items-center rounded-xl">
+            <div className="flex flex-col items-center">
+              <ProgressSpinner />
+              <h1>Cargando..</h1>
+            </div>
+          </div>
+        ) : (
+          <>
+            <p className="text-2xl">Crear Enlace</p>
+            <form onSubmit={handleSubmit(onSubmit)}>
+              <div className="grid grid-cols-2 gap-4 mt-5">
+                <div>
+                  <p className="font-thin">Usuario</p>
+                  <div>
+                    <input
+                      type="email"
+                      value={inputEmail}
+                      placeholder="Correo electrónico"
+                      onChange={(e) => setInputEmail(e.target.value)}
+                      className="border-r-0 py-2 rounded-none rounded-l-lg w-8/12"
+                      style={{ border: '1px solid gray' }}
+                    />
+                    <button
+                      type="button"
+                      className="bg-green-500 py-[9px] px-5 rounded-tr-lg rounded-br-lg text-white"
+                      onClick={searchUserByEmail}
+                    >
+                      Buscar
+                    </button>
+                  </div>
+                  {errorEmail && (
+                    <span className="text-red-500 text-sm font-sm">
+                      Usuario no encontrado
+                    </span>
+                  )}
+                </div>
+                <div>
+                  <p className="font-thin">Cursos</p>
+                  <div>
+                    <Dropdown
+                      value={selectedCareers}
+                      options={careers}
+                      disabled={disabledInput}
+                      onChange={(e) => handleChangeCareer(e.value)}
+                      optionLabel="description"
+                      filter
+                      placeholder="Seleccionar Curso"
+                      className="w-full md:w-14rem"
+                    />
+                  </div>
+                </div>
+                <div className="mt-5">
+                  <p className="font-thin">Nombre de usuario</p>
+                  <div>
+                    <input
+                      type="text"
+                      value={nameUser}
+                      className="border-r-0 py-2 rounded-lg w-10/12 bg-gray-300"
+                      style={{ border: '1px solid gray' }}
+                      disabled
+                    />
+                  </div>
+                </div>
+                <div className="mt-5">
+                  <p className="font-thin">Tipo de Formulario</p>
+                  <div>
+                    <Dropdown
+                      value={selectForm}
+                      options={forms}
+                      disabled={disabledInput}
+                      onChange={(e) => handleChangeFormType(e.value)}
+                      optionLabel="name"
+                      placeholder="Seleccionar Formulario"
+                      className="w-full md:w-14rem"
+                    />
+                  </div>
+                </div>
+              </div>
+              {selectedCareers && (
+                <div className="mt-5 col-span-12 max-h-[200px] overflow-scroll">
+                  <p className="font-thin">Tabla de precios</p>
+                  <div>
+                    <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+                      <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                        <tr>
+                          <th></th>
+                          <th scope="col" className="px-6 py-3">
+                            Nombre
+                          </th>
+                          <th scope="col" className="px-6 py-3">
+                            Matricula
+                          </th>
+                          <th scope="col" className="px-6 py-3">
+                            Comentarios
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {selectedCareers.prices.map((price, index) => {
+                          return (
+                            <tr key={index}>
+                              <td>
+                                <input
+                                  type="radio"
+                                  name="select-row"
+                                  onChange={() => handleChangeRadio(price)}
+                                />
+                              </td>
+                              <td>{price.name}</td>
+                              <td>$ {formatPrice(price.tuition)}</td>
+                              <td>{price.comments}</td>
+                            </tr>
+                          );
+                        })}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              )}
+              <div className="mt-5  w-full flex justify-end">
                 <button
-                  type="button"
-                  className="bg-green-500 py-[9px] px-5 rounded-tr-lg rounded-br-lg text-white"
-                  onClick={searchUserByEmail}
+                  className="m-1 px-5 rounded-lg text-white bg-gray-500"
+                  style={{ border: '3px solid gray' }}
+                  onClick={() => closeModal()}
                 >
-                  Buscar
+                  Cancelar
+                </button>
+                <button
+                  type="submit"
+                  className="m-1 px-5 rounded-lg text-white bg-green-500"
+                  style={{ border: '3px solid rgb(34 197 94)' }}
+                >
+                  Crear
                 </button>
               </div>
-              {errorEmail && (
-                <span className="text-red-500 text-sm font-sm">
-                  Usuario no encontrado
-                </span>
-              )}
-            </div>
-            <div>
-              <p className="font-thin">Cursos</p>
-              <div>
-                <Dropdown
-                  value={selectedCareers}
-                  options={careers}
-                  disabled={disabledInput}
-                  onChange={(e) => handleChangeCareer(e.value)}
-                  optionLabel="description"
-                  filter
-                  placeholder="Seleccionar Curso"
-                  className="w-full md:w-14rem"
-                />
-              </div>
-            </div>
-            <div className="mt-5">
-              <p className="font-thin">Nombre de usuario</p>
-              <div>
-                <input
-                  type="text"
-                  value={nameUser}
-                  className="border-r-0 py-2 rounded-lg w-10/12 bg-gray-300"
-                  style={{ border: '1px solid gray' }}
-                  disabled
-                />
-              </div>
-            </div>
-            <div className="mt-5">
-              <p className="font-thin">Tipo de Formulario</p>
-              <div>
-                <Dropdown
-                  value={selectForm}
-                  options={forms}
-                  disabled={disabledInput}
-                  onChange={(e) => handleChangeFormType(e.value)}
-                  optionLabel="name"
-                  placeholder="Seleccionar Formulario"
-                  className="w-full md:w-14rem"
-                />
-              </div>
-            </div>
-          </div>
-          {selectedCareers && (
-            <div className="mt-5 col-span-12 max-h-[200px] overflow-scroll">
-              <p className="font-thin">Tabla de precios</p>
-              <div>
-                <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
-                  <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-                    <tr>
-                      <th></th>
-                      <th scope="col" className="px-6 py-3">
-                        Nombre
-                      </th>
-                      <th scope="col" className="px-6 py-3">
-                        Matricula
-                      </th>
-                      <th scope="col" className="px-6 py-3">
-                        Comentarios
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {selectedCareers.prices.map((price, index) => {
-                      return (
-                        <tr key={index}>
-                          <td>
-                            <input
-                              type="radio"
-                              name="select-row"
-                              onChange={() => handleChangeRadio(price)}
-                            />
-                          </td>
-                          <td>{price.name}</td>
-                          <td>$ {formatPrice(price.tuition)}</td>
-                          <td>{price.comments}</td>
-                        </tr>
-                      );
-                    })}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          )}
-          <div className="mt-5  w-full flex justify-end">
-            <button
-              className="m-1 px-5 rounded-lg text-white bg-gray-500"
-              style={{ border: '3px solid gray' }}
-              onClick={() => closeModal()}
-            >
-              Cancelar
-            </button>
-            <button
-              type="submit"
-              className="m-1 px-5 rounded-lg text-white bg-green-500"
-              style={{ border: '3px solid rgb(34 197 94)' }}
-            >
-              Crear
-            </button>
-          </div>
-        </form>
+            </form>
+          </>
+        )}
       </div>
     </div>
   );
