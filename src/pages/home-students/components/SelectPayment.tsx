@@ -109,8 +109,10 @@ export const SelectPayment = (props: PropsFormUser) => {
         setNQuotes(element.pivot.quotes);
         setPaymentMethodIdSelected(Number(key));
         setTotalPayment(
-          element.pivot.reference_value -
-            (element.pivot.free_discount / 100) * element.pivot.reference_value
+          props.tuition +
+            (element.pivot.reference_value -
+              (element.pivot.free_discount / 100) *
+                element.pivot.reference_value)
         );
         // localStorage.setItem('paymentMethod', 'Pago en cuotas');
         setActiveCount(true);
@@ -128,9 +130,10 @@ export const SelectPayment = (props: PropsFormUser) => {
         // localStorage.setItem('paymentMethod', 'Pago anticipado');
         setPaymentMethodIdSelected(Number(key));
         setTotalPayment(
-          element.pivot.reference_value -
-            (element.pivot.advance_discount / 100) *
-              element.pivot.reference_value
+          props.tuition +
+            (element.pivot.reference_value -
+              (element.pivot.advance_discount / 100) *
+                element.pivot.reference_value)
         );
         setQuotesSelected(0);
         setDiscount(element.pivot.advance_discount);
