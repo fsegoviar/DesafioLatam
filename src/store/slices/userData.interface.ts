@@ -11,6 +11,7 @@ export interface UserDataState {
   step: number;
   user: UserData | null;
   user_id: number;
+  purchase: UserPurchase | null;
 }
 
 export interface UserBilling {
@@ -57,6 +58,23 @@ interface SuppliersData {
     price_id: number;
     supplier_id: number;
     updated_at: string;
+  } | null;
+}
+
+export interface UserPurchase {
+  id: number | null;
+  register_id: number | null;
+  payment_method_id: number | null;
+  sessions_id: string | null;
+  quotes: number | null;
+  total: number | null;
+  supplier: string | null;
+  status: number | null;
+  created_at: string | null;
+  updated_at: string | null;
+  payment_method: {
+    id: number | null;
+    description: string | null;
   } | null;
 }
 

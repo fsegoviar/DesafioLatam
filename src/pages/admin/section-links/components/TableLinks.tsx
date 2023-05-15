@@ -59,7 +59,7 @@ export const TableLinks = () => {
         (item) => item.id === idItemDisabled
       );
       if (findIndex) {
-        newListRegister[findIndex].status = 'Inhabilitado';
+        newListRegister[findIndex].status = 'Cancelado';
         setListRegisters(newListRegister);
       }
     }
@@ -196,7 +196,7 @@ export const TableLinks = () => {
   const actionEdit = (rowData: any) => {
     return (
       <div className="flex">
-        {rowData.status !== 'Inhabilitado' && (
+        {rowData.status !== 'Cancelado' && (
           <>
             <div style={{ margin: '0 2px' }}>
               <Button
@@ -427,7 +427,7 @@ export const TableLinks = () => {
         <DialogDeleteLink
           idRegister={idRegister}
           open={openDeleteLink}
-          close={() => setOpenEditLink(false)}
+          close={() => setOpenDeleteLink(false)}
           actionToast={actionToast}
           idItemDisabled={setIdItemDisabled}
         />

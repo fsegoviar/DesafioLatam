@@ -35,9 +35,10 @@ export const DialogDeleteLink = ({
   const disabledLink = async (): Promise<void> => {
     await axios
       .post(
-        `${process.env.REACT_APP_API_BACKEND}/register_form/disabled`,
+        `${process.env.REACT_APP_API_BACKEND}/register_form/change_status`,
         {
-          register_id: idRegister
+          register_id: idRegister,
+          status: 'Cancelado'
         },
         {
           headers: {

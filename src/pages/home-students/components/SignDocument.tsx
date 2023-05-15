@@ -83,7 +83,15 @@ export const SignDocument = (props: PropsFormUser) => {
           >
             Firmar Documento
           </button>
-          <button className="btn" onClick={nextStep}>
+          <button
+            className={` ${
+              user.status !== 'Contrato Firmado'
+                ? 'bg-gray-400 text-white rounded-[0.75rem] px-7 py-1 cursor-default'
+                : 'btn'
+            }`}
+            onClick={nextStep}
+            disabled={user.status !== 'Contrato Firmado'}
+          >
             Continuar
           </button>
         </div>

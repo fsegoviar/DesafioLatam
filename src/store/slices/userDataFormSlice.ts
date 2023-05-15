@@ -20,7 +20,8 @@ const initialState: UserDataState = {
   status: '',
   step: 0,
   user: null,
-  user_id: 0
+  user_id: 0,
+  purchase: null
 };
 
 export const userDataFormSlice = createSlice({

@@ -23,6 +23,9 @@ export const SelectPayment = (props: PropsFormUser) => {
   const [listPaymentMethods, setListPaymentMethods] = useState([]);
   const [disabledBtn, setDisabledBtn] = useState(true);
   const [nQuotes, setNQuotes] = useState(0);
+  const [paymentMethodIdSelected, setPaymentMethodIdSelected] = useState(0);
+  const [totalPayment, setTotalPayment] = useState(0);
+  const [quotesSelected, setQuotesSelected] = useState(0);
 
   const fetchData = async () => {
     await axios
@@ -49,59 +52,67 @@ export const SelectPayment = (props: PropsFormUser) => {
     props.setCurrentStep(props.currentStep + 1);
   };
 
-  const handleNextStep = () => {
-    axios
-      .post(
-        `${process.env.REACT_APP_API_BACKEND}/registers/${localStorage.getItem(
-          'register_id'
-        )}/step`,
-        {
-          step: cardSelected2 ? props.currentStep + 2 : props.currentStep + 1
-        },
-        {
-          headers: {
-            'Access-Control-Allow-Origin': '*'
-          }
-        }
-      )
-      .then((response: any) => {
-        console.log('Step =>', response.data);
-        cardSelected2
-          ? props.setCurrentStep(props.currentStep + 2)
-          : nextStep();
+  const handleNextStep = async () => {
+    await axios
+      .post(`${process.env.REACT_APP_API_BACKEND}/purchases/store`, {
+        register_id: props.registerId,
+        payment_method_id: paymentMethodIdSelected,
+        quotes: quotesSelected,
+        total: totalPayment
       })
-      .catch((error: AxiosError) => console.log('Error Aval =>', error));
+      .then(() => {
+        axios
+          .post(
+            `${
+              process.env.REACT_APP_API_BACKEND
+            }/registers/${localStorage.getItem('register_id')}/step`,
+            {
+              step: cardSelected2
+                ? props.currentStep + 2
+                : props.currentStep + 1
+            },
+            {
+              headers: {
+                'Access-Control-Allow-Origin': '*'
+              }
+            }
+          )
+          .then((response: any) => {
+            console.log('Step =>', response.data);
+            cardSelected2
+              ? props.setCurrentStep(props.currentStep + 2)
+              : nextStep();
+          })
+          .catch((error: AxiosError) => console.log('Error Aval =>', error));
+      })
+      .catch((error: AxiosError) => console.error(error));
   };
 
   const selectCard = (key: string, element: any) => {
     setCardSelected2(false);
+    console.log('Element =>', element);
 
     switch (key) {
       case '1':
-        console.log(
-          'Element =>',
-          formatPrice(
-            element.pivot.reference_value -
-              (element.pivot.free_discount / 100) *
-                element.pivot.reference_value
-          )
-        );
+        // console.log(
+        //   'Element =>',
+        //   formatPrice(
+        //     element.pivot.reference_value -
+        //       (element.pivot.free_discount / 100) *
+        //         element.pivot.reference_value
+        //   )
+        // );
         setTotalValue(
           element.pivot.reference_value -
             (element.pivot.free_discount / 100) * element.pivot.reference_value
         );
         setNQuotes(element.pivot.quotes);
-        localStorage.setItem('paymentMethod', 'Pago en cuotas');
-        localStorage.setItem('payment_method_id', key);
-        localStorage.setItem(
-          'total_amount',
-          String(
-            element.pivot.reference_value -
-              (element.pivot.free_discount / 100) *
-                element.pivot.reference_value +
-              props.tuition
-          )
+        setPaymentMethodIdSelected(Number(key));
+        setTotalPayment(
+          element.pivot.reference_value -
+            (element.pivot.free_discount / 100) * element.pivot.reference_value
         );
+        // localStorage.setItem('paymentMethod', 'Pago en cuotas');
         setActiveCount(true);
         setCardSelected1(true);
         setCardSelected2(false);
@@ -114,24 +125,20 @@ export const SelectPayment = (props: PropsFormUser) => {
             (element.pivot.advance_discount / 100) *
               element.pivot.reference_value
         );
-        localStorage.setItem('paymentMethod', 'Pago anticipado');
-        localStorage.setItem('payment_method_id', key);
-        localStorage.setItem(
-          'total_amount',
-          String(
-            element.pivot.reference_value -
-              (element.pivot.advance_discount / 100) *
-                element.pivot.reference_value +
-              +props.tuition
-          )
+        // localStorage.setItem('paymentMethod', 'Pago anticipado');
+        setPaymentMethodIdSelected(Number(key));
+        setTotalPayment(
+          element.pivot.reference_value -
+            (element.pivot.advance_discount / 100) *
+              element.pivot.reference_value
         );
+        setQuotesSelected(0);
         setDiscount(element.pivot.advance_discount);
         setCardSelected1(false);
         setCardSelected2(true);
         setCardSelected3(false);
         setDisabledBtn(false);
         setActiveCount(false);
-        localStorage.setItem('paymentQuotes', '0');
         break;
       case '3':
         setDiscount(element.pivot.isa_percent);
@@ -143,7 +150,7 @@ export const SelectPayment = (props: PropsFormUser) => {
         setCardSelected3(true);
         setDisabledBtn(false);
         setActiveCount(false);
-        localStorage.setItem('paymentQuotes', '0');
+        setQuotesSelected(0);
         break;
     }
   };
@@ -292,10 +299,7 @@ export const SelectPayment = (props: PropsFormUser) => {
               onChange={(evt: any) => {
                 setCount(evt.target.value);
                 if (cardSelected1) {
-                  localStorage.setItem(
-                    'paymentQuotes',
-                    String(evt.target.value)
-                  );
+                  setQuotesSelected(evt.target.value);
                 }
                 setDisabledBtn(false);
               }}

@@ -1,6 +1,5 @@
 import axios, { AxiosError } from 'axios';
 import { SupplierTypeUser } from '../../../interfaces';
-import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../../store/store';
 // import React, { useState } from 'react';
@@ -17,91 +16,85 @@ export const SimpleFinishPayment = ({
 }: PropsFinishPayment) => {
   // const navigate = useNavigate();
   // const [setLoadingTransbank, setSetLoadingTransbank] = useState(false);
-  const [paymentMethod, setPaymentMethod] = useState({
-    description: '',
-    quotes: ''
-  });
+
   const user = useSelector((state: RootState) => state.user);
 
-  useEffect(() => {
-    console.log('Suppliers FinishPayment', suppliers);
-    console.log('dataUser FinishPayment', dataUser);
-    console.log('User FinishPayment =>', user);
-    setPaymentMethod({
-      description: String(localStorage.getItem('paymentMethod')),
-      quotes: String(localStorage.getItem('paymentQuotes'))
-    });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
   const handleTransbankTransaction = () => {
-    axios
-      .post(
-        `${process.env.REACT_APP_API_BACKEND}/transbank/start_purchase`,
-        {
-          register_id: String(localStorage.getItem('register_id')),
-          total: localStorage.getItem('total_amount'),
-          payment_method_id: String(localStorage.getItem('payment_method_id'))
-        },
-        {
-          headers: {
-            'Access-Control-Allow-Origin': '*'
+    if (user.purchase) {
+      axios
+        .post(
+          `${process.env.REACT_APP_API_BACKEND}/transbank/start_purchase`,
+          {
+            register_id: String(localStorage.getItem('register_id')),
+            total: user.purchase.total,
+            payment_method_id: user.purchase.payment_method_id
+          },
+          {
+            headers: {
+              'Access-Control-Allow-Origin': '*'
+            }
           }
-        }
-      )
-      .then((response: any) => {
-        window.location.replace(response.data);
-      })
-      .catch((error: AxiosError) => console.log('Error Transbank =>', error));
+        )
+        .then((response: any) => {
+          window.location.replace(response.data);
+        })
+        .catch((error: AxiosError) => console.log('Error Transbank =>', error));
+    }
   };
 
   const handleTransactionPaypal = () => {
-    axios
-      .post(
-        `${process.env.REACT_APP_API_BACKEND}/paypal/pay`,
-        {
-          amount: localStorage.getItem('total_amount'),
-          currency: String(dataUser.price.currency.code),
-          register_id: String(localStorage.getItem('register_id')),
-          payment_method_id: String(localStorage.getItem('payment_method_id'))
-        },
-        {
-          headers: {
-            'Access-Control-Allow-Origin': '*'
+    if (user.purchase) {
+      axios
+        .post(
+          `${process.env.REACT_APP_API_BACKEND}/paypal/pay`,
+          {
+            amount: user.purchase.total,
+            currency: String(dataUser.price.currency.code),
+            register_id: String(localStorage.getItem('register_id')),
+            payment_method_id: user.purchase.payment_method_id
+          },
+          {
+            headers: {
+              'Access-Control-Allow-Origin': '*'
+            }
           }
-        }
-      )
-      .then((response: any) => {
-        // window.location.replace(response);
-        console.log('Paypal =>', response.data);
-        window.location.replace(response.data);
-      })
-      .catch((error: AxiosError) => console.log('Error Paypal =>', error));
+        )
+        .then((response: any) => {
+          // window.location.replace(response);
+          console.log('Paypal =>', response.data);
+          window.location.replace(response.data);
+        })
+        .catch((error: AxiosError) => console.log('Error Paypal =>', error));
+    }
   };
 
   const handleTransactionFlow = () => {
-    axios
-      .post(
-        `${process.env.REACT_APP_API_BACKEND}/flow/pay`,
-        {
-          register_id: String(localStorage.getItem('register_id')),
-          amount: localStorage.getItem('total_amount'),
-          currency: String(dataUser.price.currency.code),
-          email: String(dataUser.user.email),
-          payment_method_id: String(localStorage.getItem('payment_method_id'))
-        },
-        {
-          headers: {
-            'Access-Control-Allow-Origin': '*',
-            Authorization: `Bearer ${localStorage.getItem('token_user_latam')}`
+    if (user.purchase) {
+      axios
+        .post(
+          `${process.env.REACT_APP_API_BACKEND}/flow/pay`,
+          {
+            register_id: String(localStorage.getItem('register_id')),
+            amount: user.purchase.total,
+            currency: String(dataUser.price.currency.code),
+            email: String(dataUser.user.email),
+            payment_method_id: user.purchase.payment_method_id
+          },
+          {
+            headers: {
+              'Access-Control-Allow-Origin': '*',
+              Authorization: `Bearer ${localStorage.getItem(
+                'token_user_latam'
+              )}`
+            }
           }
-        }
-      )
-      .then((response: any) => {
-        console.log('Response Flow =>', response.data);
-        window.location.replace(response.data);
-      })
-      .catch((error: AxiosError) => console.log('Error Flow =>', error));
+        )
+        .then((response: any) => {
+          console.log('Response Flow =>', response.data);
+          window.location.replace(response.data);
+        })
+        .catch((error: AxiosError) => console.log('Error Flow =>', error));
+    }
   };
 
   const handleOtherMethodPayment = () => {
@@ -138,11 +131,19 @@ export const SimpleFinishPayment = ({
       <div className="grid gap-4 grid-cols-2 mt-3">
         <div className="flex flex-col">
           <label>Forma de pago</label>
-          <input type="text" placeholder={paymentMethod.description} readOnly />
+          <input
+            type="text"
+            placeholder={user.purchase?.payment_method?.description ?? ''}
+            readOnly
+          />
         </div>
         <div className="flex flex-col">
           <label>Número de cuotas</label>
-          <input type="text" placeholder={paymentMethod.quotes} readOnly />
+          <input
+            type="text"
+            placeholder={String(user.purchase?.quotes)}
+            readOnly
+          />
         </div>
       </div>
       <div className={'mt-5'}>
