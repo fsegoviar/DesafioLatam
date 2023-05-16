@@ -2,6 +2,8 @@ import axios, { AxiosError } from 'axios';
 import { SupplierTypeUser } from '../../../interfaces';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../../store/store';
+import { useNavigate } from 'react-router-dom';
+import { useEffect } from 'react';
 // import React, { useState } from 'react';
 // import { useNavigate } from 'react-router-dom';
 
@@ -14,10 +16,16 @@ export const SimpleFinishPayment = ({
   suppliers,
   dataUser
 }: PropsFinishPayment) => {
-  // const navigate = useNavigate();
+  const navigate = useNavigate();
   // const [setLoadingTransbank, setSetLoadingTransbank] = useState(false);
 
   const user = useSelector((state: RootState) => state.user);
+
+  useEffect(() => {
+    if (user.status === 'Completado') {
+      navigate('/pago_aprobado');
+    }
+  }, [navigate, user]);
 
   const handleTransbankTransaction = () => {
     if (user.purchase) {
