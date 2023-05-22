@@ -90,6 +90,10 @@ export const TableLinks = () => {
     'career.description': {
       value: '',
       matchMode: FilterMatchMode.CONTAINS
+    },
+    status: {
+      value: '',
+      matchMode: FilterMatchMode.CONTAINS
     }
   };
 
@@ -179,15 +183,6 @@ export const TableLinks = () => {
             {rowData.status}
           </span>
         );
-      // case 'Inhabilitado':
-      //   return (
-      //     <span
-      //       style={{ backgroundColor: 'black', color: '#FFFFFF' }}
-      //       className="px-2 py-1 rounded-full"
-      //     >
-      //       {rowData.status}
-      //     </span>
-      //   );
       default:
         break;
     }
@@ -399,7 +394,15 @@ export const TableLinks = () => {
         ></Column>
         <Column body={renderForm} header={'Formulario'}></Column>
         <Column body={renderToken} header={'Token'}></Column>
-        <Column body={renderState} header={'Estado'}></Column>
+        <Column
+          body={renderState}
+          field="status"
+          sortable
+          filter
+          filterPlaceholder="Buscar por estado"
+          showFilterMenu={false}
+          header={'Estado'}
+        ></Column>
         <Column
           body={actionEdit}
           exportable={false}

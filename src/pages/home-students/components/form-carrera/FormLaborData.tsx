@@ -104,7 +104,7 @@ export const FormLaborData = (props: PropsFormUser) => {
       <div className="mt-10">
         <div className="grid grid-cols-4 gap-4">
           <div className="col-span-2 flex flex-col">
-            <label>Situación Laboral</label>
+            <label>Situación Laboral*</label>
             <Dropdown
               value={laborSituation}
               options={workSituations}
@@ -120,7 +120,7 @@ export const FormLaborData = (props: PropsFormUser) => {
             {errors.work_situation_id && <RequiredField />}
           </div>
           <div className="col-span-2 flex flex-col">
-            <label>Renta Actual</label>
+            <label>Renta Actual*</label>
             <input
               type="number"
               {...register('rent', {
@@ -132,7 +132,7 @@ export const FormLaborData = (props: PropsFormUser) => {
           </div>
         </div>
         <div className="col-span-2 flex flex-col mt-3">
-          <label>Enlace LinkedIn</label>
+          <label>Enlace LinkedIn*</label>
           <input
             type="text"
             placeholder={'https://www.google.com'}
@@ -151,7 +151,7 @@ export const FormLaborData = (props: PropsFormUser) => {
         </div>
         <div className="grid grid-cols-4 mt-3 gap-4">
           <div className="col-span-2 flex flex-col">
-            <label>Empresa donde trabaja</label>
+            <label>Empresa donde trabaja*</label>
             <input
               type="text"
               {...register('organization', {
@@ -161,7 +161,7 @@ export const FormLaborData = (props: PropsFormUser) => {
             {errors.organization && <RequiredField />}
           </div>
           <div className="col-span-2 flex flex-col">
-            <label>Cargo</label>
+            <label>Cargo*</label>
             <input type="text" {...register('position', { required: true })} />
             {errors.position && <RequiredField />}
           </div>

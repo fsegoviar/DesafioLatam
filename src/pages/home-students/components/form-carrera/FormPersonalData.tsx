@@ -201,12 +201,12 @@ export const FormPersonalData = (props: PropsFormUser) => {
 
       <div className="grid gap-4 grid-cols-4 ">
         <div className="col-span-2 flex flex-col">
-          <label>Nombre</label>
+          <label>Nombre*</label>
           <input type="text" {...register('name', { required: true })} />
           {errors.name && <RenderRequiredField />}
         </div>
         <div className="col-span-2 flex flex-col">
-          <label>Apellidos</label>
+          <label>Apellidos*</label>
           <input type="text" {...register('lastname', { required: true })} />
           {errors.lastname && <RenderRequiredField />}
         </div>
@@ -214,7 +214,7 @@ export const FormPersonalData = (props: PropsFormUser) => {
 
       <div className="grid gap-4 grid-cols-4 mt-5">
         <div className="col-span-2  flex flex-col">
-          <label>Tipo de Identificación</label>
+          <label>Tipo de Identificación*</label>
           <select
             name=""
             id=""
@@ -232,7 +232,7 @@ export const FormPersonalData = (props: PropsFormUser) => {
           </select>
         </div>
         <div className="col-span-2 flex flex-col">
-          <label>Número de identificación</label>
+          <label>Número de identificación*</label>
           <input
             type="text"
             value={inputRut}
@@ -279,7 +279,7 @@ export const FormPersonalData = (props: PropsFormUser) => {
       </div>
       <div className="grid grid-cols-4 gap-4 mt-5">
         <div className="flex flex-col col-span-2">
-          <label>País de residencia</label>
+          <label>País de residencia*</label>
           <Dropdown
             value={countrySelected}
             options={listCountries}
@@ -306,7 +306,7 @@ export const FormPersonalData = (props: PropsFormUser) => {
           {errors.country_id?.type === 'required' && <RenderRequiredField />}
         </div>
         <div className="flex flex-col col-span-2">
-          <label>Nacionalidad</label>
+          <label>Nacionalidad*</label>
           <Dropdown
             value={nationalitySelected}
             options={listCountries}
@@ -335,7 +335,7 @@ export const FormPersonalData = (props: PropsFormUser) => {
       </div>
       <div className="grid gap-4 grid-cols-4 mt-5">
         <div className="col-span-2 flex flex-col">
-          <label>Número teléfonico</label>
+          <label>Número teléfonico*</label>
           <input
             type="number"
             {...register('phone', {
@@ -376,7 +376,7 @@ export const FormPersonalData = (props: PropsFormUser) => {
       </div>
       <div className="grid grid-cols-4 gap-4 mt-5">
         <div className="col-span-2 flex flex-col">
-          <label>Fecha de nacimiento</label>
+          <label>Fecha de nacimiento*</label>
           <Calendar
             // onChange={(e) => setDate(e.value)}
             className="style-calendar"
@@ -386,6 +386,7 @@ export const FormPersonalData = (props: PropsFormUser) => {
             {...register('birthday', {
               required: true,
               onChange: (evt) => {
+                console.log('event => ', evt);
                 console.log(
                   'Evento birthday: ' +
                     String(format(new Date(evt.target.value), 'yyyy-MM-dd'))
@@ -419,7 +420,7 @@ export const FormPersonalData = (props: PropsFormUser) => {
           )}
         </div>
         <div className="col-span-2 flex flex-col">
-          <label>Ciudad de Residencia</label>
+          <label>Ciudad de Residencia*</label>
           <input type="text" {...register('city', { required: true })} />
           {errors.city && <RenderRequiredField />}
         </div>
@@ -427,7 +428,7 @@ export const FormPersonalData = (props: PropsFormUser) => {
 
       <div className="grid grid-cols-3 mt-5">
         <div className="flex flex-col col-span-3">
-          <label>Dirección</label>
+          <label>Dirección*</label>
           <input type="text" {...register('address', { required: true })} />
           {errors.address && <RenderRequiredField />}
         </div>

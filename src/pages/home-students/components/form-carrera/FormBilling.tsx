@@ -163,7 +163,7 @@ export const FormBilling = (props: PropsFormUser) => {
       <div className="mt-5">
         <div className="grid gap-4 grid-cols-4 ">
           <div className="col-span-2 flex flex-col">
-            <label>Razón Social</label>
+            <label>Razón Social*</label>
             <input
               type="text"
               disabled={isBilling}
@@ -174,7 +174,7 @@ export const FormBilling = (props: PropsFormUser) => {
             {errors.business_name && <RequiredField />}
           </div>
           <div className="col-span-2 flex flex-col">
-            <label>Rut Empresa</label>
+            <label>Rut Empresa*</label>
             <input
               type="text"
               disabled={isBilling}
@@ -224,7 +224,7 @@ export const FormBilling = (props: PropsFormUser) => {
 
         <div className="grid gap-4 grid-cols-4 ">
           <div className="col-span-2 flex flex-col">
-            <label>Giro</label>
+            <label>Giro*</label>
             <input
               type="text"
               disabled={isBilling}
@@ -247,7 +247,7 @@ export const FormBilling = (props: PropsFormUser) => {
 
         <div className="grid gap-4 grid-cols-4 ">
           <div className="col-span-2 flex flex-col">
-            <label>Email Empresa</label>
+            <label>Email Empresa*</label>
             <input
               type="email"
               disabled={isBilling}
@@ -256,7 +256,7 @@ export const FormBilling = (props: PropsFormUser) => {
             {errors.email && <RequiredField />}
           </div>
           <div className="col-span-2 flex flex-col">
-            <label>Teléfono Empresa</label>
+            <label>Teléfono Empresa*</label>
             <input
               type="number"
               disabled={isBilling}
@@ -281,7 +281,7 @@ export const FormBilling = (props: PropsFormUser) => {
         </div>
         <div className="grid gap-4 grid-cols-4 ">
           <div className="col-span-2 flex flex-col">
-            <label>Nombre representante</label>
+            <label>Nombre representante*</label>
             <input
               type="text"
               disabled={isBilling}
@@ -294,7 +294,7 @@ export const FormBilling = (props: PropsFormUser) => {
             )}
           </div>
           <div className="col-span-2 flex flex-col">
-            <label>Rut del representante</label>
+            <label>Rut del representante*</label>
             <input
               type="text"
               disabled={isBilling}

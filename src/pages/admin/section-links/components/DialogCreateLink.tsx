@@ -26,6 +26,8 @@ export const DialogCreateLink = (props: DialogCreateLinkTypes) => {
   const [errorEmail, setErrorEmail] = useState(false);
   const { handleSubmit, setValue } = useForm<RegisterLinkType>();
   const [loading, setLoading] = useState(false);
+  const [disabledForm, setDisabledForm] = useState(true);
+  const [checkRadioBtn, setCheckRadioBtn] = useState(false);
 
   const forms = [
     { name: 'Formulario de carrera', id: 1 },
@@ -40,6 +42,7 @@ export const DialogCreateLink = (props: DialogCreateLinkTypes) => {
 
   const closeModal = (): void => {
     setLoading(false);
+    setDisabledForm(true);
     containerRef.current.classList.add('close');
     setTimeout(() => {
       containerRef.current.classList.remove('close');
@@ -99,11 +102,14 @@ export const DialogCreateLink = (props: DialogCreateLinkTypes) => {
   const handleChangeFormType = (value: { id: number; name: string }) => {
     setSelectForm(value);
     setValue('form_type_id', value.id);
+    if (checkRadioBtn) setDisabledForm(false);
   };
 
   const handleChangeRadio = (row: CareerPrice) => {
     // console.log('Radio Selected => ', row);
     setValue('price_id', row.id);
+    setCheckRadioBtn(true);
+    if (selectForm) setDisabledForm(false);
   };
 
   const onSubmit: SubmitHandler<RegisterLinkType> = async (data) => {
@@ -161,6 +167,11 @@ export const DialogCreateLink = (props: DialogCreateLinkTypes) => {
                     <input
                       type="email"
                       value={inputEmail}
+                      onKeyDown={(e: any) => {
+                        if (e.code === 'Enter') {
+                          e.preventDefault();
+                        }
+                      }}
                       placeholder="Correo electrónico"
                       onChange={(e) => setInputEmail(e.target.value)}
                       className="border-r-0 py-2 rounded-none rounded-l-lg w-8/12"
@@ -218,6 +229,7 @@ export const DialogCreateLink = (props: DialogCreateLinkTypes) => {
                       optionLabel="name"
                       placeholder="Seleccionar Formulario"
                       className="w-full md:w-14rem"
+                      required
                     />
                   </div>
                 </div>
@@ -265,6 +277,7 @@ export const DialogCreateLink = (props: DialogCreateLinkTypes) => {
               )}
               <div className="mt-5  w-full flex justify-end">
                 <button
+                  type="button"
                   className="m-1 px-5 rounded-lg text-white bg-gray-500"
                   style={{ border: '3px solid gray' }}
                   onClick={() => closeModal()}
@@ -273,8 +286,15 @@ export const DialogCreateLink = (props: DialogCreateLinkTypes) => {
                 </button>
                 <button
                   type="submit"
-                  className="m-1 px-5 rounded-lg text-white bg-green-500"
-                  style={{ border: '3px solid rgb(34 197 94)' }}
+                  className={`m-1 px-5 rounded-lg text-white ${
+                    disabledForm ? 'bg-gray-500' : ' bg-green-500'
+                  }`}
+                  style={{
+                    border: disabledForm
+                      ? '3px solid gray'
+                      : '3px solid rgb(34 197 94)'
+                  }}
+                  disabled={disabledForm}
                 >
                   Crear
                 </button>

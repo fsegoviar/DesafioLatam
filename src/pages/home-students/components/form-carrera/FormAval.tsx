@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { GetIdentityTypes } from '../../../../services';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import axios, { AxiosError } from 'axios';
+import ChileanRutify from 'chilean-rutify';
 
 type PropsFormUser = {
   stepsLength: number;
@@ -24,10 +25,12 @@ type AvalType = {
 
 export const FormAval = (props: PropsFormUser) => {
   const { indentityTypes } = GetIdentityTypes();
+  const [inputRut, setInputRut] = useState('');
   const [isBilling, setIsBilling] = useState(true);
   const [isEnableHistorical, setIsEnableHistorical] = useState(true);
   const {
     register,
+    setValue,
     handleSubmit,
     formState: { errors }
   } = useForm<AvalType>({
@@ -173,7 +176,7 @@ export const FormAval = (props: PropsFormUser) => {
       <form className={'mt-10'} onSubmit={handleSubmit(onSubmit)}>
         <div className="grid gap-4 grid-cols-4">
           <div className="col-span-2 flex flex-col">
-            <label>Nombre Aval</label>
+            <label>Nombre Aval*</label>
             <input
               type="text"
               disabled={isBilling}
@@ -182,7 +185,7 @@ export const FormAval = (props: PropsFormUser) => {
             {errors.name && <RequiredField />}
           </div>
           <div className="col-span-2 flex flex-col">
-            <label>Apellidos Aval</label>
+            <label>Apellidos Aval*</label>
             <input
               type="text"
               disabled={isBilling}
@@ -193,7 +196,7 @@ export const FormAval = (props: PropsFormUser) => {
         </div>
         <div className="grid gap-4 grid-cols-4 mt-5">
           <div className="col-span-2 flex flex-col">
-            <label>Dirección</label>
+            <label>Dirección*</label>
             <input
               type="text"
               disabled={isBilling}
@@ -202,7 +205,7 @@ export const FormAval = (props: PropsFormUser) => {
             {errors.address && <RequiredField />}
           </div>
           <div className="col-span-2 flex flex-col">
-            <label>Número de teléfono</label>
+            <label>Número de teléfono*</label>
             <input
               type="text"
               disabled={isBilling}
@@ -213,7 +216,7 @@ export const FormAval = (props: PropsFormUser) => {
         </div>
         <div className="grid gap-4 grid-cols-4 mt-5">
           <div className="col-span-2  flex flex-col">
-            <label>Tipo de Identificación</label>
+            <label>Tipo de Identificación*</label>
             <select
               id=""
               className={`w-full p-1.5 border-2 rounded-lg ${
@@ -237,13 +240,52 @@ export const FormAval = (props: PropsFormUser) => {
             {errors.identity_type_id && <RequiredField />}
           </div>
           <div className="col-span-2 flex flex-col">
-            <label>Número de identificación</label>
+            <label>Número de identificación*</label>
             <input
-              type="number"
+              type="text"
+              value={inputRut}
               disabled={isBilling}
-              {...register('dni', { required: !isBilling ?? true })}
+              onKeyDown={(input: any) => {
+                const esNumero =
+                  (input.keyCode >= 48 && input.keyCode <= 57) || // números de teclado normal
+                  (input.keyCode >= 96 && input.keyCode <= 105) ||
+                  input.keyCode === 75 ||
+                  input.keyCode === 8; // números del teclado numérico
+
+                if (!esNumero) {
+                  input.preventDefault(); // detiene la propagación del evento
+                }
+              }}
+              {...register('dni', {
+                required: !isBilling ?? true,
+                onChange: (e) => {
+                  if (e.target.value !== '-' && e.target.value !== '') {
+                    setInputRut(
+                      String(ChileanRutify.formatRut(e.target.value))
+                    );
+                    setValue(
+                      'dni',
+                      String(ChileanRutify.formatRut(e.target.value))
+                    );
+                  } else {
+                    setInputRut('-');
+                  }
+                },
+                validate: (v) => {
+                  return ChileanRutify.validRut(v);
+                }
+              })}
             />
-            {errors.dni && <RequiredField />}
+            {errors.dni?.type === 'required' && (
+              <span className="text-red-500 text-sm font-light">
+                Rut requerido
+              </span>
+            )}
+            {errors.dni?.type === 'validate' && (
+              <span className="text-red-500 text-sm font-light">
+                Rut invalido
+              </span>
+            )}
           </div>
         </div>
         <div className="grid gap-4 grid-cols-4 mt-5">

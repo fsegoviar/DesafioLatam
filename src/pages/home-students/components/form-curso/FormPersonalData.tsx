@@ -92,7 +92,7 @@ export const FormPersonalData = (props: PropsFormUser) => {
     <form onSubmit={handleSubmit(onSubmit)} className="mt-10">
       <div className="grid gap-4 grid-cols-4 ">
         <div className="col-span-2 flex flex-col">
-          <label>Nombre</label>
+          <label>Nombre*</label>
           <input
             type="text"
             {...register('name', { required: true, maxLength: 20 })}
@@ -103,7 +103,7 @@ export const FormPersonalData = (props: PropsFormUser) => {
           )}
         </div>
         <div className="col-span-2 flex flex-col">
-          <label>Apellidos</label>
+          <label>Apellidos*</label>
           <input
             type="text"
             {...register('lastname', { required: true, maxLength: 30 })}
@@ -117,7 +117,7 @@ export const FormPersonalData = (props: PropsFormUser) => {
 
       <div className="grid gap-4 grid-cols-4 mt-5">
         <div className="col-span-2  flex flex-col">
-          <label>Tipo de Identificación</label>
+          <label>Tipo de Identificación*</label>
           <select
             className="w-full p-1.5 border-2 rounded-lg border-black"
             onChange={(e) => {
@@ -136,7 +136,7 @@ export const FormPersonalData = (props: PropsFormUser) => {
           </select>
         </div>
         <div className="col-span-2 flex flex-col">
-          <label>Número de identificación</label>
+          <label>Número de identificación*</label>
           <input
             value={inputRut}
             {...register('dni', {
@@ -172,7 +172,7 @@ export const FormPersonalData = (props: PropsFormUser) => {
 
       <div className="grid gap-4 grid-cols-4 mt-5">
         <div className="col-span-2 flex flex-col">
-          <label>Correo electrónico</label>
+          <label>Correo electrónico*</label>
           <input
             type="email"
             {...register('email', {
@@ -188,7 +188,7 @@ export const FormPersonalData = (props: PropsFormUser) => {
           )}
         </div>
         <div className="col-span-2 flex flex-col">
-          <label>Número teléfonico</label>
+          <label>Número teléfonico*</label>
           <input
             type="number"
             {...register('phone', {

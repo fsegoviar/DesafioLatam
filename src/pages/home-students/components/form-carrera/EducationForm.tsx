@@ -114,7 +114,7 @@ export const EducationForm = (props: PropsFormUser) => {
     <form className="mt-10" onSubmit={handleSubmit(onSubmit)}>
       <div className="grid gap-4 grid-cols-4">
         <div className="col-span-2 flex flex-col">
-          <label>Nivel de educación</label>
+          <label>Nivel de educación*</label>
 
           <Dropdown
             value={educationLevelSelected}
@@ -131,7 +131,7 @@ export const EducationForm = (props: PropsFormUser) => {
           {errors.educational_level_id && <RequiredField />}
         </div>
         <div className="col-span-2 flex flex-col">
-          <label>Nivel de ingles</label>
+          <label>Nivel de ingles*</label>
 
           <Dropdown
             value={englishLevelSelected}
@@ -152,7 +152,7 @@ export const EducationForm = (props: PropsFormUser) => {
         <div>
           <textarea
             className="w-full rounded-lg border-2 border-black p-2 resize-none"
-            placeholder="¿Posee conocimientos previos?. ¿Cuales?"
+            placeholder="¿Posee conocimientos previos?. ¿Cuales? *"
             id=""
             rows={4}
             {...register('description', {
