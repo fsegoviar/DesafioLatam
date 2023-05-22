@@ -21,6 +21,7 @@ export const FormPersonalData = (props: PropsFormUser) => {
   const { indentityTypes } = GetIdentityTypes();
   const [inputRut, setInputRut] = useState('');
   const user = useSelector((state: RootState) => state.user);
+
   const dispatch = useDispatch();
   const {
     register,

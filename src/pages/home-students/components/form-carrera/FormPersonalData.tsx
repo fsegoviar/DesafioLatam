@@ -5,13 +5,12 @@ import { Calendar } from 'primereact/calendar';
 import { addLocale } from 'primereact/api';
 import './form-carrera-styles.css';
 import axios, { AxiosError } from 'axios';
-import { format } from 'date-fns';
+import { format, isBefore } from 'date-fns';
 import { Dropdown, DropdownChangeParams } from 'primereact/dropdown';
 import ChileanRutify from 'chilean-rutify';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../../../store/store';
 import { updatePersonalDataCarrera } from '../../../../store/slices/userDataFormSlice';
-import { isBefore } from 'date-fns';
 
 type PropsFormUser = {
   stepsLength: number;
@@ -375,7 +374,7 @@ export const FormPersonalData = (props: PropsFormUser) => {
         </div>
       </div>
       <div className="grid grid-cols-4 gap-4 mt-5">
-        <div className="col-span-2 flex flex-col">
+        {/* <div className="col-span-2 flex flex-col">
           <label>Fecha de nacimiento*</label>
           <Calendar
             // onChange={(e) => setDate(e.value)}
@@ -418,7 +417,57 @@ export const FormPersonalData = (props: PropsFormUser) => {
               Fecha de nacimiento debe ser menor a la de hoy
             </span>
           )}
+        </div> */}
+        <div className="col-span-2 flex flex-col">
+          <label>Fecha de nacimiento*</label>
+          <Calendar
+            // onChange={(e) => setDate(e.value)}
+            className="style-calendar"
+            dateFormat="yy-mm-dd"
+            locale="es"
+            placeholder="yyyy-mm-dd"
+            value={birthday}
+            {...register('birthday', {
+              required: true,
+              onChange: (evt) => {
+                console.log('event => ', evt);
+                console.log(
+                  'Evento birthday: ' +
+                    String(format(new Date(evt.target.value), 'yyyy-MM-dd'))
+                );
+                if (evt.value) {
+                  setValue(
+                    'birthday',
+                    String(format(new Date(evt.target.value), 'yyyy-MM-dd'))
+                  );
+                } else {
+                  setValue('birthday', '');
+                }
+              },
+              validate: (evt: any) => {
+                const inputDate = evt.split('-');
+                const myBirthday = new Date(
+                  inputDate[0],
+                  inputDate[1],
+                  inputDate[2]
+                );
+                const today = new Date();
+                if (isBefore(myBirthday, today)) {
+                  console.log('PASAMOS');
+                  return true;
+                }
+                return false;
+              }
+            })}
+          />
+          {errors.birthday && <RenderRequiredField />}
+          {errors.birthday?.type === 'validate' && (
+            <span className="font-light text-red-500">
+              Fecha de nacimiento debe ser menor a la de hoy
+            </span>
+          )}
         </div>
+
         <div className="col-span-2 flex flex-col">
           <label>Ciudad de Residencia*</label>
           <input type="text" {...register('city', { required: true })} />
