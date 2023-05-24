@@ -1,8 +1,14 @@
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { NavLink } from './NavLink';
 
 export const Navbar = () => {
   const location = useLocation();
+  const navigate = useNavigate();
+
+  const closeSession = () => {
+    localStorage.removeItem('token_hhrr_latam')
+    navigate("/login")
+  }
 
   return (
     <div className="fixed w-full top-0 z-40">
@@ -15,6 +21,7 @@ export const Navbar = () => {
               className="w-3/12"
             />
           </div>
+          <p className={'text-white text-2xl cursor-pointer'} onClick={closeSession}>Cerrar Sesión</p>
         </div>
       </div>
       {(location.pathname === '/servicio_cliente' ||

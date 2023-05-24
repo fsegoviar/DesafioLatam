@@ -3,7 +3,7 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm ci
 COPY . .
-RUN npm run build
+RUN npm run build --force
 
 FROM nginx:alpine
 ADD ./config/default.conf /etc/nginx/conf.d/default.conf

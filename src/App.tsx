@@ -9,12 +9,15 @@ import {
 import { SectionLinks } from './pages/admin/section-links';
 import { FormularioResponsePage } from './pages/home-students/FormularioResponse.page';
 import { RejectPaymentPage } from './pages/home-students/RejectPaymentPage';
+import AuthLogin from './components/AuthLogin';
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path={'/servicio_cliente'} element={<SectionLinks />} />
+        <Route path={'/servicio_cliente'} element={<AuthLogin>
+          <SectionLinks />
+        </AuthLogin>} />
         <Route path={'/formulario/:typeForm'} element={<HomeStudentsPage />} />
         <Route path={'/formulario'} element={<FormularioResponsePage />} />
         <Route path={'login'} element={<Login />} />
