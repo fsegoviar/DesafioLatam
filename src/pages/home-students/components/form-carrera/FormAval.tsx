@@ -28,6 +28,8 @@ export const FormAval = (props: PropsFormUser) => {
   const [inputRut, setInputRut] = useState('');
   const [isBilling, setIsBilling] = useState(true);
   const [isEnableHistorical, setIsEnableHistorical] = useState(true);
+  const [errorSizeFiles, setErrorSizeFiles] = useState(false);
+  const [errorSizeFilesRent, setErrorSizeFilesRent] = useState(false);
   const {
     register,
     setValue,
@@ -55,6 +57,7 @@ export const FormAval = (props: PropsFormUser) => {
   };
 
   const onSubmit: SubmitHandler<AvalType> = (data) => {
+    console.log('DATA =>', data);
     if (isBilling) {
       axios
         .post(
@@ -76,67 +79,92 @@ export const FormAval = (props: PropsFormUser) => {
         })
         .catch((error: AxiosError) => console.log('Error Aval =>', error));
     } else {
-      console.log('DATA AVAL =>', data);
-
-      let formData = new FormData();
-      formData.append('name', data.name);
-      formData.append('address', data.address);
-      formData.append('identity_type_id', String(data.identity_type_id));
-      formData.append('lastname', data.lastname);
-      formData.append('dni', data.dni);
-      formData.append('phone', String(data.phone));
-      formData.append('register_id', String(props.registerId));
-      if (data.liquidaciones) {
-        for (const liquidacion of data.liquidaciones) {
-          formData.append('liquidaciones[]', new Blob([liquidacion]));
-        }
-      }
-
-      if (data.historiales) {
-        for (const historiales of data.historiales) {
-          formData.append('historiales[]', new Blob([historiales]));
-        }
-      }
-
-      axios
-        .post(
-          `${process.env.REACT_APP_API_BACKEND}/register_form/guarantee`,
-          formData,
-          {
-            headers: {
-              'Access-Control-Allow-Origin': '*',
-              'Content-Type': 'multipart/form-data'
-            }
+      if (!errorSizeFiles && !errorSizeFilesRent) {
+        let formData = new FormData();
+        formData.append('name', data.name);
+        formData.append('address', data.address);
+        formData.append('identity_type_id', String(data.identity_type_id));
+        formData.append('lastname', data.lastname);
+        formData.append('dni', data.dni);
+        formData.append('phone', String(data.phone));
+        formData.append('register_id', String(props.registerId));
+        if (data.liquidaciones) {
+          for (const liquidacion of data.liquidaciones) {
+            formData.append('liquidaciones[]', new Blob([liquidacion]));
           }
-        )
-        .then((response: any) => {
-          console.log('Response Aval =>', response.data);
-          axios
-            .post(
-              `${
-                process.env.REACT_APP_API_BACKEND
-              }/registers/${localStorage.getItem('register_id')}/step`,
-              {
-                step: 6
-              },
-              {
-                headers: {
-                  'Access-Control-Allow-Origin': '*'
-                }
+        }
+
+        if (data.historiales) {
+          for (const historiales of data.historiales) {
+            formData.append('historiales[]', new Blob([historiales]));
+          }
+        }
+
+        axios
+          .post(
+            `${process.env.REACT_APP_API_BACKEND}/register_form/guarantee`,
+            formData,
+            {
+              headers: {
+                'Access-Control-Allow-Origin': '*',
+                'Content-Type': 'multipart/form-data'
               }
-            )
-            .then((response: any) => {
-              console.log('Step =>', response.data);
-              nextStep();
-            })
-            .catch((error: AxiosError) => console.log('Error Aval =>', error));
-        })
-        .catch((error: AxiosError) => console.log('Error Aval =>', error));
+            }
+          )
+          .then((response: any) => {
+            console.log('Response Aval =>', response.data);
+            axios
+              .post(
+                `${
+                  process.env.REACT_APP_API_BACKEND
+                }/registers/${localStorage.getItem('register_id')}/step`,
+                {
+                  step: 6
+                },
+                {
+                  headers: {
+                    'Access-Control-Allow-Origin': '*'
+                  }
+                }
+              )
+              .then((response: any) => {
+                console.log('Step =>', response.data);
+                nextStep();
+              })
+              .catch((error: AxiosError) =>
+                console.log('Error Aval =>', error)
+              );
+          })
+          .catch((error: AxiosError) => console.log('Error Aval =>', error));
+      }
     }
   };
 
   const RequiredField = () => {
     return <span className="text-red-500 text-sm">Campo requerido</span>;
+  };
+
+  const verifySizeFiles = (files: any, type: string) => {
+    console.log('Hola=>', files);
+    const MAX_SIZE = 9_000_000; // 9MB
+    let countSize = 0;
+
+    for (const file of files.target.files) {
+      countSize += file.size;
+    }
+    if (countSize > MAX_SIZE) {
+      if (type === 'RENT') {
+        setErrorSizeFilesRent(true);
+      } else {
+        setErrorSizeFiles(true);
+      }
+    } else {
+      if (type === 'RENT') {
+        setErrorSizeFilesRent(false);
+      } else {
+        setErrorSizeFiles(false);
+      }
+    }
   };
 
   return (
@@ -297,9 +325,17 @@ export const FormAval = (props: PropsFormUser) => {
               id="formFileMultiple"
               multiple
               disabled={isBilling}
-              {...register('liquidaciones', { required: !isBilling ?? true })}
+              {...register('liquidaciones', {
+                required: !isBilling ?? true,
+                onChange: (event: any) => verifySizeFiles(event, 'RENT')
+              })}
             />
             {errors.liquidaciones && <RequiredField />}
+            {errorSizeFilesRent && (
+              <span style={{ color: 'red' }}>
+                Tamaño de archivos excede el limite 9MB
+              </span>
+            )}
           </div>
         </div>
         <div className="grid gap-4 grid-cols-4 mt-5">
@@ -338,10 +374,16 @@ export const FormAval = (props: PropsFormUser) => {
               multiple
               disabled={isBilling || isEnableHistorical}
               {...register('historiales', {
-                required: (!isBilling && !isEnableHistorical) ?? true
+                required: (!isBilling && !isEnableHistorical) ?? true,
+                onChange: (event: any) => verifySizeFiles(event, 'HISTORICAL')
               })}
             />
-            {errors.historiales && <RequiredField />}
+            {errors.historiales?.type === 'required' && <RequiredField />}
+            {errorSizeFiles && (
+              <span style={{ color: 'red' }}>
+                Tamaño de archivos excede el limite 9MB
+              </span>
+            )}
           </div>
         </div>
         <div className="flex justify-end mt-5">

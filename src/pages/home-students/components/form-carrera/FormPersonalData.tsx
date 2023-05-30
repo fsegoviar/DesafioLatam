@@ -195,7 +195,13 @@ export const FormPersonalData = (props: PropsFormUser) => {
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="mt-10">
+    <form
+      onSubmit={handleSubmit(onSubmit)}
+      className="mt-10"
+      onKeyDown={(e) => {
+        if (e.key === 'Enter') e.preventDefault();
+      }}
+    >
       {/* Paso 1 - Datos personales */}
 
       <div className="grid gap-4 grid-cols-4 ">
@@ -288,7 +294,6 @@ export const FormPersonalData = (props: PropsFormUser) => {
             // onChange={(evt: DropdownChangeParams) => {
             //   if (evt.value.id) {
             //     setCountrySelected(evt.value);
-            //     setValue('country_id', Number(evt.value.id));
             //   }
             // }}
             // required

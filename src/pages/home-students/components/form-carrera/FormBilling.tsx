@@ -160,188 +160,190 @@ export const FormBilling = (props: PropsFormUser) => {
         </div>
       </div>
 
-      <div className="mt-5">
-        <div className="grid gap-4 grid-cols-4 ">
-          <div className="col-span-2 flex flex-col">
-            <label>Razón Social*</label>
-            <input
-              type="text"
-              disabled={isBilling}
-              {...register('business_name', {
-                required: !isBilling ?? true
-              })}
-            />
-            {errors.business_name && <RequiredField />}
-          </div>
-          <div className="col-span-2 flex flex-col">
-            <label>Rut Empresa*</label>
-            <input
-              type="text"
-              disabled={isBilling}
-              value={inputRut}
-              onKeyDown={(input: any) => {
-                const esNumero =
-                  (input.keyCode >= 48 && input.keyCode <= 57) || // números de teclado normal
-                  (input.keyCode >= 96 && input.keyCode <= 105) ||
-                  input.keyCode === 8; // números del teclado numérico
+      {!isBilling && (
+        <div className="mt-5">
+          <div className="grid gap-4 grid-cols-4 ">
+            <div className="col-span-2 flex flex-col">
+              <label>Razón Social*</label>
+              <input
+                type="text"
+                disabled={isBilling}
+                {...register('business_name', {
+                  required: !isBilling ?? true
+                })}
+              />
+              {errors.business_name && <RequiredField />}
+            </div>
+            <div className="col-span-2 flex flex-col">
+              <label>Rut Empresa*</label>
+              <input
+                type="text"
+                disabled={isBilling}
+                value={inputRut}
+                onKeyDown={(input: any) => {
+                  const esNumero =
+                    (input.keyCode >= 48 && input.keyCode <= 57) || // números de teclado normal
+                    (input.keyCode >= 96 && input.keyCode <= 105) ||
+                    input.keyCode === 8; // números del teclado numérico
 
-                if (!esNumero) {
-                  input.preventDefault(); // detiene la propagación del evento
-                }
-              }}
-              {...register('dni', {
-                required: !isBilling ?? true,
-                onChange: (e) => {
-                  if (e.target.value !== '-' && e.target.value !== '') {
-                    setInputRut(
-                      String(ChileanRutify.formatRut(e.target.value))
-                    );
-                    setValue(
-                      'dni',
-                      String(ChileanRutify.formatRut(e.target.value))
-                    );
-                  } else {
-                    setInputRut('-');
+                  if (!esNumero) {
+                    input.preventDefault(); // detiene la propagación del evento
                   }
-                },
-                validate: (v: any) => {
-                  return ChileanRutify.validRut(v);
-                }
-              })}
-            />
-            {errors.dni?.type === 'required' && (
-              <span className="text-red-500 text-sm font-light">
-                Rut requerido
-              </span>
-            )}
-            {errors.dni?.type === 'validate' && (
-              <span className="text-red-500 text-sm font-light">
-                Rut invalido
-              </span>
-            )}
-          </div>
-        </div>
-
-        <div className="grid gap-4 grid-cols-4 ">
-          <div className="col-span-2 flex flex-col">
-            <label>Giro*</label>
-            <input
-              type="text"
-              disabled={isBilling}
-              {...register('business_line', {
-                required: !isBilling ?? true
-              })}
-            />
-            {errors.business_line && <RequiredField />}
-          </div>
-          <div className="col-span-2 flex flex-col">
-            <label>Dirección</label>
-            <input
-              type="text"
-              disabled={isBilling}
-              {...register('address', { required: !isBilling ?? true })}
-            />
-            {errors.address && <RequiredField />}
-          </div>
-        </div>
-
-        <div className="grid gap-4 grid-cols-4 ">
-          <div className="col-span-2 flex flex-col">
-            <label>Email Empresa*</label>
-            <input
-              type="email"
-              disabled={isBilling}
-              {...register('email', { required: !isBilling ?? true })}
-            />
-            {errors.email && <RequiredField />}
-          </div>
-          <div className="col-span-2 flex flex-col">
-            <label>Teléfono Empresa*</label>
-            <input
-              type="number"
-              disabled={isBilling}
-              {...register('phone', {
-                required: !isBilling ?? true,
-                minLength: !isBilling ? 5 : 0,
-                maxLength: !isBilling ? 15 : 999
-              })}
-            />
-            {errors.phone?.type === 'required' && <RequiredField />}
-            {errors.phone?.type === 'maxLength' && (
-              <span className="text-red-500 text-sm font-light">
-                Debe tener menos de 15 digitos
-              </span>
-            )}
-            {errors.phone?.type === 'minLength' && (
-              <span className="text-red-500 text-sm font-light">
-                Debe tener más de 5 digitos
-              </span>
-            )}
-          </div>
-        </div>
-        <div className="grid gap-4 grid-cols-4 ">
-          <div className="col-span-2 flex flex-col">
-            <label>Nombre representante*</label>
-            <input
-              type="text"
-              disabled={isBilling}
-              {...register('representative_fullname', {
-                required: !isBilling ?? true
-              })}
-            />
-            {errors.representative_fullname?.type === 'required' && (
-              <RequiredField />
-            )}
-          </div>
-          <div className="col-span-2 flex flex-col">
-            <label>Rut del representante*</label>
-            <input
-              type="text"
-              disabled={isBilling}
-              onKeyDown={(input: any) => {
-                const esNumero =
-                  (input.keyCode >= 48 && input.keyCode <= 57) || // números de teclado normal
-                  (input.keyCode >= 96 && input.keyCode <= 105) ||
-                  input.keyCode === 8; // números del teclado numérico
-
-                if (!esNumero) {
-                  input.preventDefault(); // detiene la propagación del evento
-                }
-              }}
-              value={inputRutRepresentative}
-              {...register('representative_dni', {
-                required: !isBilling ?? true,
-                onChange: (e) => {
-                  if (e.target.value !== '-' && e.target.value !== '') {
-                    setInputRutRepresentative(
-                      String(ChileanRutify.formatRut(e.target.value))
-                    );
-                    setValue(
-                      'representative_dni',
-                      String(ChileanRutify.formatRut(e.target.value))
-                    );
-                  } else {
-                    setInputRutRepresentative('-');
+                }}
+                {...register('dni', {
+                  required: !isBilling ?? true,
+                  onChange: (e) => {
+                    if (e.target.value !== '-' && e.target.value !== '') {
+                      setInputRut(
+                        String(ChileanRutify.formatRut(e.target.value))
+                      );
+                      setValue(
+                        'dni',
+                        String(ChileanRutify.formatRut(e.target.value))
+                      );
+                    } else {
+                      setInputRut('-');
+                    }
+                  },
+                  validate: (v: any) => {
+                    return ChileanRutify.validRut(v);
                   }
-                },
-                validate: (v: any) => {
-                  return ChileanRutify.validRut(v);
-                }
-              })}
-            />
-            {errors.representative_dni?.type === 'required' && (
-              <span className="text-red-500 text-sm font-light">
-                Rut requerido
-              </span>
-            )}
-            {errors.representative_dni?.type === 'validate' && (
-              <span className="text-red-500 text-sm font-light">
-                Rut invalido
-              </span>
-            )}
+                })}
+              />
+              {errors.dni?.type === 'required' && (
+                <span className="text-red-500 text-sm font-light">
+                  Rut requerido
+                </span>
+              )}
+              {errors.dni?.type === 'validate' && (
+                <span className="text-red-500 text-sm font-light">
+                  Rut invalido
+                </span>
+              )}
+            </div>
+          </div>
+
+          <div className="grid gap-4 grid-cols-4 ">
+            <div className="col-span-2 flex flex-col">
+              <label>Giro*</label>
+              <input
+                type="text"
+                disabled={isBilling}
+                {...register('business_line', {
+                  required: !isBilling ?? true
+                })}
+              />
+              {errors.business_line && <RequiredField />}
+            </div>
+            <div className="col-span-2 flex flex-col">
+              <label>Dirección</label>
+              <input
+                type="text"
+                disabled={isBilling}
+                {...register('address', { required: !isBilling ?? true })}
+              />
+              {errors.address && <RequiredField />}
+            </div>
+          </div>
+
+          <div className="grid gap-4 grid-cols-4 ">
+            <div className="col-span-2 flex flex-col">
+              <label>Email Empresa*</label>
+              <input
+                type="email"
+                disabled={isBilling}
+                {...register('email', { required: !isBilling ?? true })}
+              />
+              {errors.email && <RequiredField />}
+            </div>
+            <div className="col-span-2 flex flex-col">
+              <label>Teléfono Empresa*</label>
+              <input
+                type="number"
+                disabled={isBilling}
+                {...register('phone', {
+                  required: !isBilling ?? true,
+                  minLength: !isBilling ? 5 : 0,
+                  maxLength: !isBilling ? 15 : 999
+                })}
+              />
+              {errors.phone?.type === 'required' && <RequiredField />}
+              {errors.phone?.type === 'maxLength' && (
+                <span className="text-red-500 text-sm font-light">
+                  Debe tener menos de 15 digitos
+                </span>
+              )}
+              {errors.phone?.type === 'minLength' && (
+                <span className="text-red-500 text-sm font-light">
+                  Debe tener más de 5 digitos
+                </span>
+              )}
+            </div>
+          </div>
+          <div className="grid gap-4 grid-cols-4 ">
+            <div className="col-span-2 flex flex-col">
+              <label>Nombre representante*</label>
+              <input
+                type="text"
+                disabled={isBilling}
+                {...register('representative_fullname', {
+                  required: !isBilling ?? true
+                })}
+              />
+              {errors.representative_fullname?.type === 'required' && (
+                <RequiredField />
+              )}
+            </div>
+            <div className="col-span-2 flex flex-col">
+              <label>Rut del representante*</label>
+              <input
+                type="text"
+                disabled={isBilling}
+                onKeyDown={(input: any) => {
+                  const esNumero =
+                    (input.keyCode >= 48 && input.keyCode <= 57) || // números de teclado normal
+                    (input.keyCode >= 96 && input.keyCode <= 105) ||
+                    input.keyCode === 8; // números del teclado numérico
+
+                  if (!esNumero) {
+                    input.preventDefault(); // detiene la propagación del evento
+                  }
+                }}
+                value={inputRutRepresentative}
+                {...register('representative_dni', {
+                  required: !isBilling ?? true,
+                  onChange: (e) => {
+                    if (e.target.value !== '-' && e.target.value !== '') {
+                      setInputRutRepresentative(
+                        String(ChileanRutify.formatRut(e.target.value))
+                      );
+                      setValue(
+                        'representative_dni',
+                        String(ChileanRutify.formatRut(e.target.value))
+                      );
+                    } else {
+                      setInputRutRepresentative('-');
+                    }
+                  },
+                  validate: (v: any) => {
+                    return ChileanRutify.validRut(v);
+                  }
+                })}
+              />
+              {errors.representative_dni?.type === 'required' && (
+                <span className="text-red-500 text-sm font-light">
+                  Rut requerido
+                </span>
+              )}
+              {errors.representative_dni?.type === 'validate' && (
+                <span className="text-red-500 text-sm font-light">
+                  Rut invalido
+                </span>
+              )}
+            </div>
           </div>
         </div>
-      </div>
+      )}
       <div className="flex justify-end mt-5">
         <button className="btn-prev m-1" onClick={() => prevStep()}>
           Atras
