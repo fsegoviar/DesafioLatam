@@ -146,7 +146,7 @@ export const FormAval = (props: PropsFormUser) => {
 
   const verifySizeFiles = (files: any, type: string) => {
     console.log('Hola=>', files);
-    const MAX_SIZE = 9_000_000; // 9MB
+    const MAX_SIZE = 20_000_000; // 20MB
     let countSize = 0;
 
     for (const file of files.target.files) {
@@ -333,7 +333,7 @@ export const FormAval = (props: PropsFormUser) => {
             {errors.liquidaciones && <RequiredField />}
             {errorSizeFilesRent && (
               <span style={{ color: 'red' }}>
-                Tamaño de archivos excede el limite 9MB
+                Tamaño de archivos excede el limite 20MB
               </span>
             )}
           </div>
@@ -381,7 +381,7 @@ export const FormAval = (props: PropsFormUser) => {
             {errors.historiales?.type === 'required' && <RequiredField />}
             {errorSizeFiles && (
               <span style={{ color: 'red' }}>
-                Tamaño de archivos excede el limite 9MB
+                Tamaño de archivos excede el limite 20MB
               </span>
             )}
           </div>

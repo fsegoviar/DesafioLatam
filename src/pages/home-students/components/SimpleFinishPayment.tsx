@@ -46,7 +46,10 @@ export const SimpleFinishPayment = ({
         .then((response: any) => {
           window.location.replace(response.data);
         })
-        .catch((error: AxiosError) => console.log('Error Transbank =>', error));
+        .catch((error: AxiosError) => {
+          console.log('Error Transbank =>', error);
+          navigate('/error_transbank');
+        });
     }
   };
 

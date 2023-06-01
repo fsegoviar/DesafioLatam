@@ -15,15 +15,26 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path={'/servicio_cliente'} element={<AuthLogin>
-          <SectionLinks />
-        </AuthLogin>} />
+        <Route
+          path={'/servicio_cliente'}
+          element={
+            <AuthLogin>
+              <SectionLinks />
+            </AuthLogin>
+          }
+        />
         <Route path={'/formulario/:typeForm'} element={<HomeStudentsPage />} />
         <Route path={'/formulario'} element={<FormularioResponsePage />} />
         <Route path={'login'} element={<Login />} />
         <Route path={'tabla_precios'} element={<SectionPayment />} />
         <Route path={'pago_aprobado'} element={<FinishPaymentPage />} />
         <Route path={'pago_rechazado'} element={<RejectPaymentPage />} />
+        <Route
+          path={'error_transbank'}
+          element={
+            <RejectPaymentPage text="Algo salió mal con Transbank, por favor inténtalo nuevamente o comunicate con nosotros" />
+          }
+        />
       </Routes>
     </BrowserRouter>
   );

@@ -2,7 +2,13 @@ import { Navbar } from '../../components';
 import { useNavigate } from 'react-router-dom';
 import React from 'react';
 
-export const RejectPaymentPage = () => {
+type RejectType = {
+  text?: string;
+};
+
+export const RejectPaymentPage = ({
+  text = 'Algo salió mal, por favor inténtalo nuevamente o comunicate con nosotros'
+}: RejectType) => {
   const navigate = useNavigate();
 
   const handleRestart = () => {
@@ -28,10 +34,7 @@ export const RejectPaymentPage = () => {
             className={'my-5'}
             alt={'pago_rechazado'}
           />
-          <h1 className={'text-4xl'}>
-            Algo salió mal, por favor inténtalo nuevamente o comunicate con
-            nosotros{' '}
-          </h1>
+          <h1 className={'text-4xl w-10/12 text-center'}>{text}</h1>
           <div className={'flex mt-5'}>
             <button
               className={
