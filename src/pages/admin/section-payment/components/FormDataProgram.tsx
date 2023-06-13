@@ -171,6 +171,14 @@ export const FormDataProgram = ({
             Number(watch('payment_methods.2.isa_value'))
       );
     }
+
+    if (
+      watch('payment_methods.2.isa_percent') !== 0 ||
+      watch('payment_methods.2.isa_percent') !== undefined
+    ) {
+      return Number(watch('payment_methods.2.isa_value'));
+    }
+
     return 0;
   };
 
