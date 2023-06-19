@@ -170,7 +170,7 @@ export const FormDataEditPrice = (props: PropsEditPrice) => {
           case 'Flow':
             setCheckFlow(true);
             break;
-          case 'Otro metodo':
+          case 'Otro':
             setCheckOtherMethods(true);
             break;
           default:
