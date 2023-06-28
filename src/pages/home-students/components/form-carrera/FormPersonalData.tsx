@@ -194,6 +194,13 @@ export const FormPersonalData = (props: PropsFormUser) => {
     return <span className="font-light text-red-500">Campo requerido</span>;
   };
 
+  const [selectedIdentityType, setSelectedIdentityType] = useState('');
+
+  const handleIdentityTypeChange = (event:any) => {
+    const selectedValue = event.target.value;
+    setSelectedIdentityType(selectedValue);
+  };
+
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
@@ -224,6 +231,8 @@ export const FormPersonalData = (props: PropsFormUser) => {
             name=""
             id=""
             className="w-full p-1.5 border-2 rounded-lg border-black"
+            value={selectedIdentityType}
+            onChange={handleIdentityTypeChange}
           >
             <option value="" disabled>
               Seleccionar
@@ -242,6 +251,7 @@ export const FormPersonalData = (props: PropsFormUser) => {
             type="text"
             value={inputRut}
             onKeyDown={(input: any) => {
+              if(selectedIdentityType !== "4"){
               const esNumero =
                 (input.keyCode >= 48 && input.keyCode <= 57) || // números de teclado normal
                 (input.keyCode >= 96 && input.keyCode <= 105) ||
@@ -250,11 +260,25 @@ export const FormPersonalData = (props: PropsFormUser) => {
 
               if (!esNumero) {
                 input.preventDefault(); // detiene la propagación del evento
+              }}
+              else{
+                // Expresión regular que coincide con caracteres especiales
+                const specialCharsRegex = /[!@#$%^&*(),.?":{}¨¨|<>/+~´´áéíóúÁÉÍÓÚ]/;
+                const isValidChar =
+                  (input.keyCode >= 48 && input.keyCode <= 57) || // Números del teclado normal
+                  (input.keyCode >= 65 && input.keyCode <= 90) || // Letras mayúsculas
+                  (input.keyCode >= 97 && input.keyCode <= 122) || // Letras minúsculas
+                  input.keyCode === 45 || input.keyCode === 8; // Carácter guion ("-")
+
+                if (!isValidChar || specialCharsRegex.test(input.key)) {
+                  input.preventDefault(); // Detiene la propagación del evento
+                }
               }
             }}
             {...register('dni', {
               required: true,
               onChange: (e) => {
+                if(selectedIdentityType !== "4"){
                 if (e.target.value !== '-' && e.target.value !== '') {
                   setInputRut(String(ChileanRutify.formatRut(e.target.value)));
                   setValue(
@@ -264,7 +288,14 @@ export const FormPersonalData = (props: PropsFormUser) => {
                 } else {
                   setInputRut('-');
                 }
-              },
+              }else{
+                setInputRut(e.target.value);
+                  setValue(
+                    'dni',
+                    String(e.target.value)
+                  );
+              }
+            },
               validate: (v) => {
                 return ChileanRutify.validRut(v);
               }
