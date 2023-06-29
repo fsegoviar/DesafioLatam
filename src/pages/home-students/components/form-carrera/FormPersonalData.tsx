@@ -251,7 +251,7 @@ export const FormPersonalData = (props: PropsFormUser) => {
             type="text"
             value={inputRut}
             onKeyDown={(input: any) => {
-              if(selectedIdentityType !== "4"){
+              if(selectedIdentityType === "1" || selectedIdentityType === ""){
               const esNumero =
                 (input.keyCode >= 48 && input.keyCode <= 57) || // números de teclado normal
                 (input.keyCode >= 96 && input.keyCode <= 105) ||
@@ -262,15 +262,16 @@ export const FormPersonalData = (props: PropsFormUser) => {
                 input.preventDefault(); // detiene la propagación del evento
               }}
               else{
+                const key = input.key;
                 // Expresión regular que coincide con caracteres especiales
                 const specialCharsRegex = /[!@#$%^&*(),.?":{}¨¨|<>/+~´´áéíóúÁÉÍÓÚ]/;
                 const isValidChar =
-                  (input.keyCode >= 48 && input.keyCode <= 57) || // Números del teclado normal
-                  (input.keyCode >= 65 && input.keyCode <= 90) || // Letras mayúsculas
-                  (input.keyCode >= 97 && input.keyCode <= 122) || // Letras minúsculas
-                  input.keyCode === 45 || input.keyCode === 8; // Carácter guion ("-")
+                  (key >= "0" && key <= "9") || // Números del teclado normal
+                  (key >= "a" && key <= "z") || // Letras minúsculas
+                  (key >= "A" && key <= "Z") || // Letras mayúsculas
+                  key === "-" || key === "0"; // Carácter guion ("-") y tecla "0" del teclado numérico
 
-                if (!isValidChar || specialCharsRegex.test(input.key)) {
+                if (!isValidChar || specialCharsRegex.test(key)) {
                   input.preventDefault(); // Detiene la propagación del evento
                 }
               }
@@ -278,7 +279,7 @@ export const FormPersonalData = (props: PropsFormUser) => {
             {...register('dni', {
               required: true,
               onChange: (e) => {
-                if(selectedIdentityType !== "4"){
+                if(selectedIdentityType === "1" || selectedIdentityType === ""){
                 if (e.target.value !== '-' && e.target.value !== '') {
                   setInputRut(String(ChileanRutify.formatRut(e.target.value)));
                   setValue(
