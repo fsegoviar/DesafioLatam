@@ -89,6 +89,14 @@ export const FormPersonalData = (props: PropsFormUser) => {
     return <span className="font-light text-red-500">{text}</span>;
   };
 
+  const [selectedIdentityType, setSelectedIdentityType] = useState('');
+
+  const handleIdentityTypeChange = (event:any) => {
+    const selectedValue = event.target.value;
+    setSelectedIdentityType(selectedValue);
+    setInputRut('');
+  };
+
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="mt-10">
       <div className="grid gap-4 grid-cols-4 ">
@@ -121,9 +129,11 @@ export const FormPersonalData = (props: PropsFormUser) => {
           <label>Tipo de Identificación*</label>
           <select
             className="w-full p-1.5 border-2 rounded-lg border-black"
-            onChange={(e) => {
-              setValue('identity_type_id', Number(e.target.value));
-            }}
+            // onChange={(e) => {
+            //   setValue('identity_type_id', Number(e.target.value));
+            // }}
+            value={selectedIdentityType}
+            onChange={handleIdentityTypeChange}
           >
             <option value="" disabled>
               Seleccionar
@@ -140,9 +150,36 @@ export const FormPersonalData = (props: PropsFormUser) => {
           <label>Número de identificación*</label>
           <input
             value={inputRut}
+            onKeyDown={(input: any) => {
+              if(selectedIdentityType === "1" || selectedIdentityType === ""){
+              const esNumero =
+                (input.keyCode >= 48 && input.keyCode <= 57) || // números de teclado normal
+                (input.keyCode >= 96 && input.keyCode <= 105) ||
+                input.keyCode === 75 ||
+                input.keyCode === 8; // números del teclado numérico
+
+              if (!esNumero) {
+                input.preventDefault(); // detiene la propagación del evento
+              }}
+              else{
+                const key = input.key;
+                // Expresión regular que coincide con caracteres especiales
+                const specialCharsRegex = /[!@#$%^&*(),.?":{}¨¨|<>/+~´´áéíóúÁÉÍÓÚ]/;
+                const isValidChar =
+                  (key >= "0" && key <= "9") || // Números del teclado normal
+                  (key >= "a" && key <= "z") || // Letras minúsculas
+                  (key >= "A" && key <= "Z") || // Letras mayúsculas
+                  key === "-" || key === "0"; // Carácter guion ("-") y tecla "0" del teclado numérico
+
+                if (!isValidChar || specialCharsRegex.test(key)) {
+                  input.preventDefault(); // Detiene la propagación del evento
+                }
+              }
+            }}
             {...register('dni', {
               required: true,
               onChange: (e) => {
+                if(selectedIdentityType === "1" || selectedIdentityType === ""){
                 if (e.target.value !== '-') {
                   setInputRut(String(ChileanRutify.formatRut(e.target.value)));
                   setValue(
@@ -152,7 +189,13 @@ export const FormPersonalData = (props: PropsFormUser) => {
                 } else {
                   setInputRut('');
                 }
-              },
+              }else{
+                setInputRut(e.target.value);
+                  setValue(
+                    'dni',
+                    String(e.target.value)
+                  );
+              }},
               validate: (v) => {
                 return ChileanRutify.validRut(v);
               }

@@ -199,6 +199,7 @@ export const FormPersonalData = (props: PropsFormUser) => {
   const handleIdentityTypeChange = (event:any) => {
     const selectedValue = event.target.value;
     setSelectedIdentityType(selectedValue);
+    setInputRut('');
   };
 
   return (
