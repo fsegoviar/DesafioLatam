@@ -1,3 +1,4 @@
+import { Button } from 'primereact/button';
 import { useState, useEffect, useLayoutEffect } from 'react';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import {
@@ -415,6 +416,7 @@ export const FormDataEditPrice = (props: PropsEditPrice) => {
                   value={selectedCareers}
                   options={careers}
                   optionLabel="description"
+                  disabled
                   filter
                   placeholder="Seleccionar Curso"
                   className="w-full dropdown-form md:w-14rem"
@@ -426,6 +428,22 @@ export const FormDataEditPrice = (props: PropsEditPrice) => {
                   })}
                 />
                 {errors.price?.career_id && <RequiredField />}
+              </div>
+              <div className="flex flex-col mt-6">               
+                <Button
+                icon="pi pi-question-circle"
+                data-te-toggle="tooltip"
+                className="p-button-rounded p-button-text p-button-warning"
+                tooltip="No se puede modificar el programa seleccionado!"
+                tooltipOptions={{
+                  position: 'bottom',
+                  mouseTrack: false,
+                  mouseTrackTop: 15
+                }}
+                onClick={(e) => {
+                  e.preventDefault();
+                }}
+              />                                      
               </div>
             </div>
             {/* Formas de Pago */}
