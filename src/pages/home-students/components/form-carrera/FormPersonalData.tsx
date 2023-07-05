@@ -66,7 +66,7 @@ export const FormPersonalData = (props: PropsFormUser) => {
     today: 'Hoy',
     clear: 'Limpiar'
   });
-
+  const [selectedIdentityType, setSelectedIdentityType] = useState('');
   const { indentityTypes } = GetIdentityTypes();
   const [birthday, setBirthday] = useState<string | Date>(
     new Date().toLocaleDateString()
@@ -118,7 +118,9 @@ export const FormPersonalData = (props: PropsFormUser) => {
     }
 
     getCountries();
-
+    //selecciono el id que viene del modelo y se lo paso a mi "Tipo de Identificación*"
+    const userIdentityTypeId = user.user?.identity_type?.id ?? '';
+    setSelectedIdentityType(userIdentityTypeId.toString());
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -193,8 +195,6 @@ export const FormPersonalData = (props: PropsFormUser) => {
   const RenderRequiredField = () => {
     return <span className="font-light text-red-500">Campo requerido</span>;
   };
-
-  const [selectedIdentityType, setSelectedIdentityType] = useState('');
 
   const handleIdentityTypeChange = (event:any) => {
     const selectedValue = event.target.value;

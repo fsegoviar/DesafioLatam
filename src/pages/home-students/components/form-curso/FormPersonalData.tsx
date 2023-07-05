@@ -150,6 +150,7 @@ export const FormPersonalData = (props: PropsFormUser) => {
           <label>Número de identificación*</label>
           <input
             value={inputRut}
+            disabled={!selectedIdentityType} // Agregamos el atributo disabled
             onKeyDown={(input: any) => {
               if(selectedIdentityType === "1" || selectedIdentityType === ""){
               const esNumero =
