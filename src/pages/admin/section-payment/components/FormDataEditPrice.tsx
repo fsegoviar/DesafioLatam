@@ -230,8 +230,7 @@ export const FormDataEditPrice = (props: PropsEditPrice) => {
       });
 
     requestData.payment_methods = clearArr;
-
-    suppliers = resultForm.price.suppliers.map((v: any) => {
+    suppliers = resultForm.price.suppliers.length === 1 ? [{ supplier_id: parseInt(resultForm.price.suppliers.toString()) }] :resultForm.price.suppliers.map((v: any) => {
       return { supplier_id: Number(v) };
     });
 

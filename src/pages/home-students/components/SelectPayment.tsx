@@ -79,9 +79,7 @@ export const SelectPayment = (props: PropsFormUser) => {
           )
           .then((response: any) => {
             console.log('Step =>', response.data);
-            cardSelected2
-              ? props.setCurrentStep(props.currentStep + 2)
-              : nextStep();
+             nextStep();
           })
           .catch((error: AxiosError) => console.log('Error Aval =>', error));
       })
@@ -211,8 +209,8 @@ export const SelectPayment = (props: PropsFormUser) => {
                     Total a pagar: $
                     {formatPrice(
                       element.pivot.reference_value -
-                        (element.pivot.free_discount / 100) *
-                          element.pivot.reference_value
+                        ((element.pivot.free_discount / 100) *
+                          element.pivot.reference_value) + props.tuition
                     )}{' '}
                     CLP
                   </p>
