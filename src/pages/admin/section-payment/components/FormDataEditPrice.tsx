@@ -108,6 +108,7 @@ export const FormDataEditPrice = (props: PropsEditPrice) => {
       setValue('price.comments', data.price.comments);
       setValue('price.currency_id', data.price.currency_id);
       setValue('price.career_id', data.price.career_id);
+      setCashType(data.price.currency);
     }
   };
 
@@ -185,7 +186,7 @@ export const FormDataEditPrice = (props: PropsEditPrice) => {
     let requestData: FormPaymentType = {
       career_id: resultForm.price.career_id,
       comments: resultForm.price.comments,
-      currency_id: resultForm.price.currency_id,
+      currency_id: cashType.id,
       payment_methods: [],
       name: resultForm.price.name,
       suppliers: [],
@@ -347,6 +348,21 @@ export const FormDataEditPrice = (props: PropsEditPrice) => {
     return <span className="text-red-500 text-[12px]">Campo Requerido</span>;
   };
 
+  const checkHandler = (id:string) => {
+    if(id.toString() !== "4"){
+      setCheckPaypal(false);      
+    }
+  }
+
+  const setChangeCheckPaypal = (check:boolean) => {
+    setCheckPaypal(!checkPaypal);
+    if(check === true && cashType.id === 4){
+      setCheckPaypal(true);
+    }else{
+      setCheckPaypal(false);
+    }
+  }
+
   return (
     <div className="w-full">
       {loading ? (
@@ -387,7 +403,11 @@ export const FormDataEditPrice = (props: PropsEditPrice) => {
                   {...register('price.currency_id', {
                     required: true,
                     onChange: (evt: DropdownChangeParams) => {
-                      if (evt.value.id) setCashType(evt.value);
+                      if (evt.value.id) 
+                      {
+                        setCashType(evt.value)
+                        checkHandler(evt.value.id);
+                      }
                     }
                   })}
                 />
@@ -743,15 +763,20 @@ export const FormDataEditPrice = (props: PropsEditPrice) => {
               </label>
               <label
                 className="mx-2"
-                onChange={() => setCheckPaypal(!checkPaypal)}
+                onChange={() => setChangeCheckPaypal(!checkPaypal)}
               >
                 <input
                   type="checkbox"
                   value={'2'}
-                  checked={checkPaypal}
+                  { ...checkPaypal === true ? 
                   {...register('price.suppliers', {
                     required: true
                   })}
+                  :{...register('price.suppliers', {
+                    required: false
+                  })}}
+                  checked={checkPaypal}
+                  onChange={() => setChangeCheckPaypal(!checkPaypal)}
                 />{' '}
                 Paypal
               </label>
