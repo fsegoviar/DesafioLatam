@@ -35,6 +35,7 @@ export const FormDataProgram = ({
   const [checkPrepaid, setCheckPrepaid] = useState(true);
   const [checkISA, setCheckISA] = useState(true);
   const [valueQuotes, setValueQuotes] = useState(0);
+  const [checkPaypal, setCheckPaypal] = useState(false);
   const {
     handleSubmit,
     register,
@@ -212,6 +213,21 @@ export const FormDataProgram = ({
     return 0;
   };
 
+  const checkHandler = (id:string) => {
+    if(id.toString() !== "4"){
+      setCheckPaypal(false);      
+    }
+  }
+
+  const setChangeCheckPaypal = (check:boolean) => {
+    setCheckPaypal(!checkPaypal);
+    if(check === true && cashType.id === 4){
+      setCheckPaypal(true);
+    }else{
+      setCheckPaypal(false);
+    }
+  }
+
   return (
     <div className="w-full">
       <form onSubmit={handleSubmit(onSubmit)} className="relative">
@@ -243,8 +259,12 @@ export const FormDataProgram = ({
               className="w-full dropdown-form md:w-14rem"
               {...register('currency_id', {
                 required: true,
-                onChange: (evt: DropdownChangeParams) => {
-                  if (evt.value.id) setCashType(evt.value);
+                onChange: (evt: DropdownChangeParams) => {                  
+                  if (evt.value.id)
+                  {
+                     setCashType(evt.value)
+                     checkHandler(evt.value.id);
+                  };
                 }
               })}
             />
@@ -582,11 +602,14 @@ export const FormDataProgram = ({
           </label>
           <label className="mx-2">
             <input
-              type="checkbox"
+              type="checkbox"  
+              title='Solo se puede seleccionar este método de pago cuando el tipo de moneda es $USD'
               value={'2'}
               {...register('suppliers', {
                 required: true
               })}
+              checked={checkPaypal}
+              onChange={() => setChangeCheckPaypal(!checkPaypal)}
             />{' '}
             Paypal
           </label>

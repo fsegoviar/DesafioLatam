@@ -259,8 +259,18 @@ export const FormBilling = (props: PropsFormUser) => {
             <div className="col-span-2 flex flex-col">
               <label>Teléfono Empresa*</label>
               <input
-                type="number"
+                type="text"
                 disabled={isBilling}
+                onKeyDown={(input: any) => {
+                  const esNumero =
+                    (input.keyCode >= 48 && input.keyCode <= 57) || // números de teclado normal
+                    (input.keyCode >= 96 && input.keyCode <= 105) ||
+                    input.keyCode === 8; // números del teclado numérico
+
+                  if (!esNumero) {
+                    input.preventDefault(); // detiene la propagación del evento
+                  }
+                }}
                 {...register('phone', {
                   required: !isBilling ?? true,
                   minLength: !isBilling ? 5 : 0,
