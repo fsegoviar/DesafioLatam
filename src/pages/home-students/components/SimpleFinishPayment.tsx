@@ -212,7 +212,7 @@ export const SimpleFinishPayment = ({
                     </div>
                   </>
                 );
-              case 'Otro medio':
+              case 'Otro':
                 return (
                   <>
                     <div className="relative bg-white rounded-xl m-4 w-[200px] h-[100px]">
