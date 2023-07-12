@@ -144,26 +144,41 @@ export const FormAval = (props: PropsFormUser) => {
     return <span className="text-red-500 text-sm">Campo requerido</span>;
   };
 
-  const verifySizeFiles = (files: any, type: string) => {
-    const MAX_SIZE = 20_000_000; // 20MB
-    let countSize = 0;
+  const verifySizeFiles = (event: any, type: string) => {
+    // const MAX_SIZE = 20_000_000; // 20MB
+    // let countSize = 0;
 
-    for (const file of files.target.files) {
-      countSize += file.size;
-    }
-    if (countSize > MAX_SIZE) {
-      if (type === 'RENT') {
-        setErrorSizeFilesRent(true);
-      } else {
-        setErrorSizeFiles(true);
+    // for (const file of files.target.files) {
+    //   countSize += file.size;
+    // }
+    // if (countSize > MAX_SIZE) {
+    //   if (type === 'RENT') {
+    //     setErrorSizeFilesRent(true);
+    //   } else {
+    //     setErrorSizeFiles(true);
+    //   }
+    // } else {
+    //   if (type === 'RENT') {
+    //     setErrorSizeFilesRent(false);
+    //   } else {
+    //     setErrorSizeFiles(false);
+    //   }
+    // }
+    const files = event.target.files;
+    const maxSize = 20 * 1024 * 1024; // 20 MB
+
+    // Verificar el tamaño de cada archivo seleccionado
+    if(files !== null){
+      for (let i = 0; i < files.length; i++) {
+        if (files[i].size > maxSize) {
+          setErrorSizeFilesRent(true);
+          event.currentTarget.value = ''; // Deseleccionar archivos
+          return; // Salir de la función si se encuentra un archivo con tamaño excedido
+        }
       }
-    } else {
-      if (type === 'RENT') {
-        setErrorSizeFilesRent(false);
-      } else {
-        setErrorSizeFiles(false);
-      }
     }
+  
+    setErrorSizeFilesRent(false);    
   };
 
   const [selectedIdentityType, setSelectedIdentityType] = useState('');

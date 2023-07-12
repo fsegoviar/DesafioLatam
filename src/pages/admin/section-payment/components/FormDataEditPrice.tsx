@@ -25,7 +25,7 @@ type PropsEditPrice = {
 export const FormDataEditPrice = (props: PropsEditPrice) => {
   const { currencies } = GetCurrencies();
   const { careers } = GetCareers();
-  const [cashType, setCashType] = useState<Currency>(null!);
+  const [cashType, setCashType] = useState<Currency>({id: 0, description:'', code:''});
   const [selectedCareers, setSelectedCareers] = useState<Career>(null!);
   const [checkTransbank, setCheckTransbank] = useState(false);
   const [checkPaypal, setCheckPaypal] = useState(false);
@@ -352,14 +352,26 @@ export const FormDataEditPrice = (props: PropsEditPrice) => {
     if(id.toString() !== "4"){
       setCheckPaypal(false);      
     }
+    if(id.toString() !== "1"){
+      setCheckFlow(false);      
+    }
   }
 
   const setChangeCheckPaypal = (check:boolean) => {
     setCheckPaypal(!checkPaypal);
-    if(check === true && cashType.id === 4){
+    if((check === true && cashType.id === 4) || (check === true && cashType.id === 5)){
       setCheckPaypal(true);
     }else{
       setCheckPaypal(false);
+    }
+  }
+
+  const setChangeCheckFlow = (check:boolean) => {
+    setCheckFlow(!checkFlow);
+    if(check === true && cashType.id === 1){
+      setCheckFlow(true);
+    }else{
+      setCheckFlow(false);
     }
   }
 
@@ -761,6 +773,7 @@ export const FormDataEditPrice = (props: PropsEditPrice) => {
                 />
                 Transbank
               </label>
+              <div style={{ display: cashType.id === 4 || cashType.id === 5 ? 'inline' : 'none' }}>
               <label
                 className="mx-2"
                 onChange={() => setChangeCheckPaypal(!checkPaypal)}
@@ -780,17 +793,25 @@ export const FormDataEditPrice = (props: PropsEditPrice) => {
                 />{' '}
                 Paypal
               </label>
-              <label className="mx-2" onChange={() => setCheckFlow(!checkFlow)}>
+              </div>
+              <div style={{ display: cashType.id === 1 ? 'inline' : 'none' }}>
+              <label className="mx-2" onChange={() => setChangeCheckFlow(!checkFlow)}>
                 <input
                   type="checkbox"
-                  value={'1'}
-                  checked={checkFlow}
+                  value={'1'}                  
+                  { ...checkFlow === true ? 
                   {...register('price.suppliers', {
                     required: true
                   })}
+                  :{...register('price.suppliers', {
+                    required: false
+                  })}}
+                  checked={checkFlow}
+                  onChange={() => setChangeCheckFlow(!checkFlow)}
                 />{' '}
                 Flow
               </label>
+              </div>
               <label
                 className="mx-2"
                 onChange={() => setCheckOtherMethods(!checkOtherMethods)}

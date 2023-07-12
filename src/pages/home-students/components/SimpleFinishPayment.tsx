@@ -110,10 +110,8 @@ export const SimpleFinishPayment = ({
 
   const handleOtherMethodPayment = () => {
     axios
-      .post(
-        `${
-          process.env.REACT_APP_API_BACKEND
-        } /registers/${1}/notification-payment`,
+      .get(
+        `${process.env.REACT_APP_API_BACKEND}/registers/${dataUser.id}/notification-payment`,
         {
           headers: {
             'Access-Control-Allow-Origin': '*'
@@ -122,6 +120,8 @@ export const SimpleFinishPayment = ({
       )
       .then((response: any) => {
         console.log('Response Flow =>', response.data);
+        window.location.replace('/pago_aprobado');
+        // navigate('/pago_aprobado');
       })
       .catch((error: AxiosError) => console.log('Error Flow =>', error));
   };

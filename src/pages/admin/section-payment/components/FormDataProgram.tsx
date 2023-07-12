@@ -29,13 +29,14 @@ export const FormDataProgram = ({
   const { currencies } = GetCurrencies();
   const [selectedCareers, setSelectedCareers] = useState<Career>(null!);
   const { careers } = GetCareers();
-  const [cashType, setCashType] = useState<Currency>(null!);
+  const [cashType, setCashType] = useState<Currency>({id: 0, description:'', code:''});
   //Estados para metodos de pago
   const [checkPaymentQuotes, setcheckPaymentQuotes] = useState(true);
   const [checkPrepaid, setCheckPrepaid] = useState(true);
   const [checkISA, setCheckISA] = useState(true);
   const [valueQuotes, setValueQuotes] = useState(0);
   const [checkPaypal, setCheckPaypal] = useState(false);
+  const [checkFlow, setCheckFlow] = useState(false);
   const {
     handleSubmit,
     register,
@@ -217,14 +218,26 @@ export const FormDataProgram = ({
     if(id.toString() !== "4"){
       setCheckPaypal(false);      
     }
+    if(id.toString() !== "1"){
+      setCheckFlow(false);      
+    }
   }
 
   const setChangeCheckPaypal = (check:boolean) => {
     setCheckPaypal(!checkPaypal);
-    if(check === true && cashType.id === 4){
+    if((check === true && cashType.id === 4) || (check === true && cashType.id === 5)){
       setCheckPaypal(true);
     }else{
       setCheckPaypal(false);
+    }
+  }
+
+  const setChangeCheckFlow = (check:boolean) => {
+    setCheckFlow(!checkFlow);
+    if(check === true && cashType.id === 1){
+      setCheckFlow(true);
+    }else{
+      setCheckFlow(false);
     }
   }
 
@@ -600,6 +613,7 @@ export const FormDataProgram = ({
             />
             Transbank
           </label>
+          <div style={{ display: cashType.id === 4 || cashType.id === 5 ? 'inline' : 'none' }}>
           <label className="mx-2">
             <input
               type="checkbox"  
@@ -613,14 +627,19 @@ export const FormDataProgram = ({
             />{' '}
             Paypal
           </label>
+          </div> 
+          <div style={{ display: cashType.id === 1 ? 'inline' : 'none' }}>
           <label className="mx-2">
             <input
               type="checkbox"
               value={'1'}
               {...register('suppliers', { required: true })}
+              checked={checkFlow}
+              onChange={() => setChangeCheckFlow(!checkFlow)}
             />{' '}
             Flow
           </label>
+          </div>
           <label className="mx-2">
             <input
               type="checkbox"
