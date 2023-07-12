@@ -28,7 +28,7 @@ export const FormAval = (props: PropsFormUser) => {
   const [inputRut, setInputRut] = useState('');
   const [isBilling, setIsBilling] = useState(true);
   const [isEnableHistorical, setIsEnableHistorical] = useState(true);
-  const [errorSizeFiles, setErrorSizeFiles] = useState(false);
+  const errorSizeFiles = useState(false);
   const [errorSizeFilesRent, setErrorSizeFilesRent] = useState(false);
   const {
     register,

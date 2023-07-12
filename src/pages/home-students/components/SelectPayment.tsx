@@ -29,6 +29,8 @@ export const SelectPayment = (props: PropsFormUser) => {
   const [totalToPay, setTotalToPay] = useState(0);
   const [totalMonth, setTotalMonth] = useState(0);
 
+	console.log(totalValue)
+
   const fetchData = async () => {
     await axios
       .get(
