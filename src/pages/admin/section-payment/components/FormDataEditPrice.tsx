@@ -231,9 +231,23 @@ export const FormDataEditPrice = (props: PropsEditPrice) => {
       });
 
     requestData.payment_methods = clearArr;
-    suppliers = resultForm.price.suppliers.length === 1 ? [{ supplier_id: parseInt(resultForm.price.suppliers.toString()) }] :resultForm.price.suppliers.map((v: any) => {
-      return { supplier_id: Number(v) };
-    });
+    // suppliers = resultForm.price.suppliers.length === 1 ? [{ supplier_id: parseInt(resultForm.price.suppliers.toString()) }] :resultForm.price.suppliers.map((v: any) => {
+    //   return { supplier_id: Number(v) };
+    // });
+
+    if(checkFlow){
+      suppliers.push({ supplier_id: 1});
+    }
+    if(checkPaypal){
+      suppliers.push({ supplier_id: 2});
+    }    
+    if(checkTransbank){
+      suppliers.push({ supplier_id: 3});
+    }
+    if(checkOtherMethods){
+      suppliers.push({ supplier_id: 4});
+    }
+    console.log(suppliers);
 
     requestData.suppliers = suppliers;
 
@@ -363,15 +377,17 @@ export const FormDataEditPrice = (props: PropsEditPrice) => {
       setCheckPaypal(true);
     }else{
       setCheckPaypal(false);
+      setCheckFlow(false);
     }
   }
 
-  const setChangeCheckFlow = (check:boolean) => {
+  const setChangeCheckFlow = (check:boolean) => {    
     setCheckFlow(!checkFlow);
     if(check === true && cashType.id === 1){
       setCheckFlow(true);
     }else{
       setCheckFlow(false);
+      setCheckPaypal(false);
     }
   }
 
@@ -799,13 +815,9 @@ export const FormDataEditPrice = (props: PropsEditPrice) => {
                 <input
                   type="checkbox"
                   value={'1'}                  
-                  { ...checkFlow === true ? 
                   {...register('price.suppliers', {
                     required: true
                   })}
-                  :{...register('price.suppliers', {
-                    required: false
-                  })}}
                   checked={checkFlow}
                   onChange={() => setChangeCheckFlow(!checkFlow)}
                 />{' '}

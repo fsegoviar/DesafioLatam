@@ -37,6 +37,8 @@ export const FormDataProgram = ({
   const [valueQuotes, setValueQuotes] = useState(0);
   const [checkPaypal, setCheckPaypal] = useState(false);
   const [checkFlow, setCheckFlow] = useState(false);
+  const [checkTransbank, setCheckTransbank] = useState(false);
+  const [checkOtherMethods, setCheckOtherMethods] = useState(false);
   const {
     handleSubmit,
     register,
@@ -92,9 +94,23 @@ export const FormDataProgram = ({
 
     data.payment_methods = clearArr;
 
-    suppliers = getValues('suppliers').map((v: any) => {
-      return { supplier_id: Number(v) };
-    });
+    // suppliers = getValues('suppliers').map((v: any) => {
+    //   return { supplier_id: Number(v) };
+    // });
+
+    if(checkFlow){
+      suppliers.push({ supplier_id: 1});
+    }
+    if(checkPaypal){
+      suppliers.push({ supplier_id: 2});
+    }    
+    if(checkTransbank){
+      suppliers.push({ supplier_id: 3});
+    }
+    if(checkOtherMethods){
+      suppliers.push({ supplier_id: 4});
+    }
+    console.log(suppliers);
 
     data.suppliers = suppliers;
 
@@ -603,18 +619,19 @@ export const FormDataProgram = ({
         {/* Metodos de pago */}
         <p className="py-3 font-bold"> Métodos de Pago</p>
         <div>
-          <label className="mx-2">
+          <label className="mx-2" onChange={() => setCheckTransbank(!checkTransbank)}>
             <input
               type="checkbox"
               value={'3'}
               {...register('suppliers', {
                 required: true
               })}
+              checked={checkTransbank}
             />
             Transbank
           </label>
           <div style={{ display: cashType.id === 4 || cashType.id === 5 ? 'inline' : 'none' }}>
-          <label className="mx-2">
+          <label className="mx-2" onChange={() => setChangeCheckPaypal(!checkPaypal)}>
             <input
               type="checkbox"  
               title='Solo se puede seleccionar este método de pago cuando el tipo de moneda es $USD'
@@ -629,7 +646,7 @@ export const FormDataProgram = ({
           </label>
           </div> 
           <div style={{ display: cashType.id === 1 ? 'inline' : 'none' }}>
-          <label className="mx-2">
+          <label className="mx-2" onChange={() => setChangeCheckFlow(!checkFlow)}>
             <input
               type="checkbox"
               value={'1'}
@@ -640,10 +657,11 @@ export const FormDataProgram = ({
             Flow
           </label>
           </div>
-          <label className="mx-2">
+          <label className="mx-2" onChange={() => setCheckOtherMethods(!checkOtherMethods)}>
             <input
               type="checkbox"
               value={'4'}
+              checked={checkOtherMethods}
               {...register('suppliers', { required: true })}
             />{' '}
             Otro medio de pago
