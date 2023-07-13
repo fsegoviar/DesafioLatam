@@ -28,7 +28,7 @@ export const FormAval = (props: PropsFormUser) => {
   const [inputRut, setInputRut] = useState('');
   const [isBilling, setIsBilling] = useState(true);
   const [isEnableHistorical, setIsEnableHistorical] = useState(true);
-  const errorSizeFiles = useState(false);
+  const [errorSizeFiles, setErrorSizeFiles]= useState(false);
   const [errorSizeFilesRent, setErrorSizeFilesRent] = useState(false);
   const {
     register,
@@ -58,6 +58,9 @@ export const FormAval = (props: PropsFormUser) => {
 
   const onSubmit: SubmitHandler<AvalType> = (data) => {
     console.log('DATA =>', data);
+    console.log(errorSizeFiles);
+    console.log(errorSizeFilesRent);
+    
     if (isBilling) {
       axios
         .post(
@@ -169,16 +172,30 @@ export const FormAval = (props: PropsFormUser) => {
 
     // Verificar el tamaño de cada archivo seleccionado
     if(files !== null){
-      for (let i = 0; i < files.length; i++) {
-        if (files[i].size > maxSize) {
-          setErrorSizeFilesRent(true);
-          event.currentTarget.value = ''; // Deseleccionar archivos
-          return; // Salir de la función si se encuentra un archivo con tamaño excedido
+      if (type === 'RENT') {
+        for (let i = 0; i < files.length; i++) {
+          if (files[i].size > maxSize) {
+            setErrorSizeFilesRent(true);
+            event.currentTarget.value = ''; // Deseleccionar archivos
+            return; // Salir de la función si se encuentra un archivo con tamaño excedido
+          }
+        }
+      }else{
+          for (let i = 0; i < files.length; i++) {
+            if (files[i].size > maxSize) {
+              setErrorSizeFiles(true);
+              event.currentTarget.value = ''; // Deseleccionar archivos
+              return; // Salir de la función si se encuentra un archivo con tamaño excedido
+            }
         }
       }
     }
-  
-    setErrorSizeFilesRent(false);    
+
+    if (type === 'RENT') {
+      setErrorSizeFilesRent(false);
+    } else {
+      setErrorSizeFiles(false);
+    }
   };
 
   const [selectedIdentityType, setSelectedIdentityType] = useState('');
@@ -188,6 +205,15 @@ export const FormAval = (props: PropsFormUser) => {
     setSelectedIdentityType(selectedValue);
     setInputRut('');
   };
+
+  const changeIsEnableHistorical = (value:any)=>{    
+    if(value === false){
+      setErrorSizeFiles(false);
+      setIsEnableHistorical(false);
+    }else{
+      setIsEnableHistorical(true);
+    }
+  }
 
   return (
     <>
@@ -399,7 +425,7 @@ export const FormAval = (props: PropsFormUser) => {
                   name="tipo"
                   id="si"
                   disabled={isBilling}
-                  onChange={() => setIsEnableHistorical(false)}
+                  onChange={() => changeIsEnableHistorical(false)}
                 />
                 <label htmlFor="si" className="ml-1">
                   Sí
@@ -410,8 +436,8 @@ export const FormAval = (props: PropsFormUser) => {
                   type="radio"
                   name="tipo"
                   id="no"
-                  disabled={isBilling}
-                  onChange={() => setIsEnableHistorical(true)}
+                  disabled={isBilling}  
+                  onChange={() => changeIsEnableHistorical(true)}
                 />
                 <label htmlFor="no" className="ml-1">
                   No
