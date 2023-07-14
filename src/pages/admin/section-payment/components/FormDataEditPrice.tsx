@@ -137,7 +137,7 @@ export const FormDataEditPrice = (props: PropsEditPrice) => {
 
         if (
           payment_method.description === 'Anticipado' &&
-          payment_method.advance_discount
+          payment_method.reference_value
         ) {
           setCheckPrepaid(true);
           setValue(
@@ -207,7 +207,7 @@ export const FormDataEditPrice = (props: PropsEditPrice) => {
         isa_percent: null,
         isa_value: null
       });
-    if (resultForm.payment_methods[1].advance_discount && checkPrepaid === true)
+    if (resultForm.payment_methods[1].reference_value && checkPrepaid === true)
       clearArr.push({
         payment_method_id: 2,
         quotes: null,
@@ -309,6 +309,14 @@ export const FormDataEditPrice = (props: PropsEditPrice) => {
             Number(watch('payment_methods.1.reference_value'))
       );
     }
+
+    if (
+      watch('payment_methods.1.reference_value') !== 0 ||
+      watch('payment_methods.1.reference_value') !== undefined
+    ) {
+      return Number(watch('payment_methods.1.reference_value'));
+    }
+
     return 0;
   };
 
@@ -323,6 +331,14 @@ export const FormDataEditPrice = (props: PropsEditPrice) => {
             Number(watch('payment_methods.2.isa_value'))
       );
     }
+
+    if (
+      watch('payment_methods.2.isa_percent') !== 0 ||
+      watch('payment_methods.2.isa_percent') !== undefined
+    ) {
+      return Number(watch('payment_methods.2.isa_value'));
+    }
+
     return 0;
   };
 

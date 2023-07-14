@@ -69,7 +69,7 @@ export const FormDataProgram = ({
         isa_percent: null,
         isa_value: null
       });
-    if (data.payment_methods[1].advance_discount && checkPrepaid === false)
+    if (data.payment_methods[1].reference_value && checkPrepaid === false)
       clearArr.push({
         payment_method_id: 2,
         quotes: null,
@@ -175,6 +175,14 @@ export const FormDataProgram = ({
             Number(watch('payment_methods.1.reference_value'))
       );
     }
+
+    if (
+      watch('payment_methods.1.reference_value') !== 0 ||
+      watch('payment_methods.1.reference_value') !== undefined
+    ) {
+      return Number(watch('payment_methods.1.reference_value'));
+    }
+
     return 0;
   };
 
