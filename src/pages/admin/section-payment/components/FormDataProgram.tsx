@@ -310,7 +310,18 @@ export const FormDataProgram = ({
           <div className={'flex flex-col'}>
             <label>Matrícula</label>
             <input
-              type="number"
+              type="text"
+              onKeyDown={(input: any) => {
+                const esNumero =
+                  (input.keyCode >= 48 && input.keyCode <= 57) || // números de teclado normal
+                  (input.keyCode >= 96 && input.keyCode <= 105) ||
+                  input.keyCode === 75 ||
+                  input.keyCode === 8; // números del teclado numérico
+  
+                if (!esNumero) {
+                  input.preventDefault(); // detiene la propagación del evento
+                }
+              }}
               {...register('tuition', {
                 required: true,
                 valueAsNumber: true,
@@ -367,6 +378,17 @@ export const FormDataProgram = ({
             <input
               type="text"
               disabled={checkPaymentQuotes}
+              onKeyDown={(input: any) => {
+                const esNumero =
+                  (input.keyCode >= 48 && input.keyCode <= 57) || // números de teclado normal
+                  (input.keyCode >= 96 && input.keyCode <= 105) ||
+                  input.keyCode === 75 ||
+                  input.keyCode === 8; // números del teclado numérico
+  
+                if (!esNumero) {
+                  input.preventDefault(); // detiene la propagación del evento
+                }
+              }}
               {...register(`payment_methods.0.reference_value`, {
                 required: !checkPaymentQuotes ?? true,
                 valueAsNumber: true
@@ -389,8 +411,19 @@ export const FormDataProgram = ({
           <div className={'flex flex-col '}>
             <label>Número de cuotas</label>
             <input
-              type="number"
+              type="text"
               disabled={checkPaymentQuotes}
+              onKeyDown={(input: any) => {
+                const esNumero =
+                  (input.keyCode >= 48 && input.keyCode <= 57) || // números de teclado normal
+                  (input.keyCode >= 96 && input.keyCode <= 105) ||
+                  input.keyCode === 75 ||
+                  input.keyCode === 8; // números del teclado numérico
+  
+                if (!esNumero) {
+                  input.preventDefault(); // detiene la propagación del evento
+                }
+              }}
               {...register(`payment_methods.0.quotes`, {
                 required: !checkPaymentQuotes ?? true,
                 valueAsNumber: true,
@@ -424,8 +457,19 @@ export const FormDataProgram = ({
           <div className={'flex flex-col'}>
             <label>Descuento cuotas (%)</label>
             <input
-              type="number"
+              type="text"
               disabled={checkPaymentQuotes}
+              onKeyDown={(input: any) => {
+                const esNumero =
+                  (input.keyCode >= 48 && input.keyCode <= 57) || // números de teclado normal
+                  (input.keyCode >= 96 && input.keyCode <= 105) ||
+                  input.keyCode === 75 ||
+                  input.keyCode === 8; // números del teclado numérico
+  
+                if (!esNumero) {
+                  input.preventDefault(); // detiene la propagación del evento
+                }
+              }}
               {...register(`payment_methods.0.free_discount`, {
                 required: !checkPaymentQuotes ?? true,
                 valueAsNumber: true
@@ -482,6 +526,17 @@ export const FormDataProgram = ({
               <input
                 type="text"
                 disabled={checkPrepaid}
+                onKeyDown={(input: any) => {
+                  const esNumero =
+                    (input.keyCode >= 48 && input.keyCode <= 57) || // números de teclado normal
+                    (input.keyCode >= 96 && input.keyCode <= 105) ||
+                    input.keyCode === 75 ||
+                    input.keyCode === 8; // números del teclado numérico
+    
+                  if (!esNumero) {
+                    input.preventDefault(); // detiene la propagación del evento
+                  }
+                }}
                 {...register(`payment_methods.1.reference_value`, {
                   required: !checkPrepaid ?? true,
                   valueAsNumber: true
@@ -505,8 +560,19 @@ export const FormDataProgram = ({
             <div className={'flex flex-col '}>
               <label>Descuento anticipado (%)</label>
               <input
-                type="number"
+                type="text"
                 disabled={checkPrepaid}
+                onKeyDown={(input: any) => {
+                  const esNumero =
+                    (input.keyCode >= 48 && input.keyCode <= 57) || // números de teclado normal
+                    (input.keyCode >= 96 && input.keyCode <= 105) ||
+                    input.keyCode === 75 ||
+                    input.keyCode === 8; // números del teclado numérico
+    
+                  if (!esNumero) {
+                    input.preventDefault(); // detiene la propagación del evento
+                  }
+                }}
                 {...register(`payment_methods.1.advance_discount`, {
                   required: !checkPrepaid ?? true,
                   valueAsNumber: true
@@ -552,8 +618,19 @@ export const FormDataProgram = ({
           <div className={'flex flex-col '}>
             <label>Valor ISA</label>
             <input
-              type="number"
+              type="text"
               disabled={checkISA}
+              onKeyDown={(input: any) => {
+                const esNumero =
+                  (input.keyCode >= 48 && input.keyCode <= 57) || // números de teclado normal
+                  (input.keyCode >= 96 && input.keyCode <= 105) ||
+                  input.keyCode === 75 ||
+                  input.keyCode === 8; // números del teclado numérico
+  
+                if (!esNumero) {
+                  input.preventDefault(); // detiene la propagación del evento
+                }
+              }}
               {...register(`payment_methods.2.isa_value`, {
                 required: !checkISA ?? true,
                 valueAsNumber: true
@@ -576,8 +653,19 @@ export const FormDataProgram = ({
           <div className={'flex flex-col '}>
             <label>Descuento ISA (%)</label>
             <input
-              type="number"
+              type="text"
               disabled={checkISA}
+              onKeyDown={(input: any) => {
+                const esNumero =
+                  (input.keyCode >= 48 && input.keyCode <= 57) || // números de teclado normal
+                  (input.keyCode >= 96 && input.keyCode <= 105) ||
+                  input.keyCode === 75 ||
+                  input.keyCode === 8; // números del teclado numérico
+  
+                if (!esNumero) {
+                  input.preventDefault(); // detiene la propagación del evento
+                }
+              }}
               {...register(`payment_methods.2.isa_percent`, {
                 required: !checkISA ?? true,
                 valueAsNumber: true
