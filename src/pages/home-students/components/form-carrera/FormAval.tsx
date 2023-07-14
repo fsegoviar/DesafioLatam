@@ -122,7 +122,7 @@ export const FormAval = (props: PropsFormUser) => {
                   process.env.REACT_APP_API_BACKEND
                 }/registers/${localStorage.getItem('register_id')}/step`,
                 {
-                  step: 6
+                  step: 7
                 },
                 {
                   headers: {
