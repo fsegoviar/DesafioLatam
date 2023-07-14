@@ -117,7 +117,7 @@ export const FormDataEditPrice = (props: PropsEditPrice) => {
       for (const payment_method of data.payment_methods) {
         if (
           payment_method.description === 'Pago Cuota' &&
-          payment_method.quotes_value
+          payment_method.reference_value
         ) {
           setCheckPaymentQuotes(true);
           setValue(
@@ -196,7 +196,7 @@ export const FormDataEditPrice = (props: PropsEditPrice) => {
     let suppliers: SupplierId[] = [];
     const clearArr: PaymentMethod[] = [];
 
-    if (resultForm.payment_methods[0].quotes && checkPaymentQuotes === true)
+    if (resultForm.payment_methods[0].reference_value && checkPaymentQuotes === true)
       clearArr.push({
         payment_method_id: 1,
         quotes: resultForm.payment_methods[0].quotes,
@@ -295,6 +295,14 @@ export const FormDataEditPrice = (props: PropsEditPrice) => {
             Number(watch('payment_methods.0.reference_value'))
       );
     }
+
+    if (
+      watch('payment_methods.0.reference_value') !== 0 ||
+      watch('payment_methods.0.reference_value') !== undefined
+    ) {
+      return Number(watch('payment_methods.0.reference_value'));
+    }
+
     return 0;
   };
 
@@ -343,10 +351,31 @@ export const FormDataEditPrice = (props: PropsEditPrice) => {
   };
 
   const calculateValueQuotes = () => {
-    const value = Math.round(
-      Number(getValues(`payment_methods.0.reference_value`)) /
-        Number(getValues(`payment_methods.0.quotes`))
-    );
+    // const value = Math.round(
+    //   Number(getValues(`payment_methods.0.reference_value`)) /
+    //     Number(getValues(`payment_methods.0.quotes`))
+    // );
+    // setValueQuotes(value);
+    // setValue('payment_methods.0.quotes_value', value);
+
+    let value = 0;
+    if (
+      watch('payment_methods.0.reference_value') &&
+      watch('payment_methods.0.quotes')
+    ) {
+      value = Math.round(
+        Number(getValues(`payment_methods.0.reference_value`)) /
+          Number(getValues(`payment_methods.0.quotes`))
+      );
+    }
+
+    if (
+      watch('payment_methods.0.quotes') === 0 ||
+      watch('payment_methods.0.quotes') === undefined || isNaN(watch('payment_methods.0.quotes'))
+    ) {
+      value = Number(watch('payment_methods.0.reference_value'));
+    }
+
     setValueQuotes(value);
     setValue('payment_methods.0.quotes_value', value);
 
@@ -354,16 +383,24 @@ export const FormDataEditPrice = (props: PropsEditPrice) => {
   };
 
   const calculateValueQuotesWithDiscount = () => {
+    let valuesPerQuotes=0;
+    let valuePerQuotesWhitDiscount = 0;
     if (
       watch('payment_methods.0.reference_value') &&
       watch('payment_methods.0.free_discount')
     ) {
-      const valuesPerQuotes = Math.round(
+      valuesPerQuotes = Math.round(
         Number(watch('payment_methods.0.reference_value')) /
           Number(watch('payment_methods.0.quotes'))
       );
+      if (
+        watch('payment_methods.0.quotes') === 0 ||
+        watch('payment_methods.0.quotes') === undefined || isNaN(watch('payment_methods.0.quotes'))
+      ) {
+        valuesPerQuotes = Number(watch('payment_methods.0.reference_value'));
+      }
 
-      const valuePerQuotesWhitDiscount = Math.round(
+      valuePerQuotesWhitDiscount = Math.round(
         valuesPerQuotes -
           (Number(watch('payment_methods.0.free_discount')) / 100) *
             valuesPerQuotes
@@ -371,6 +408,24 @@ export const FormDataEditPrice = (props: PropsEditPrice) => {
 
       return valuePerQuotesWhitDiscount;
     }
+
+    if (
+      watch('payment_methods.0.free_discount') === 0 ||
+      watch('payment_methods.0.free_discount') === undefined || isNaN(watch('payment_methods.0.free_discount'))
+    ) {
+      console.log(watch('payment_methods.0.reference_value'));
+      console.log(watch('payment_methods.0.quotes'));
+      if(watch('payment_methods.0.quotes') === 0 && watch('payment_methods.0.free_discount') === 0){
+        valuePerQuotesWhitDiscount = Number(watch('payment_methods.0.reference_value'));
+        return valuePerQuotesWhitDiscount;
+      }
+      valuePerQuotesWhitDiscount = Math.round(
+        Number(watch('payment_methods.0.reference_value')) /
+          Number(watch('payment_methods.0.quotes'))
+      );
+      return valuePerQuotesWhitDiscount;
+    }
+    
     return 0;
   };
 
