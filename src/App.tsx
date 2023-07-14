@@ -23,8 +23,8 @@ function App() {
             </AuthLogin>
           }
         />
+        <Route path={'/formulario/envelope'} element={<FormularioResponsePage />} />
         <Route path={'/formulario/:typeForm'} element={<HomeStudentsPage />} />
-        <Route path={'/formulario'} element={<FormularioResponsePage />} />
         <Route path={'login'} element={<Login />} />
         <Route path={'tabla_precios'} element={<SectionPayment />} />
         <Route path={'pago_aprobado'} element={<FinishPaymentPage />} />
