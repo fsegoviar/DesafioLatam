@@ -1,14 +1,14 @@
 import { useEffect } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import axios, { AxiosError } from 'axios';
 import { ProgressSpinner } from 'primereact/progressspinner';
 
 export const FormularioResponsePage = () => {
-  const [params] = useSearchParams();
   const navigate = useNavigate();
 
   useEffect(() => {
 		getStatus();
+		// eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
 	const getStatus = async (): Promise<void> => {
