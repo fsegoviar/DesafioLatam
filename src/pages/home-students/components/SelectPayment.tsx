@@ -26,7 +26,6 @@ export const SelectPayment = (props: PropsFormUser) => {
   const [paymentMethodIdSelected, setPaymentMethodIdSelected] = useState(0);
   const [totalPayment, setTotalPayment] = useState(0);
   const [quotesSelected, setQuotesSelected] = useState(0);
-  const [totalToPay, setTotalToPay] = useState(0);
   const [totalMonth, setTotalMonth] = useState(0);
 
 	console.log(totalValue)
@@ -40,14 +39,6 @@ export const SelectPayment = (props: PropsFormUser) => {
         console.log('Response PAyment =>', response.data);
 
         setListPaymentMethods(response.data);
-        let sum:number = parseFloat(formatPrice(response.data[0].pivot.quotes_value 
-          - (response.data[0].pivot.quotes_value * response.data[0].pivot.free_discount)/100))
-          * response.data[0].pivot.quotes + parseFloat(formatPrice(props.tuition));          
-        setTotalToPay(sum);
-        let totalMes:number = parseFloat(formatPrice(response.data[0].pivot.quotes_value 
-          - (response.data[0].pivot.quotes_value * response.data[0].pivot.free_discount)/100))
-          * response.data[0].pivot.quotes;
-        setTotalMonth(totalMes);          
         
       });
   };
@@ -115,7 +106,13 @@ export const SelectPayment = (props: PropsFormUser) => {
         // );
         setTotalValue(
           element.pivot.reference_value -
-            (element.pivot.free_discount / 100) * element.pivot.reference_value
+            ((element.pivot.free_discount / 100) *
+              element.pivot.reference_value) + props.tuition
+        );
+
+        setTotalMonth(element.pivot.reference_value -
+          ((element.pivot.free_discount / 100) *
+            element.pivot.reference_value)
         );
         setNQuotes(element.pivot.quotes);
         setPaymentMethodIdSelected(Number(key));
@@ -220,12 +217,11 @@ export const SelectPayment = (props: PropsFormUser) => {
                   </p>
                   <p className="font-bold text-center text-sky-500 text-sm pt-2">
                     Total a pagar: $
-                    {/* {formatPrice(
+                    {formatPrice(
                       element.pivot.reference_value -
                         ((element.pivot.free_discount / 100) *
                           element.pivot.reference_value) + props.tuition
-                    )}{' '} */}
-                    {totalToPay.toFixed(3).replace(/\.(\d+)/, (match, decimales) => `.${decimales.padEnd(3, '0')}`)}{' '}
+                    )}{' '}
                     CLP
                   </p>
                 </div>
@@ -344,7 +340,7 @@ export const SelectPayment = (props: PropsFormUser) => {
                   Matrícula ${formatPrice(props.tuition)}
                 </p>
                 <p className="py-2 px-7 rounded-lg m-1">{`${count} cuotas de $ ${
-                  (totalMonth / count).toFixed(3)
+                  formatPrice(totalMonth / count)
                 }`}</p>
 
                 <p className="py-2 px-7 rounded-lg m-1 font-bold text-2xl">
@@ -355,7 +351,7 @@ export const SelectPayment = (props: PropsFormUser) => {
                 </label>
               </div>
               <p className="font-bold mt-5 text-3xl">
-                Total: ${totalToPay.toFixed(3).replace(/\.(\d+)/, (match, decimales) => `.${decimales.padEnd(3, '0')}`)}
+                Total: ${formatPrice(totalValue)}
               </p>
             </div>
           )}
