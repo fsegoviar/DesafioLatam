@@ -71,9 +71,10 @@ export const SelectPayment = (props: PropsFormUser) => {
               process.env.REACT_APP_API_BACKEND
             }/registers/${localStorage.getItem('register_id')}/step`,
             {
-              step: cardSelected2
-                ? props.currentStep + 2
-                : props.currentStep + 1
+              // step: cardSelected2
+              //   ? props.currentStep + 2
+              //   : props.currentStep + 1
+							step: props.currentStep + 1
             },
             {
               headers: {
