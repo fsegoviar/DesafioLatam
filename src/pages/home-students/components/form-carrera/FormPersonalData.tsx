@@ -460,20 +460,15 @@ export const FormPersonalData = (props: PropsFormUser) => {
         <div className="col-span-2 flex flex-col">
           <label>Fecha de nacimiento*</label>
           <Calendar
-            // onChange={(e) => setDate(e.value)}
             className="style-calendar"
-            dateFormat="yy-mm-dd"
+            dateFormat="dd-mm-yy"
             locale="es"
-            placeholder="yyyy-mm-dd"
+            placeholder="dd-mm-yyyy"
             value={birthday}
             {...register('birthday', {
               required: true,
               onChange: (evt) => {
-                console.log('event => ', evt);
-                console.log(
-                  'Evento birthday: ' +
-                    String(format(new Date(evt.target.value), 'yyyy-MM-dd'))
-                );
+								setBirthday(evt.value)
                 if (evt.value) {
                   setValue(
                     'birthday',
@@ -492,7 +487,6 @@ export const FormPersonalData = (props: PropsFormUser) => {
                 );
                 const today = new Date();
                 if (isBefore(myBirthday, today)) {
-                  console.log('PASAMOS');
                   return true;
                 }
                 return false;
