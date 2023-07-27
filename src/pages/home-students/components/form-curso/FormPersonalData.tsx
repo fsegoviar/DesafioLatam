@@ -18,6 +18,7 @@ type PropsFormUser = {
 };
 
 export const FormPersonalData = (props: PropsFormUser) => {
+  const [selectedIdentityType, setSelectedIdentityType] = useState('');
   const { indentityTypes } = GetIdentityTypes();
   const [inputRut, setInputRut] = useState('');
   const user = useSelector((state: RootState) => state.user);
@@ -31,7 +32,7 @@ export const FormPersonalData = (props: PropsFormUser) => {
   } = useForm({
     defaultValues: {
       name: user.user?.name ?? '',
-      identity_type_id: 1,
+      identity_type_id: user.user?.identity_type?.id ?? '',
       lastname: user.user?.lastname ?? '',
       dni: user.user?.dni ?? '',
       phone: user.user?.phone ?? '',
@@ -41,11 +42,13 @@ export const FormPersonalData = (props: PropsFormUser) => {
 
   useEffect(() => {
     if (user.user?.dni) setInputRut(user.user?.dni);
+		const userIdentityTypeId = user.user?.identity_type?.id ?? '';
+    setSelectedIdentityType(userIdentityTypeId.toString());
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const onSubmit: SubmitHandler<any> = async (data) => {
-    console.log('data submit =>', data);
+		if (selectedIdentityType) data.identity_type_id = selectedIdentityType;
     await axios
       .post(
         `${process.env.REACT_APP_API_BACKEND}/register_form/personal_info`,
@@ -89,11 +92,8 @@ export const FormPersonalData = (props: PropsFormUser) => {
     return <span className="font-light text-red-500">{text}</span>;
   };
 
-  const [selectedIdentityType, setSelectedIdentityType] = useState('');
-
   const handleIdentityTypeChange = (event:any) => {
-    const selectedValue = event.target.value;
-    setSelectedIdentityType(selectedValue);
+    setSelectedIdentityType(event.target.value);
     setInputRut('');
   };
 

@@ -91,7 +91,7 @@ export const FormPersonalData = (props: PropsFormUser) => {
       country_id: user.user?.country_id ?? null,
       dni: user.user?.dni ?? '',
       email: user.user?.email ?? '',
-      identity_type_id: 1,
+      identity_type_id: user.user?.identity_type?.id ?? '',
       lastname: user.user?.lastname ?? '',
       phone: user.user?.phone ?? '',
       nationality: user.user?.nationality ?? null
@@ -149,6 +149,7 @@ export const FormPersonalData = (props: PropsFormUser) => {
     // data.user.nationality = nationalitySelected.description;
 
     if (countrySelected) data.country_id = countrySelected.id;
+    if (selectedIdentityType) data.identity_type_id = selectedIdentityType;
 
     await axios
       .post(
@@ -197,8 +198,7 @@ export const FormPersonalData = (props: PropsFormUser) => {
   };
 
   const handleIdentityTypeChange = (event:any) => {
-    const selectedValue = event.target.value;
-    setSelectedIdentityType(selectedValue);
+    setSelectedIdentityType(event.target.value.toString());
     setInputRut('');
   };
 
