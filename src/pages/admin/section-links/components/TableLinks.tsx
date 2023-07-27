@@ -21,6 +21,7 @@ export const TableLinks = () => {
   const [openDialogForm, setOpenDialogForm] = useState(false);
   const { registers, loading } = GetRegisters();
   const [idRegister, setIdRegister] = useState();
+  const [careerId, setCareerId] = useState();
   const { toast, showSuccess, showSuccessEdit, showSuccessDelete } =
     NotificationComponent();
   const [openEditLink, setOpenEditLink] = useState(false);
@@ -200,6 +201,7 @@ export const TableLinks = () => {
                 title="Editar"
                 className="p-button-rounded p-button-text p-button-warning"
                 onClick={() => {
+									setCareerId(rowData.career_id)
                   setIdRegister(rowData.id);
                   setOpenEditLink(true);
                 }}
@@ -420,6 +422,7 @@ export const TableLinks = () => {
       {openEditLink && (
         <DialogEditLink
           idRegister={idRegister}
+          careerId={careerId}
           open={openEditLink}
           close={() => setOpenEditLink(false)}
           actionToast={actionToast}

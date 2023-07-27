@@ -11,16 +11,20 @@ type DialogEditLinkTypes = {
   close: () => void;
   actionToast: (action: string) => void;
   editData: (data: any) => void;
+  careerId?: number;
 };
 
 export const DialogEditLink = (props: DialogEditLinkTypes) => {
   const modalRef = useRef<HTMLDivElement>(null!);
   const containerRef = useRef<HTMLDivElement>(null!);
   const [inputEmail, setInputEmail] = useState('');
+  const [selectedPrice, setSelectedPrice] = useState(0);
   const [selectedCareers, setSelectedCareers] = useState<Career>(null!);
   const [selectForm, setSelectForm] = useState<any>(null!);
   const [nameUser, setNameUser] = useState<string | number>(null!);
-  const { handleSubmit } = useForm<RegisterLinkType>();
+  const { handleSubmit, setValue } = useForm<RegisterLinkType>();
+  const [disabledForm, setDisabledForm] = useState(true);
+	const [checkRadioBtn, setCheckRadioBtn] = useState(false);
   const [loading, setLoading] = useState(false);
   const { careers } = GetCareers();
   const forms = [
@@ -29,6 +33,13 @@ export const DialogEditLink = (props: DialogEditLinkTypes) => {
     { name: 'Formulario de reintegro', id: 3 },
     { name: 'Formulario de talleres', id: 4 }
   ];
+
+  useEffect(() => {
+    if (careers) {
+			const selectedCareer = careers.find(element => element.id === props.careerId)
+			setSelectedCareers(selectedCareer as Career)
+    }
+  }, [careers])
 
   useEffect(() => {
     console.log('Edit => ', props.idRegister);
@@ -77,14 +88,11 @@ export const DialogEditLink = (props: DialogEditLinkTypes) => {
           setNameUser(
             `${response.data[0].user.name} ${response.data[0].user.lastname}`
           );
-          // TODO: Falta obtener las carreras según el id que se entrega o bien añadirla al objeto response
-          // await axios
-          //   .get(
-          //     `${process.env.REACT_APP_API_BACKEND}/careers/${response.data[0].career_id}/generations`
-          //   )
-          //   .then((response: any) =>
-          //     console.log('response careers:>> ', response.data)
-          //   );
+			    setValue('career_id', response.data[0].career_id);
+			    setValue('price_id', response.data[0].price_id);
+			    setValue('form_type_id', response.data[0].form_type_id);
+					setSelectedPrice(response.data[0].price_id)
+
         })
         .catch((error: AxiosError) => console.log('Error =>', error))
         .finally(() => setLoading(false));
@@ -94,12 +102,6 @@ export const DialogEditLink = (props: DialogEditLinkTypes) => {
     fetchRegister();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [props.open]);
-
-  // const initData = () => {
-  //   setValue('email', props.data.user.email);
-  //   setInputEmail(props.data.user.email);
-  //   setNameUser(`${props.data.user.name} ${props.data.user.lastname}`);
-  // };
 
   const closeModal = (): void => {
     containerRef.current.classList.add('close');
@@ -118,7 +120,7 @@ export const DialogEditLink = (props: DialogEditLinkTypes) => {
   const handleChangeCareer = async (value: Career) => {
     console.log('Value change career =>', value);
     setSelectedCareers(value);
-    // setValue('career_id', value.id);
+    setValue('career_id', value.id);
 
     const response = await axios.get(
       `${process.env.REACT_APP_API_BACKEND}/careers/${value.id}/generations`,
@@ -133,8 +135,6 @@ export const DialogEditLink = (props: DialogEditLinkTypes) => {
   };
 
   const searchUserByEmail = async () => {
-    // const email = inputEmail;
-    // setValue('email', email);
 
     const response = await axios.get(
       `${process.env.REACT_APP_API_BACKEND}/hubspot/client/${inputEmail}/email`,
@@ -150,27 +150,26 @@ export const DialogEditLink = (props: DialogEditLinkTypes) => {
       `${response.data.results[0].properties.firstname} ${response.data.results[0].properties.lastname}`
     );
 
-    // setValue('name', response.data.results[0].properties.firstname);
-    // setValue('lastname', response.data.results[0].properties.lastname);
-    // setValue('lastname2', '');
-
     console.log('Response Hubspot by Email =>', response);
   };
 
   const handleChangeFormType = (value: { id: number; name: string }) => {
     setSelectForm(value);
-    // setValue('form_type_id', value.id);
+    setValue('form_type_id', value.id);
   };
 
   const handleChangeRadio = (row: CareerPrice) => {
     console.log('Radio Selected => ', row);
-    // setValue('price_id', row.id);
+    setValue('price_id', row.id);
+		setSelectedPrice(row.id)
+		setCheckRadioBtn(true)
+		if (checkRadioBtn) setDisabledForm(false)
   };
 
   const onSubmit: SubmitHandler<RegisterLinkType> = async (data) => {
     console.log('OnSubmit Form Link => ', data);
     await axios
-      .post(`${process.env.REACT_APP_API_BACKEND}/registers`, data, {
+      .post(`${process.env.REACT_APP_API_BACKEND}/registers/${props.idRegister}`, data, {
         headers: {
           Accept: 'application/json'
         }
@@ -289,6 +288,7 @@ export const DialogEditLink = (props: DialogEditLinkTypes) => {
                               <input
                                 type="radio"
                                 name="select-row"
+                                checked={price.id === selectedPrice}
                                 onChange={() => handleChangeRadio(price)}
                               />
                             </td>
@@ -315,8 +315,15 @@ export const DialogEditLink = (props: DialogEditLinkTypes) => {
               </button>
               <button
                 type="submit"
-                className="m-1 px-5 rounded-lg text-white bg-green-500"
-                style={{ border: '3px solid rgb(34 197 94)' }}
+								className={`m-1 px-5 rounded-lg text-white ${
+									disabledForm ? 'bg-gray-500' : ' bg-green-500'
+								}`}
+								style={{
+									border: disabledForm
+										? '3px solid gray'
+										: '3px solid rgb(34 197 94)'
+								}}
+								disabled={disabledForm}
               >
                 Editar
               </button>
