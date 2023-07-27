@@ -146,7 +146,7 @@ export const FormCurso = () => {
           } else {
             return (
               <div className="text-center font-bold w-100 py-40">
-                <p>Hubo un error al cargar los datos</p>
+                 <p>El link de acceso ha expirado o ha sido cancelado, por favor contactate a <b>inscripciones@desafiolatam.com</b></p>
               </div>
             );
           }
