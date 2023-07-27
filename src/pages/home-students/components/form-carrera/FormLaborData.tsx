@@ -120,11 +120,10 @@ export const FormLaborData = (props: PropsFormUser) => {
             {errors.work_situation_id && <RequiredField />}
           </div>
           <div className="col-span-2 flex flex-col">
-            <label>Renta Actual*</label>
+            <label>Renta Actual</label>
             <input
               type="number"
               {...register('rent', {
-                required: true,
                 min: 0
               })}
             />
@@ -132,17 +131,17 @@ export const FormLaborData = (props: PropsFormUser) => {
           </div>
         </div>
         <div className="col-span-2 flex flex-col mt-3">
-          <label>Enlace LinkedIn*</label>
+          <label>Enlace LinkedIn</label>
           <input
             type="text"
+						maxLength={100}
             placeholder={'https://www.google.com'}
             {...register('linkedin', {
-              required: true,
               pattern:
                 /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})(\/([^\s]*))?$/
             })}
           />
-          {errors.linkedin?.type === 'required' && <RequiredField />}
+          {errors.linkedin?.type === 'required'}
           {errors.linkedin?.type === 'pattern' && (
             <span className="text-red-500 text-sm font-light">
               Formato URL no valido
@@ -151,19 +150,18 @@ export const FormLaborData = (props: PropsFormUser) => {
         </div>
         <div className="grid grid-cols-4 mt-3 gap-4">
           <div className="col-span-2 flex flex-col">
-            <label>Empresa donde trabaja*</label>
+            <label>Empresa donde trabaja</label>
             <input
               type="text"
-              {...register('organization', {
-                required: true
-              })}
+							maxLength={150}
+              {...register('organization')}
             />
             {errors.organization && <RequiredField />}
           </div>
           <div className="col-span-2 flex flex-col">
-            <label>Cargo*</label>
-            <input type="text" {...register('position', { required: true })} />
-            {errors.position && <RequiredField />}
+            <label>Cargo</label>
+            <input type="text" maxLength={50} {...register('position')} />
+            {/* {errors.position} */}
           </div>
         </div>
         <div className="flex justify-end">
