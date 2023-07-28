@@ -39,7 +39,8 @@ export const DialogEditLink = (props: DialogEditLinkTypes) => {
 			const selectedCareer = careers.find(element => element.id === props.careerId)
 			setSelectedCareers(selectedCareer as Career)
     }
-  }, [careers])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [careers])
 
   useEffect(() => {
     console.log('Edit => ', props.idRegister);
