@@ -95,7 +95,8 @@ export const EducationForm = (props: PropsFormUser) => {
             },
             {
               headers: {
-                'Access-Control-Allow-Origin': '*'
+                'Access-Control-Allow-Origin': '*',
+								Authorization: `Bearer ${localStorage.getItem('token_user_latam')}`
               }
             }
           )

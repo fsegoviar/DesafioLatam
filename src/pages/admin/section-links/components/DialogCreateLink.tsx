@@ -65,7 +65,8 @@ export const DialogCreateLink = (props: DialogCreateLinkTypes) => {
         `${process.env.REACT_APP_API_BACKEND}/hubspot/client/${inputEmail}/email`,
         {
           headers: {
-            Accept: 'application/json'
+            Accept: 'application/json',
+						Authorization: `Bearer ${localStorage.getItem('token_user_latam')}`
           }
         }
       )
@@ -118,7 +119,8 @@ export const DialogCreateLink = (props: DialogCreateLinkTypes) => {
     await axios
       .post(`${process.env.REACT_APP_API_BACKEND}/registers`, data, {
         headers: {
-          Accept: 'application/json'
+          Accept: 'application/json',
+					Authorization: `Bearer ${localStorage.getItem('token_user_latam')}`
         }
       })
       .then(async (response: any) => {
@@ -129,7 +131,8 @@ export const DialogCreateLink = (props: DialogCreateLinkTypes) => {
             `${process.env.REACT_APP_API_BACKEND}/registers/${response.data[0].id}/notification`,
             {
               headers: {
-                Accept: 'application/json'
+                Accept: 'application/json',
+								Authorization: `Bearer ${localStorage.getItem('token_user_latam')}`
               }
             }
           )

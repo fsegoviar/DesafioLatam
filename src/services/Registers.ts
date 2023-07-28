@@ -12,7 +12,8 @@ export const GetRegisters = () => {
         `${process.env.REACT_APP_API_BACKEND}/registers`,
         {
           headers: {
-            Accept: 'application/json'
+            Accept: 'application/json',
+						Authorization: `Bearer ${localStorage.getItem('token_user_latam')}`
           }
         }
       );

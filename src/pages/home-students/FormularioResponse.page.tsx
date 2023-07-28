@@ -21,8 +21,8 @@ export const FormularioResponsePage = () => {
 					{
 						headers: {
 							Accept: 'application/json',
-							'Access-Control-Allow-Origin': '*'
-							// Authorization: `Bearer ${localStorage.getItem('token_user_latam')}`
+							'Access-Control-Allow-Origin': '*',
+							Authorization: `Bearer ${localStorage.getItem('token_user_latam')}`
 						}
 					}
 				)

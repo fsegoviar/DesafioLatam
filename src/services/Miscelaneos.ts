@@ -18,7 +18,8 @@ export const GetIdentityTypes = () => {
         `${process.env.REACT_APP_API_BACKEND}/identity_types`,
         {
           headers: {
-            Accept: 'application/json'
+            Accept: 'application/json',
+						Authorization: `Bearer ${localStorage.getItem('token_user_latam')}`
           }
         }
       );
@@ -49,7 +50,8 @@ export const GetEnglishLevel = () => {
         `${process.env.REACT_APP_API_BACKEND}/english_levels`,
         {
           headers: {
-            Accept: 'application/json'
+            Accept: 'application/json',
+						Authorization: `Bearer ${localStorage.getItem('token_user_latam')}`
           }
         }
       );
@@ -82,7 +84,8 @@ export const GetEducationLevel = () => {
         `${process.env.REACT_APP_API_BACKEND}/educational_levels`,
         {
           headers: {
-            Accept: 'application/json'
+            Accept: 'application/json',
+						Authorization: `Bearer ${localStorage.getItem('token_user_latam')}`
           }
         }
       );
@@ -113,7 +116,8 @@ export const GetWorkSituations = () => {
         `${process.env.REACT_APP_API_BACKEND}/work_situations`,
         {
           headers: {
-            Accept: 'application/json'
+            Accept: 'application/json',
+						Authorization: `Bearer ${localStorage.getItem('token_user_latam')}`
           }
         }
       );

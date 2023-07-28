@@ -72,7 +72,8 @@ export const FormAval = (props: PropsFormUser) => {
           },
           {
             headers: {
-              'Access-Control-Allow-Origin': '*'
+              'Access-Control-Allow-Origin': '*',
+							Authorization: `Bearer ${localStorage.getItem('token_user_latam')}`
             }
           }
         )
@@ -110,7 +111,8 @@ export const FormAval = (props: PropsFormUser) => {
             {
               headers: {
                 'Access-Control-Allow-Origin': '*',
-                'Content-Type': 'multipart/form-data'
+                'Content-Type': 'multipart/form-data',
+								Authorization: `Bearer ${localStorage.getItem('token_user_latam')}`
               }
             }
           )
@@ -126,7 +128,8 @@ export const FormAval = (props: PropsFormUser) => {
                 },
                 {
                   headers: {
-                    'Access-Control-Allow-Origin': '*'
+                    'Access-Control-Allow-Origin': '*',
+										Authorization: `Bearer ${localStorage.getItem('token_user_latam')}`
                   }
                 }
               )

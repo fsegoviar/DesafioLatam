@@ -39,7 +39,8 @@ export const SimpleFinishPayment = ({
           },
           {
             headers: {
-              'Access-Control-Allow-Origin': '*'
+              'Access-Control-Allow-Origin': '*',
+							Authorization: `Bearer ${localStorage.getItem('token_user_latam')}`
             }
           }
         )
@@ -66,7 +67,8 @@ export const SimpleFinishPayment = ({
           },
           {
             headers: {
-              'Access-Control-Allow-Origin': '*'
+              'Access-Control-Allow-Origin': '*',
+							Authorization: `Bearer ${localStorage.getItem('token_user_latam')}`
             }
           }
         )
@@ -114,7 +116,8 @@ export const SimpleFinishPayment = ({
         `${process.env.REACT_APP_API_BACKEND}/registers/${dataUser.id}/notification-payment`,
         {
           headers: {
-            'Access-Control-Allow-Origin': '*'
+            'Access-Control-Allow-Origin': '*',
+						Authorization: `Bearer ${localStorage.getItem('token_user_latam')}`
           }
         }
       )

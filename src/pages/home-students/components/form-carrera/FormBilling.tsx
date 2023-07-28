@@ -63,7 +63,8 @@ export const FormBilling = (props: PropsFormUser) => {
         },
         {
           headers: {
-            'Access-Control-Allow-Origin': '*'
+            'Access-Control-Allow-Origin': '*',
+						Authorization: `Bearer ${localStorage.getItem('token_user_latam')}`
           }
         }
       )
@@ -94,6 +95,11 @@ export const FormBilling = (props: PropsFormUser) => {
         .post(`${process.env.REACT_APP_API_BACKEND}/register_form/billing`, {
           ...dataBilling,
           register_id: props.registerId
+        },
+				{
+          headers: {
+						Authorization: `Bearer ${localStorage.getItem('token_user_latam')}`
+          }
         })
         .then(() => {
           // console.log('Response Billing =>', response.data);
@@ -106,6 +112,11 @@ export const FormBilling = (props: PropsFormUser) => {
         .post(`${process.env.REACT_APP_API_BACKEND}/register_form/billing`, {
           ...dataBillingForm,
           register_id: props.registerId
+        },
+				{
+          headers: {
+						Authorization: `Bearer ${localStorage.getItem('token_user_latam')}`
+          }
         })
         .then(() => {
           // console.log('Response Billing =>', response.data);

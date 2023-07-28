@@ -126,7 +126,14 @@ export const FormPersonalData = (props: PropsFormUser) => {
 
   const getCountries = async () => {
     await axios
-      .get(`${process.env.REACT_APP_API_BACKEND}/countries`)
+      .get(`${process.env.REACT_APP_API_BACKEND}/countries`,
+				{
+					headers: {
+						Accept: 'application/json',
+						Authorization: `Bearer ${localStorage.getItem('token_user_latam')}`
+					}
+				}
+			)
       .then((response: any) => {
         setListCountries(response.data);
         const findCountrie = response.data.find((data: any) => {
@@ -178,7 +185,8 @@ export const FormPersonalData = (props: PropsFormUser) => {
             },
             {
               headers: {
-                'Access-Control-Allow-Origin': '*'
+                'Access-Control-Allow-Origin': '*',
+								Authorization: `Bearer ${localStorage.getItem('token_user_latam')}`
               }
             }
           )

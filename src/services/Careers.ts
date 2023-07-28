@@ -13,7 +13,8 @@ export const GetCareers = () => {
         `${process.env.REACT_APP_API_BACKEND}/careers`,
         {
           headers: {
-            Accept: 'application/json'
+            Accept: 'application/json',
+						Authorization: `Bearer ${localStorage.getItem('token_user_latam')}`
           }
         }
       );

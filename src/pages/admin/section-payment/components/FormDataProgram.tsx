@@ -119,7 +119,8 @@ export const FormDataProgram = ({
     axios
       .post(`${process.env.REACT_APP_API_BACKEND}/prices`, data, {
         headers: {
-          'Access-Control-Allow-Origin': '*'
+          'Access-Control-Allow-Origin': '*',
+					Authorization: `Bearer ${localStorage.getItem('token_user_latam')}`
         }
       })
       .then((response) => {
@@ -140,7 +141,7 @@ export const FormDataProgram = ({
     return <span className="text-red-500 text-[12px]">Campo requerido</span>;
   };
 
-  const getTotalValueQuotes = () => {debugger
+  const getTotalValueQuotes = () => {
     if (
       watch('payment_methods.0.reference_value') &&
       watch('payment_methods.0.free_discount')

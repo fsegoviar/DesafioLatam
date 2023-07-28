@@ -29,7 +29,12 @@ export const DialogForm = (props: DialogType) => {
     setLoading(true);
     await axios
       .get(
-        `${process.env.REACT_APP_API_BACKEND}/registers/${props.userData.id}`
+        `${process.env.REACT_APP_API_BACKEND}/registers/${props.userData.id}`,
+				{
+					headers: {
+						Authorization: `Bearer ${localStorage.getItem('token_user_latam')}`
+					}
+				}
       )
       .then((response: any) => {
         console.log('Response User =>', response.data[0]);

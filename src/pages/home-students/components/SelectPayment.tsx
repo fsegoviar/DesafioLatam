@@ -33,7 +33,11 @@ export const SelectPayment = (props: PropsFormUser) => {
   const fetchData = async () => {
     await axios
       .get(
-        `${process.env.REACT_APP_API_BACKEND}/registers/${props.registerId}/payment_methods`
+        `${process.env.REACT_APP_API_BACKEND}/registers/${props.registerId}/payment_methods`, {
+          headers: {
+						Authorization: `Bearer ${localStorage.getItem('token_user_latam')}`
+          }
+        }
       )
       .then((response) => {
         console.log('Response PAyment =>', response.data);
@@ -63,7 +67,12 @@ export const SelectPayment = (props: PropsFormUser) => {
         payment_method_id: paymentMethodIdSelected,
         quotes: quotesSelected,
         total: totalPayment
-      })
+      },
+			{
+				headers: {
+					Authorization: `Bearer ${localStorage.getItem('token_user_latam')}`
+				}
+			})
       .then(() => {
         axios
           .post(
@@ -78,7 +87,8 @@ export const SelectPayment = (props: PropsFormUser) => {
             },
             {
               headers: {
-                'Access-Control-Allow-Origin': '*'
+                'Access-Control-Allow-Origin': '*',
+								Authorization: `Bearer ${localStorage.getItem('token_user_latam')}`
               }
             }
           )

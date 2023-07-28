@@ -13,7 +13,8 @@ export const GetPricesTable = () => {
         `${process.env.REACT_APP_API_BACKEND}/prices`,
         {
           headers: {
-            Accept: 'application/json'
+            Accept: 'application/json',
+						Authorization: `Bearer ${localStorage.getItem('token_user_latam')}`
           }
         }
       );

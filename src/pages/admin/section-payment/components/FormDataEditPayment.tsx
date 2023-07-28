@@ -123,7 +123,8 @@ export const FormDataEditPayment = (props: FormPaymentProgramType) => {
         data,
         {
           headers: {
-            'Access-Control-Allow-Origin': '*'
+            'Access-Control-Allow-Origin': '*',
+						Authorization: `Bearer ${localStorage.getItem('token_user_latam')}`
           }
         }
       )

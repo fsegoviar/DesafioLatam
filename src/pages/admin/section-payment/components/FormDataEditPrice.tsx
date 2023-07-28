@@ -57,7 +57,8 @@ export const FormDataEditPrice = (props: PropsEditPrice) => {
     await axios
       .get(`${process.env.REACT_APP_API_BACKEND}/prices/${props.id}`, {
         headers: {
-          Accept: 'application/json'
+          Accept: 'application/json',
+					Authorization: `Bearer ${localStorage.getItem('token_user_latam')}`
         }
       })
       .then((response) => {
@@ -263,7 +264,8 @@ export const FormDataEditPrice = (props: PropsEditPrice) => {
           requestData,
           {
             headers: {
-              'Access-Control-Allow-Origin': '*'
+              'Access-Control-Allow-Origin': '*',
+							Authorization: `Bearer ${localStorage.getItem('token_user_latam')}`
             }
           }
         )

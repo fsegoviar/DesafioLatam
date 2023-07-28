@@ -104,7 +104,8 @@ export const TableLinks = () => {
         `${process.env.REACT_APP_API_BACKEND}/registers/${id}/notification`,
         {
           headers: {
-            Accept: 'application/json'
+            Accept: 'application/json',
+						Authorization: `Bearer ${localStorage.getItem('token_user_latam')}`
           }
         }
       )
@@ -323,7 +324,8 @@ export const TableLinks = () => {
         `${process.env.REACT_APP_API_BACKEND}/registers/${registerId}/copy_link`,
         {
           headers: {
-            Accept: 'application/json'
+            Accept: 'application/json',
+						Authorization: `Bearer ${localStorage.getItem('token_user_latam')}`
           }
         }
       )

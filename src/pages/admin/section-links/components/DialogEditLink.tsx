@@ -52,7 +52,8 @@ export const DialogEditLink = (props: DialogEditLinkTypes) => {
           `${process.env.REACT_APP_API_BACKEND}/hubspot/clients`,
           {
             headers: {
-              Accept: 'application/json'
+              Accept: 'application/json',
+							Authorization: `Bearer ${localStorage.getItem('token_user_latam')}`
             }
           }
         );
@@ -70,7 +71,8 @@ export const DialogEditLink = (props: DialogEditLinkTypes) => {
           `${process.env.REACT_APP_API_BACKEND}/registers/${props.idRegister}`,
           {
             headers: {
-              Accept: 'application/json'
+              Accept: 'application/json',
+							Authorization: `Bearer ${localStorage.getItem('token_user_latam')}`
             }
           }
         )
@@ -126,7 +128,8 @@ export const DialogEditLink = (props: DialogEditLinkTypes) => {
       `${process.env.REACT_APP_API_BACKEND}/careers/${value.id}/generations`,
       {
         headers: {
-          Accept: 'applicatino/json'
+          Accept: 'applicatino/json',
+					Authorization: `Bearer ${localStorage.getItem('token_user_latam')}`
         }
       }
     );
@@ -140,7 +143,8 @@ export const DialogEditLink = (props: DialogEditLinkTypes) => {
       `${process.env.REACT_APP_API_BACKEND}/hubspot/client/${inputEmail}/email`,
       {
         headers: {
-          Accept: 'application/json'
+          Accept: 'application/json',
+					Authorization: `Bearer ${localStorage.getItem('token_user_latam')}`
         }
       }
     );
@@ -171,7 +175,8 @@ export const DialogEditLink = (props: DialogEditLinkTypes) => {
     await axios
       .post(`${process.env.REACT_APP_API_BACKEND}/registers/${props.idRegister}`, data, {
         headers: {
-          Accept: 'application/json'
+          Accept: 'application/json',
+					Authorization: `Bearer ${localStorage.getItem('token_user_latam')}`
         }
       })
       .then((response: any) => {
