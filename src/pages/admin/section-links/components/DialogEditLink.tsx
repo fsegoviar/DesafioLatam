@@ -11,7 +11,7 @@ type DialogEditLinkTypes = {
   close: () => void;
   actionToast: (action: string) => void;
   editData: (data: any) => void;
-  careerId?: number;
+  careerId: any;
 };
 
 export const DialogEditLink = (props: DialogEditLinkTypes) => {

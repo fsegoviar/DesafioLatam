@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../../../store/store';
 import { updatePersonalDataCarrera } from '../../../../store/slices/userDataFormSlice';
+import { Dropdown, DropdownChangeParams } from 'primereact/dropdown';
 
 type PropsFormUser = {
   stepsLength: number;
@@ -21,6 +22,8 @@ export const FormPersonalData = (props: PropsFormUser) => {
   const [selectedIdentityType, setSelectedIdentityType] = useState('');
   const { indentityTypes } = GetIdentityTypes();
   const [inputRut, setInputRut] = useState('');
+  const [listCountries, setListCountries] = useState([]);
+  const [countrySelected, setCountrySelected] = useState<any>(null);
   const user = useSelector((state: RootState) => state.user);
 
   const dispatch = useDispatch();
@@ -36,7 +39,8 @@ export const FormPersonalData = (props: PropsFormUser) => {
       lastname: user.user?.lastname ?? '',
       dni: user.user?.dni ?? '',
       phone: user.user?.phone ?? '',
-      email: user.user?.email ?? ''
+      email: user.user?.email ?? '',
+			country_id: user.user?.country_id ?? null,
     }
   });
 
@@ -44,11 +48,39 @@ export const FormPersonalData = (props: PropsFormUser) => {
     if (user.user?.dni) setInputRut(user.user?.dni);
 		const userIdentityTypeId = user.user?.identity_type?.id ?? '';
     setSelectedIdentityType(userIdentityTypeId.toString());
+		getCountries();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+	const getCountries = async () => {
+    await axios
+      .get(`${process.env.REACT_APP_API_BACKEND}/countries`,
+				{
+					headers: {
+						Accept: 'application/json',
+						Authorization: `Bearer ${localStorage.getItem('token_user_latam')}`
+					}
+				}
+			)
+      .then((response: any) => {
+        setListCountries(response.data);
+        const findCountrie = response.data.find((data: any) => {
+          if (user.user && user.user.country_id) {
+            if (data.id === user.user.country_id) return data;
+          }
+          return null;
+        });
+
+        if (findCountrie) {
+          setCountrySelected(findCountrie);
+        }
+      })
+      .catch((error: AxiosError) => console.log('Error Countries =>', error));
+  };
+
   const onSubmit: SubmitHandler<any> = async (data) => {
 		if (selectedIdentityType) data.identity_type_id = selectedIdentityType;
+		if (countrySelected) data.country_id = countrySelected.id;
     await axios
       .post(
         `${process.env.REACT_APP_API_BACKEND}/register_form/personal_info`,
@@ -257,19 +289,35 @@ export const FormPersonalData = (props: PropsFormUser) => {
         </div>
       </div>
 
-      <div className="mt-3">
-        <div>
-          <div className="grid grid-cols-4 gap-4">
-            <div className="col-span-4 flex flex-col">
-              <label>Carrera a la cual te estas matriculando</label>
-              <input
-                type="text"
-                placeholder={user.career?.description ?? ''}
-                disabled={true}
-              />
-            </div>
-          </div>
-        </div>
+      <div className="grid gap-4 grid-cols-4 mt-5">
+				<div className="col-span-2 flex flex-col">
+					<label>País de residencia*</label>
+					<Dropdown
+						value={countrySelected}
+						options={listCountries}
+						optionLabel="description"
+						filter
+						className="dropdown-form"
+						{...register('country_id', {
+							required: true,
+							onChange(evt: DropdownChangeParams) {
+								if (evt.value.id) {
+									setCountrySelected(evt.value);
+									setValue('country_id', Number(evt.value.id));
+								}
+							}
+						})}
+					/>
+					{errors.country_id?.type === 'required' && <RenderRequiredField />}
+				</div>
+				<div className="col-span-2 flex flex-col">
+					<label>Carrera a la cual te estas matriculando</label>
+					<input
+						type="text"
+						placeholder={user.career?.description ?? ''}
+						disabled={true}
+					/>
+				</div>
       </div>
 
       <div className="flex justify-end mt-5">
