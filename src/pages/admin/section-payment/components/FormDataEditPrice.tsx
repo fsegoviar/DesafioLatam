@@ -58,7 +58,7 @@ export const FormDataEditPrice = (props: PropsEditPrice) => {
       .get(`${process.env.REACT_APP_API_BACKEND}/prices/${props.id}`, {
         headers: {
           Accept: 'application/json',
-					Authorization: `Bearer ${localStorage.getItem('token_user_latam')}`
+					Authorization: `Bearer ${localStorage.getItem('token_hhrr_latam')}`
         }
       })
       .then((response) => {
@@ -265,7 +265,7 @@ export const FormDataEditPrice = (props: PropsEditPrice) => {
           {
             headers: {
               'Access-Control-Allow-Origin': '*',
-							Authorization: `Bearer ${localStorage.getItem('token_user_latam')}`
+							Authorization: `Bearer ${localStorage.getItem('token_hhrr_latam')}`
             }
           }
         )

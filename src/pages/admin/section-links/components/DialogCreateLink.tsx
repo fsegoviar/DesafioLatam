@@ -66,7 +66,7 @@ export const DialogCreateLink = (props: DialogCreateLinkTypes) => {
         {
           headers: {
             Accept: 'application/json',
-						Authorization: `Bearer ${localStorage.getItem('token_user_latam')}`
+						Authorization: `Bearer ${localStorage.getItem('token_hhrr_latam')}`
           }
         }
       )
@@ -120,7 +120,7 @@ export const DialogCreateLink = (props: DialogCreateLinkTypes) => {
       .post(`${process.env.REACT_APP_API_BACKEND}/registers`, data, {
         headers: {
           Accept: 'application/json',
-					Authorization: `Bearer ${localStorage.getItem('token_user_latam')}`
+					Authorization: `Bearer ${localStorage.getItem('token_hhrr_latam')}`
         }
       })
       .then(async (response: any) => {
@@ -132,7 +132,7 @@ export const DialogCreateLink = (props: DialogCreateLinkTypes) => {
             {
               headers: {
                 Accept: 'application/json',
-								Authorization: `Bearer ${localStorage.getItem('token_user_latam')}`
+								Authorization: `Bearer ${localStorage.getItem('token_hhrr_latam')}`
               }
             }
           )

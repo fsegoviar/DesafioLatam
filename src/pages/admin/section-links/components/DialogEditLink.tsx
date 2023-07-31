@@ -23,8 +23,6 @@ export const DialogEditLink = (props: DialogEditLinkTypes) => {
   const [selectForm, setSelectForm] = useState<any>(null!);
   const [nameUser, setNameUser] = useState<string | number>(null!);
   const { handleSubmit, setValue } = useForm<RegisterLinkType>();
-  const [disabledForm, setDisabledForm] = useState(true);
-	const [checkRadioBtn, setCheckRadioBtn] = useState(false);
   const [loading, setLoading] = useState(false);
   const { careers } = GetCareers();
   const forms = [
@@ -54,7 +52,7 @@ export const DialogEditLink = (props: DialogEditLinkTypes) => {
           {
             headers: {
               Accept: 'application/json',
-							Authorization: `Bearer ${localStorage.getItem('token_user_latam')}`
+							Authorization: `Bearer ${localStorage.getItem('token_hhrr_latam')}`
             }
           }
         );
@@ -73,7 +71,7 @@ export const DialogEditLink = (props: DialogEditLinkTypes) => {
           {
             headers: {
               Accept: 'application/json',
-							Authorization: `Bearer ${localStorage.getItem('token_user_latam')}`
+							Authorization: `Bearer ${localStorage.getItem('token_hhrr_latam')}`
             }
           }
         )
@@ -130,7 +128,7 @@ export const DialogEditLink = (props: DialogEditLinkTypes) => {
       {
         headers: {
           Accept: 'applicatino/json',
-					Authorization: `Bearer ${localStorage.getItem('token_user_latam')}`
+					Authorization: `Bearer ${localStorage.getItem('token_hhrr_latam')}`
         }
       }
     );
@@ -145,7 +143,7 @@ export const DialogEditLink = (props: DialogEditLinkTypes) => {
       {
         headers: {
           Accept: 'application/json',
-					Authorization: `Bearer ${localStorage.getItem('token_user_latam')}`
+					Authorization: `Bearer ${localStorage.getItem('token_hhrr_latam')}`
         }
       }
     );
@@ -167,8 +165,6 @@ export const DialogEditLink = (props: DialogEditLinkTypes) => {
     console.log('Radio Selected => ', row);
     setValue('price_id', row.id);
 		setSelectedPrice(row.id)
-		setCheckRadioBtn(true)
-		if (checkRadioBtn) setDisabledForm(false)
   };
 
   const onSubmit: SubmitHandler<RegisterLinkType> = async (data) => {
@@ -321,15 +317,7 @@ export const DialogEditLink = (props: DialogEditLinkTypes) => {
               </button>
               <button
                 type="submit"
-								className={`m-1 px-5 rounded-lg text-white ${
-									disabledForm ? 'bg-gray-500' : ' bg-green-500'
-								}`}
-								style={{
-									border: disabledForm
-										? '3px solid gray'
-										: '3px solid rgb(34 197 94)'
-								}}
-								disabled={disabledForm}
+								className={'m-1 px-5 rounded-lg text-white bg-green-500'}
               >
                 Editar
               </button>

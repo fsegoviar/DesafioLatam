@@ -124,7 +124,7 @@ export const FormDataEditPayment = (props: FormPaymentProgramType) => {
         {
           headers: {
             'Access-Control-Allow-Origin': '*',
-						Authorization: `Bearer ${localStorage.getItem('token_user_latam')}`
+						Authorization: `Bearer ${localStorage.getItem('token_hhrr_latam')}`
           }
         }
       )

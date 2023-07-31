@@ -13,7 +13,7 @@ export const GetCurrencies = () => {
         {
           headers: {
             Accept: 'application/json',
-						Authorization: `Bearer ${localStorage.getItem('token_user_latam')}`
+						Authorization: `Bearer ${localStorage.getItem('token_hhrr_latam')}`
           }
         }
       );

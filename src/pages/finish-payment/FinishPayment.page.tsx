@@ -8,7 +8,13 @@ export const FinishPaymentPage = () => {
       .post(`${process.env.REACT_APP_API_BACKEND}/hubspot/client`, {
         register_id: localStorage.getItem('register_id'),
         email: 'jherrera@lisit.cl'
-      })
+      },
+			{
+				headers: {
+					Accept: 'application/json',
+					Authorization: `Bearer ${localStorage.getItem('token_user_latam')}`
+				}
+			})
       .then((response: any) => console.log('Success =>', response.data))
       .catch((error: AxiosError) =>
         console.log('Error Update data user => ', error)
