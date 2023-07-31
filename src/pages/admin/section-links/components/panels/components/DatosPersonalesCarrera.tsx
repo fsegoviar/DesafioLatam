@@ -24,7 +24,7 @@ export const DatosPersonalesCarrera = (props: PropsDatosPersonalesCarrera) => {
           <label>Número de identificación</label>
           <input
             type="text"
-            value={props.dataUser.user.identity_type?.description ?? ''}
+            value={props.dataUser.user.dni ?? ''}
             disabled
           />
         </div>
@@ -72,7 +72,9 @@ export const DatosPersonalesCarrera = (props: PropsDatosPersonalesCarrera) => {
         </div>
         <div className="col-span-4 flex flex-col">
           <label>Carrera a la cual te estas matriculando</label>
-          <input type="text" disabled />
+          <input type="text"
+						 value={props.dataUser.career?.description ?? ''}
+						disabled />
         </div>
       </div>
     </>
