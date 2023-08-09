@@ -467,7 +467,7 @@ export const FormDataEditPrice = (props: PropsEditPrice) => {
   return (
     <div className="w-full">
       {loading ? (
-        <div className="absolute top-0 left-0 w-full h-full bg-white z-10 grid place-items-center rounded-xl">
+        <div className="absolute top-0 left-0 w-full bg-white z-10 grid place-items-center rounded-xl">
           <div className="flex flex-col items-center">
             <ProgressSpinner />
             <h1>Cargando..</h1>
