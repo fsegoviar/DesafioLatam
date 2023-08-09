@@ -10,7 +10,7 @@ export const DocumentoEmitirComponent = (props: PropsPanel) => {
       <div className="grid gap-4 grid-cols-8 ">
         <div className="col-span-4 flex flex-col justify-center h-100">
           <label>
-            Tipo: <b>{props.dataUser.billing.document_type.description}</b>
+            Tipo: <b>{props.dataUser.billing?.document_type.description}</b>
           </label>
         </div>
         <div className="col-span-4 flex flex-col">
