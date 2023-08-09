@@ -370,8 +370,8 @@ export const FormPersonalData = (props: PropsFormUser) => {
               required: true,
               onChange(evt: DropdownChangeParams) {
                 if (evt.value.id) {
-                  setNationalitySelected(evt.value);
-                  setValue('nationality', String(evt.value.id));
+									setNationalitySelected(evt.value);
+                  setValue('nationality', String(evt.value.nationality));
                 }
               }
             })}
