@@ -295,6 +295,16 @@ export const TableLinks = () => {
   const renderToken = (row: any) => {
     let dateLimit = new Date();
     dateLimit.setDate(dateLimit.getDate() + 3);
+		if(row.status === 'Cancelado'){
+			return (
+        <span
+          style={{ backgroundColor: 'red', color: '#FFFFFF' }}
+          className="px-2 py-1 rounded-full"
+        >
+          Expirado
+        </span>
+      );
+		}
     if (isBefore(new Date(row.created_at), dateLimit)) {
       return (
         <span
