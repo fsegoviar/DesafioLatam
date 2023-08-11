@@ -21,7 +21,11 @@ export const Navbar = () => {
               className="w-3/12"
             />
           </div>
-          <p className={'text-white text-2xl cursor-pointer'} onClick={closeSession}>Cerrar Sesión</p>
+					{(location.pathname === '/servicio_cliente' || location.pathname === '/tabla_precios') && (
+						<p className={'text-white text-2xl cursor-pointer'} onClick={closeSession}>
+							Cerrar Sesión
+						</p>
+       	 	)}
         </div>
       </div>
       {(location.pathname === '/servicio_cliente' ||
