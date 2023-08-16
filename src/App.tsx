@@ -1,5 +1,5 @@
 import './App.css';
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom';
 import {
   HomeStudentsPage,
   Login,
@@ -23,6 +23,7 @@ function App() {
             </AuthLogin>
           }
         />
+				<Route path="/" element={<Navigate to="login" />} />
         <Route path={'/formulario/envelope'} element={<FormularioResponsePage />} />
         <Route path={'/formulario/:typeForm'} element={<HomeStudentsPage />} />
         <Route path={'login'} element={<Login />} />
