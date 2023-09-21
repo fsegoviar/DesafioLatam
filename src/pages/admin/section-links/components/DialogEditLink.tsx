@@ -173,7 +173,7 @@ export const DialogEditLink = (props: DialogEditLinkTypes) => {
       .post(`${process.env.REACT_APP_API_BACKEND}/registers/${props.idRegister}`, data, {
         headers: {
           Accept: 'application/json',
-					Authorization: `Bearer ${localStorage.getItem('token_user_latam')}`
+					Authorization: `Bearer ${localStorage.getItem('token_hhrr_latam')}`
         }
       })
       .then((response: any) => {
