@@ -62,7 +62,7 @@ export const DatosPersonalesCarrera = (props: PropsDatosPersonalesCarrera) => {
         </div>
       </div>
       <div className="grid gap-4 grid-cols-8 mt-5">
-        <div className="col-span-4 flex flex-col">
+        <div className="col-span-2 flex flex-col">
           <label>Correo electrónico</label>
           <input
             type="email"
@@ -70,10 +70,16 @@ export const DatosPersonalesCarrera = (props: PropsDatosPersonalesCarrera) => {
             disabled
           />
         </div>
-        <div className="col-span-4 flex flex-col">
+        <div className="col-span-3 flex flex-col">
           <label>Carrera a la cual te estas matriculando</label>
           <input type="text"
 						 value={props.dataUser.career?.description ?? ''}
+						disabled />
+        </div>
+				<div className="col-span-3 flex flex-col">
+          <label>Generación</label>
+          <input type="text"
+						 value={props.dataUser.generation?.description ?? ''}
 						disabled />
         </div>
       </div>

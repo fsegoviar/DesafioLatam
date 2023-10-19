@@ -12,6 +12,7 @@ type DialogEditLinkTypes = {
   actionToast: (action: string) => void;
   editData: (data: any) => void;
   careerId: any;
+  generationId: any;
 };
 
 export const DialogEditLink = (props: DialogEditLinkTypes) => {
@@ -25,6 +26,10 @@ export const DialogEditLink = (props: DialogEditLinkTypes) => {
   const { handleSubmit, setValue } = useForm<RegisterLinkType>();
   const [loading, setLoading] = useState(false);
   const { careers } = GetCareers();
+  const [generations, setGenerations] = useState<any>(null!);
+  const [selectedGeneration, setSelectedGeneration] = useState<any>(null!);
+  const [errors, setErrors] = useState<any>(null!);
+
   const forms = [
     { name: 'Formulario de carrera', id: 1 },
     { name: 'Formulario de cursos', id: 2 },
@@ -36,12 +41,12 @@ export const DialogEditLink = (props: DialogEditLinkTypes) => {
     if (careers) {
 			const selectedCareer = careers.find(element => element.id === props.careerId)
 			setSelectedCareers(selectedCareer as Career)
+			getGenerations(props.careerId)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [careers])
 
   useEffect(() => {
-    console.log('Edit => ', props.idRegister);
 
     if (props.open) modalRef.current.style.display = 'flex';
 
@@ -57,7 +62,6 @@ export const DialogEditLink = (props: DialogEditLinkTypes) => {
           }
         );
 
-        console.log('Response Get Clients =>', response.data);
       } catch (error) {
         console.log('Error Clients =>', error);
       }
@@ -76,13 +80,10 @@ export const DialogEditLink = (props: DialogEditLinkTypes) => {
           }
         )
         .then(async (response: any) => {
-          console.log('RegisterSelected => ', response.data);
 
           const findForm = forms.find(
             (form) => form.id === response.data[0].form_type_id
           );
-
-          console.log('Find Form =>', findForm);
 
           setSelectForm(findForm);
           setInputEmail(response.data[0].user.email);
@@ -92,6 +93,7 @@ export const DialogEditLink = (props: DialogEditLinkTypes) => {
 			    setValue('career_id', response.data[0].career_id);
 			    setValue('price_id', response.data[0].price_id);
 			    setValue('form_type_id', response.data[0].form_type_id);
+					setValue('generation_id', response.data[0].generation_id);
 					setSelectedPrice(response.data[0].price_id)
 
         })
@@ -119,10 +121,9 @@ export const DialogEditLink = (props: DialogEditLinkTypes) => {
   );
 
   const handleChangeCareer = async (value: Career) => {
-    console.log('Value change career =>', value);
     setSelectedCareers(value);
     setValue('career_id', value.id);
-
+		setSelectedPrice(value.prices[0].id)
     const response = await axios.get(
       `${process.env.REACT_APP_API_BACKEND}/careers/${value.id}/generations`,
       {
@@ -132,9 +133,34 @@ export const DialogEditLink = (props: DialogEditLinkTypes) => {
         }
       }
     );
+		setGenerations(response.data)
+		setSelectedGeneration(response.data[0])
+		setValue('generation_id', response.data[0].id);
 
-    console.log('Response Generations => ', response.data);
   };
+
+	const getGenerations = async (career_id: number) => {
+		await axios.get(`${process.env.REACT_APP_API_BACKEND}/careers/${career_id}/generations`,
+			{
+				headers: {
+					Accept: 'application/json',
+					Authorization: `Bearer ${localStorage.getItem('token_hhrr_latam')}`
+				}
+			}
+		).then((response: any) => {
+			setGenerations(response.data)
+			const generation = response.data.find((element: { id: number; }) => element.id === props.generationId)
+			setSelectedGeneration(generation)
+		}).catch((error: AxiosError) => {
+			console.log('Error', error);
+		});
+	}
+
+	const handleChangeGeneration = (value: any) => {
+		setErrors(null)
+		setSelectedGeneration(value)
+    setValue('generation_id', value.id);
+	}
 
   const searchUserByEmail = async () => {
 
@@ -147,13 +173,11 @@ export const DialogEditLink = (props: DialogEditLinkTypes) => {
         }
       }
     );
-    console.log('Response Search by Email =>!', response.data);
 
     setNameUser(
       `${response.data.results[0].properties.firstname} ${response.data.results[0].properties.lastname}`
     );
 
-    console.log('Response Hubspot by Email =>', response);
   };
 
   const handleChangeFormType = (value: { id: number; name: string }) => {
@@ -162,13 +186,12 @@ export const DialogEditLink = (props: DialogEditLinkTypes) => {
   };
 
   const handleChangeRadio = (row: CareerPrice) => {
-    console.log('Radio Selected => ', row);
+		setErrors(null)
     setValue('price_id', row.id);
 		setSelectedPrice(row.id)
   };
 
   const onSubmit: SubmitHandler<RegisterLinkType> = async (data) => {
-    console.log('OnSubmit Form Link => ', data);
     await axios
       .post(`${process.env.REACT_APP_API_BACKEND}/registers/${props.idRegister}`, data, {
         headers: {
@@ -179,9 +202,16 @@ export const DialogEditLink = (props: DialogEditLinkTypes) => {
       .then((response: any) => {
         props.editData(response.data);
         props.actionToast('edit');
+				closeModal()
       })
-      .catch((error: AxiosError) => console.log('Error onSubmit =>', error))
-      .finally(() => closeModal());
+      .catch((error: any) => {
+				console.log('Error onSubmit =>', error)
+				if(error.response.status === 422){
+					console.log(error.response.data.errors)
+					setErrors(error.response.data.errors)
+				}
+			})
+      // .finally(() => closeModal());
   };
 
   return (
@@ -217,7 +247,19 @@ export const DialogEditLink = (props: DialogEditLinkTypes) => {
                   </button>
                 </div>
               </div>
-              <div>
+							<div >
+                <p className="font-thin">Nombre de usuario</p>
+                <div>
+                  <input
+                    type="text"
+                    value={nameUser}
+                    className="border-r-0 py-2 rounded-lg w-10/12 bg-gray-300"
+                    style={{ border: '1px solid gray' }}
+                    disabled
+                  />
+                </div>
+              </div>
+              <div className="mt-5">
                 <p className="font-thin">Cursos</p>
                 <div>
                   <Dropdown
@@ -231,17 +273,24 @@ export const DialogEditLink = (props: DialogEditLinkTypes) => {
                   />
                 </div>
               </div>
-              <div className="mt-5">
-                <p className="font-thin">Nombre de usuario</p>
+							<div className="mt-5">
+                <p className="font-thin">Generaciones</p>
                 <div>
-                  <input
-                    type="text"
-                    value={nameUser}
-                    className="border-r-0 py-2 rounded-lg w-10/12 bg-gray-300"
-                    style={{ border: '1px solid gray' }}
-                    disabled
+                  <Dropdown
+                    value={selectedGeneration}
+                    options={generations}
+                    onChange={(e) => handleChangeGeneration(e.value)}
+                    optionLabel="description"
+                    filter
+                    placeholder="Seleccionar Generación"
+                    className="w-full md:w-14rem"
                   />
                 </div>
+								{errors?.generation_id?.[0] === 'The generation id field is required.' && (
+									<span className="text-red-500 text-sm font-light">
+										La Generación es requerida
+									</span>
+								)}
               </div>
               <div className="mt-5">
                 <p className="font-thin">Tipo de Formulario</p>
@@ -260,6 +309,11 @@ export const DialogEditLink = (props: DialogEditLinkTypes) => {
             {selectedCareers && (
               <div className="mt-5 col-span-12">
                 <p className="font-thin">Tabla de precios</p>
+								{errors?.price_id?.[0] === 'The price id field is required.' && (
+									<span className="text-red-500 text-sm font-light">
+										La tabla de precio es requerida
+									</span>
+								)}
                 <div>
                   <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
                     <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">

@@ -22,6 +22,7 @@ export const TableLinks = () => {
   const { registers, loading } = GetRegisters();
   const [idRegister, setIdRegister] = useState();
   const [careerId, setCareerId] = useState();
+  const [generationId, setGenerationId] = useState();
   const { toast, showSuccess, showSuccessEdit, showSuccessDelete } =
     NotificationComponent();
   const [openEditLink, setOpenEditLink] = useState(false);
@@ -204,6 +205,7 @@ export const TableLinks = () => {
                 onClick={() => {
 									setCareerId(rowData.career_id)
                   setIdRegister(rowData.id);
+									setGenerationId(rowData.generation_id)
                   setOpenEditLink(true);
                 }}
               />
@@ -435,6 +437,7 @@ export const TableLinks = () => {
         <DialogEditLink
           idRegister={idRegister}
           careerId={careerId}
+          generationId={generationId}
           open={openEditLink}
           close={() => setOpenEditLink(false)}
           actionToast={actionToast}

@@ -5,5 +5,6 @@ export type RegisterLinkType = {
   email: string;
   career_id: number;
   form_type_id: number;
-  price_id: number;
+  price_id: any;
+  generation_id: any;
 };

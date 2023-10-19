@@ -28,6 +28,8 @@ export const DialogCreateLink = (props: DialogCreateLinkTypes) => {
   const [loading, setLoading] = useState(false);
   const [disabledForm, setDisabledForm] = useState(true);
   const [checkRadioBtn, setCheckRadioBtn] = useState(false);
+  const [generations, setGenerations] = useState<any>(null!);
+  const [selectedGeneration, setSelectedGeneration] = useState<any>(null!);
 
   const forms = [
     { name: 'Formulario de carrera', id: 1 },
@@ -94,7 +96,31 @@ export const DialogCreateLink = (props: DialogCreateLinkTypes) => {
   const handleChangeCareer = async (value: Career) => {
     setSelectedCareers(value);
     setValue('career_id', value.id);
+		getGenerations(value.id)
   };
+
+	const handleChangeGeneration = (value: any) => {
+		setSelectedGeneration(value)
+    setValue('generation_id', value.id);
+    setCheckRadioBtn(false);
+	}
+
+	const getGenerations = async (career_id: number) => {
+		await axios.get(`${process.env.REACT_APP_API_BACKEND}/careers/${career_id}/generations`,
+			{
+				headers: {
+					Accept: 'application/json',
+					Authorization: `Bearer ${localStorage.getItem('token_hhrr_latam')}`
+				}
+			}
+		).then((response: any) => {
+			setGenerations(response.data)
+			setSelectedGeneration(response.data[0])
+			setValue('generation_id', response.data[0].id);
+		}).catch((error: AxiosError) => {
+			console.log('Error', error);
+		});
+	}
 
   const formatPrice = (value: number) => {
     return new Intl.NumberFormat('es-ES', {}).format(value);
@@ -195,6 +221,18 @@ export const DialogCreateLink = (props: DialogCreateLinkTypes) => {
                   )}
                 </div>
                 <div>
+                  <p className="font-thin">Nombre de usuario</p>
+                  <div>
+                    <input
+                      type="text"
+                      value={nameUser}
+                      className="border-r-0 py-2 rounded-lg w-10/12 bg-gray-300"
+                      style={{ border: '1px solid gray' }}
+                      disabled
+                    />
+                  </div>
+                </div>
+								<div className="mt-5">
                   <p className="font-thin">Cursos</p>
                   <div>
                     <Dropdown
@@ -209,15 +247,18 @@ export const DialogCreateLink = (props: DialogCreateLinkTypes) => {
                     />
                   </div>
                 </div>
-                <div className="mt-5">
-                  <p className="font-thin">Nombre de usuario</p>
+								<div className="mt-5">
+                  <p className="font-thin">Generaciones</p>
                   <div>
-                    <input
-                      type="text"
-                      value={nameUser}
-                      className="border-r-0 py-2 rounded-lg w-10/12 bg-gray-300"
-                      style={{ border: '1px solid gray' }}
-                      disabled
+                    <Dropdown
+                      value={selectedGeneration}
+                      options={generations}
+                      disabled={disabledInput}
+                      onChange={(e) => handleChangeGeneration(e.value)}
+                      optionLabel="description"
+                      filter
+                      placeholder="Seleccionar Generación"
+                      className="w-full md:w-14rem"
                     />
                   </div>
                 </div>
