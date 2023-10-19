@@ -124,6 +124,7 @@ export const DialogEditLink = (props: DialogEditLinkTypes) => {
     setSelectedCareers(value);
     setValue('career_id', value.id);
 		setSelectedPrice(value.prices[0].id)
+		setValue('price_id', value.prices[0].id)
     const response = await axios.get(
       `${process.env.REACT_APP_API_BACKEND}/careers/${value.id}/generations`,
       {

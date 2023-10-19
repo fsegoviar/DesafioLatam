@@ -96,6 +96,7 @@ export const DialogCreateLink = (props: DialogCreateLinkTypes) => {
   const handleChangeCareer = async (value: Career) => {
     setSelectedCareers(value);
     setValue('career_id', value.id);
+		setValue('price_id', value.prices[0].id)
 		getGenerations(value.id)
   };
 
